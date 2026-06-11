@@ -76,6 +76,7 @@ export const GeneratedSoftFloat: React.FC<{
         const phase = index * 12;
         const floatY = wave(localFrame, segmentFrames, 8, phase);
         const tilt = wave(localFrame, segmentFrames, 1.2, phase + 6);
+        const isIntroHero = layout.family === 'intro-hero';
         return (
           <div
             key={`img-${index}`}
@@ -87,11 +88,9 @@ export const GeneratedSoftFloat: React.FC<{
               height: box.height,
               overflow: 'hidden',
               opacity: imageEnter,
-              transform:
-                layout.family === 'intro-hero'
-                  ? `translateY(${imageFloatY}px) scale(${imageScale})`
-                  : `translateY(${floatY}px) rotate(${index % 2 === 0 ? tilt : -tilt}deg)`,
-              transformOrigin: 'center center',
+              transform: isIntroHero
+                ? `translateY(${imageFloatY}px)`
+                : `translateY(${floatY}px) rotate(${index % 2 === 0 ? tilt : -tilt}deg)`,
             }}
           >
             <Img
@@ -99,8 +98,10 @@ export const GeneratedSoftFloat: React.FC<{
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover',
-                objectPosition: layout.family === 'intro-hero' ? 'center center' : 'center top',
+                objectFit: isIntroHero ? 'contain' : 'cover',
+                objectPosition: isIntroHero ? 'center center' : 'center top',
+                transform: isIntroHero ? `scale(${imageScale})` : undefined,
+                transformOrigin: 'center center',
               }}
             />
           </div>

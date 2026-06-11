@@ -152,8 +152,12 @@ function formatTitleText(text, box, textStyle, family) {
     const helloIam = raw.match(/^HELLO,?\s+I\s+AM\s+(.+)$/i);
     if (helloIam) {
       const tail = helloIam[1].trim();
-      if (!tail.includes(' ')) {
-        return `HELLO,\nI AM\n${tail}`.toUpperCase();
+      const words = tail.split(/\s+/).filter(Boolean);
+      if (words.length === 1) {
+        return `HELLO,\nI AM\n${words[0]}`.toUpperCase();
+      }
+      if (words.length > 1) {
+        return ['HELLO,', 'I AM', ...words].join('\n').toUpperCase();
       }
     }
   }
