@@ -20,9 +20,8 @@ RUN mkdir -p out/renders public/generated
 
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
-ENV STUDIO_PORT=3000
 ENV GALLERY_PORT=3456
 
-EXPOSE 3000 3456
+EXPOSE 3456
 
-CMD ["node", "scripts/server.mjs"]
+CMD ["node", "scripts/gallery-only.mjs"]

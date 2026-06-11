@@ -1,0 +1,14 @@
+{
+  "id": "wizz-london-yerevan",
+  "templateId": "wizz-london-yerevan",
+  "name": "Wizz Air London Yerevan",
+  "format": "carousel-portrait",
+  "cardCount": 3,
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardFrames": 210,
+  "composition": "TemplateRenderPortrait",
+  "splitVideos": true,
+  "exportName": "Template"
+}

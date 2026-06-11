@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>HelloIAM Studio</title>
+    <title>HelloIAM Stories</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
     <style>
       :root {
         color-scheme: light;
@@ -13,13 +16,8 @@
         --muted: #5c6670;
         --accent: #4a7bff;
         --accent-soft: #e8efff;
-        --red: #d61e23;
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
+      * { box-sizing: border-box; }
       body {
         margin: 0;
         min-height: 100vh;
@@ -27,33 +25,36 @@
         background: radial-gradient(circle at top left, #f8fafc, var(--bg));
         color: var(--text);
       }
-
-      .wrap {
-        max-width: 920px;
-        margin: 0 auto;
-        padding: 48px 24px 64px;
-      }
-
-      h1 {
-        margin: 0 0 8px;
-        font-size: 2rem;
-        letter-spacing: -0.02em;
-      }
-
-      .lead {
-        margin: 0 0 28px;
-        color: var(--muted);
-        font-size: 1.05rem;
-        line-height: 1.5;
-      }
-
-      .projects {
+      .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
+      h1 { margin: 0 0 6px; font-size: 1.85rem; letter-spacing: -0.02em; }
+      .lead { margin: 0 0 24px; color: var(--muted); font-size: 1rem; line-height: 1.5; }
+      .app-nav {
         display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 22px;
+        gap: 8px;
+        margin-bottom: 28px;
+        border-bottom: 1px solid #d9dde0;
       }
-
+      .app-nav a {
+        padding: 10px 18px;
+        text-decoration: none;
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 0.95rem;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+      .app-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+      .panel {
+        background: var(--card);
+        border: 1px solid #d9dde0;
+        border-radius: 20px;
+        padding: 22px;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 30px rgba(15, 15, 16, 0.05);
+      }
+      .panel h2 { margin: 0 0 8px; font-size: 1.1rem; }
+      .panel p { margin: 0 0 16px; color: var(--muted); font-size: 0.95rem; line-height: 1.45; }
+      .projects { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
       .project-tab {
         appearance: none;
         border: 1px solid #d9dde0;
@@ -65,1054 +66,900 @@
         cursor: pointer;
         background: #fff;
         color: var(--text);
-        transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
       }
-
-      .project-tab:hover {
-        border-color: #b8c0c8;
-      }
-
-      .project-tab.active {
-        color: #fff;
-        border-color: transparent;
-        background: var(--tab-accent, var(--accent));
-      }
-
-      .project-desc {
-        margin: 0 0 22px;
-        color: var(--muted);
-        font-size: 0.95rem;
-        line-height: 1.45;
-      }
-
-      .import-panel {
+      .project-tab.active { color: #fff; border-color: transparent; background: var(--tab-accent, var(--accent)); }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+      .card {
         background: #fff;
         border: 1px solid #d9dde0;
-        border-radius: 20px;
-        padding: 22px;
-        margin-bottom: 28px;
-        box-shadow: 0 10px 30px rgba(15, 15, 16, 0.05);
-      }
-
-      .import-panel h2 {
-        margin: 0 0 8px;
-        font-size: 1.1rem;
-      }
-
-      .import-panel p {
-        margin: 0 0 16px;
-        color: var(--muted);
-        font-size: 0.95rem;
-        line-height: 1.45;
-      }
-
-      .import-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        align-items: end;
-      }
-
-      .import-field {
+        border-radius: 16px;
+        padding: 20px;
         display: flex;
         flex-direction: column;
-        gap: 6px;
-        min-width: 140px;
+        gap: 10px;
+        overflow: hidden;
       }
-
-      .import-field label {
-        font-size: 0.82rem;
+      .card-cover {
+        margin: -20px -20px 4px;
+        padding: 12px;
+        background: #c8ccd0;
+        border-bottom: 1px solid #d9dde0;
+        display: flex;
+        justify-content: center;
+      }
+      .card-cover .card-preview-canvas { box-shadow: 0 4px 14px rgba(15, 15, 16, 0.1); }
+      .danger-btn { color: #d61e23; border-color: #f0b4b6; }
+      .danger-btn:hover { background: #fff5f5; }
+      .card .tag {
+        align-self: flex-start;
+        font-size: 0.75rem;
         font-weight: 700;
-        color: var(--muted);
         text-transform: uppercase;
         letter-spacing: 0.04em;
+        color: var(--accent);
+        background: var(--accent-soft);
+        padding: 4px 10px;
+        border-radius: 999px;
       }
-
-      .import-field input,
-      .import-field select,
-      .import-field textarea {
+      .card h2, .card h3 { margin: 0; font-size: 1.15rem; }
+      .card p { margin: 0; color: var(--muted); font-size: 0.92rem; line-height: 1.45; flex: 1; }
+      .card-meta { font-size: 0.85rem; color: var(--muted); }
+      .primary-btn, .secondary-btn {
+        appearance: none;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .primary-btn { background: var(--accent); color: #fff; }
+      .secondary-btn { background: #fff; border: 1px solid #d9dde0; color: var(--text); }
+      .primary-btn:disabled, .secondary-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .import-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+      .import-field label { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+      .import-field input[type="text"],
+      .import-field textarea,
+      .import-field select {
         font: inherit;
         padding: 10px 12px;
         border: 1px solid #d9dde0;
         border-radius: 10px;
         background: #fff;
       }
-
-      .import-field textarea {
-        width: 100%;
-        min-height: 120px;
-        resize: vertical;
-        font-family: ui-monospace, "SF Mono", Menlo, monospace;
-        font-size: 0.82rem;
-        line-height: 1.4;
-      }
-
-      .import-btn {
-        appearance: none;
-        border: 0;
-        border-radius: 12px;
-        padding: 12px 18px;
-        font: inherit;
-        font-weight: 700;
-        cursor: pointer;
-        background: var(--accent);
-        color: #fff;
-      }
-
-      .import-btn:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
-
-      .import-status {
-        margin-top: 14px;
-        font-size: 0.92rem;
-        line-height: 1.45;
-      }
-
-      .import-status.ok {
-        color: #15803d;
-      }
-
-      .import-status.err {
-        color: var(--red);
-      }
-
-      .assets-panel {
-        background: #fff;
-        border: 1px solid #d9dde0;
-        border-radius: 20px;
-        padding: 22px;
-        margin-bottom: 28px;
-        box-shadow: 0 10px 30px rgba(15, 15, 16, 0.05);
-      }
-
-      .assets-panel h2 {
-        margin: 0 0 8px;
-        font-size: 1.1rem;
-      }
-
-      .assets-panel p {
-        margin: 0 0 16px;
-        color: var(--muted);
-        font-size: 0.95rem;
-        line-height: 1.45;
-      }
-
-      .assets-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        align-items: end;
-        margin-bottom: 16px;
-      }
-
+      .import-field textarea { min-height: 88px; resize: vertical; }
+      .import-field input[type="color"] { width: 56px; height: 36px; padding: 2px; cursor: pointer; }
+      .assets-toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
       .assets-upload-btn {
         appearance: none;
-        border: 0;
-        border-radius: 12px;
-        padding: 12px 18px;
-        font: inherit;
-        font-weight: 700;
-        cursor: pointer;
-        background: #0f0f10;
-        color: #fff;
-      }
-
-      .assets-upload-btn:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
-
-      .assets-status {
-        font-size: 0.92rem;
-        line-height: 1.45;
-        margin-bottom: 12px;
-      }
-
-      .assets-status.ok {
-        color: #15803d;
-      }
-
-      .assets-status.err {
-        color: var(--red);
-      }
-
-      .assets-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 12px;
-      }
-
-      .asset-card {
-        border: 1px solid #d9dde0;
-        border-radius: 14px;
-        overflow: hidden;
-        background: #f8fafc;
-      }
-
-      .asset-thumb {
-        aspect-ratio: 1;
-        background: #0f0f10;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
-
-      .asset-thumb img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-      }
-
-      .asset-meta {
-        padding: 10px;
-      }
-
-      .asset-name {
-        font-size: 0.78rem;
-        font-weight: 700;
-        word-break: break-all;
-        margin-bottom: 8px;
-      }
-
-      .asset-copy {
-        appearance: none;
-        border: 1px solid #d9dde0;
-        border-radius: 8px;
-        padding: 6px 10px;
-        font: inherit;
-        font-size: 0.78rem;
-        font-weight: 700;
-        cursor: pointer;
-        background: #fff;
-        width: 100%;
-      }
-
-      .status {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: #fff;
-        border: 1px solid #d9dde0;
-        font-size: 0.92rem;
-        margin-bottom: 28px;
-      }
-
-      .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #f59e0b;
-        animation: pulse 1.2s ease-in-out infinite;
-      }
-
-      .status.ready .dot {
-        background: #22c55e;
-        animation: none;
-      }
-
-      .status.error .dot {
-        background: var(--red);
-        animation: none;
-      }
-
-      @keyframes pulse {
-        50% {
-          opacity: 0.45;
-        }
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 18px;
-      }
-
-      .card {
-        background: var(--card);
-        border: 1px solid #d9dde0;
-        border-radius: 20px;
-        padding: 22px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        box-shadow: 0 10px 30px rgba(15, 15, 16, 0.05);
-      }
-
-      .tag {
-        align-self: flex-start;
-        padding: 4px 10px;
-        border-radius: 999px;
-        background: var(--accent-soft);
-        color: var(--accent);
-        font-size: 0.78rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-
-      .card h2 {
-        margin: 0;
-        font-size: 1.25rem;
-      }
-
-      .card p {
-        margin: 0;
-        color: var(--muted);
-        line-height: 1.45;
-        flex: 1;
-      }
-
-      .open {
-        appearance: none;
-        border: 0;
-        border-radius: 12px;
-        padding: 14px 18px;
-        font: inherit;
-        font-weight: 700;
-        cursor: pointer;
-        background: var(--text);
-        color: #fff;
-        transition: transform 0.15s ease, opacity 0.15s ease;
-      }
-
-      .open:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
-
-      .open:not(:disabled):hover {
-        transform: translateY(-1px);
-      }
-
-      .card-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-
-      .render-btn {
-        appearance: none;
         border: 1px solid #d9dde0;
         border-radius: 12px;
-        padding: 14px 18px;
+        padding: 10px 16px;
         font: inherit;
         font-weight: 700;
         cursor: pointer;
         background: #fff;
-        color: var(--text);
-        transition: transform 0.15s ease, opacity 0.15s ease;
       }
-
-      .render-btn:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
-
-      .render-btn:not(:disabled):hover {
-        transform: translateY(-1px);
-        border-color: #b8c0c8;
-      }
-
-      .edit-btn {
-        appearance: none;
-        border: 1px solid var(--accent);
-        border-radius: 12px;
-        padding: 14px 18px;
-        font: inherit;
-        font-weight: 700;
-        cursor: pointer;
-        background: var(--accent-soft);
-        color: var(--accent);
-        transition: transform 0.15s ease, opacity 0.15s ease;
-      }
-
-      .edit-btn:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
-
-      .edit-btn:not(:disabled):hover {
-        transform: translateY(-1px);
-      }
-
-      .edit-panel {
-        background: #fff;
-        border: 1px solid #d9dde0;
-        border-radius: 20px;
-        padding: 22px;
-        margin-bottom: 28px;
-        box-shadow: 0 10px 30px rgba(15, 15, 16, 0.05);
-      }
-
-      .edit-panel h2 {
-        margin: 0 0 8px;
-        font-size: 1.25rem;
-      }
-
-      .edit-panel .edit-desc {
-        margin: 0 0 20px;
-        color: var(--muted);
-        font-size: 0.95rem;
-        line-height: 1.45;
-      }
-
-      .edit-back {
-        appearance: none;
-        border: 0;
-        background: none;
-        padding: 0;
-        margin: 0 0 18px;
-        font: inherit;
-        font-weight: 700;
-        color: var(--accent);
-        cursor: pointer;
-      }
-
-      .edit-back:hover {
-        text-decoration: underline;
-      }
-
-      .props-form {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        margin-bottom: 20px;
-      }
-
-      .props-form .import-field input[type="color"] {
-        width: 100%;
-        height: 44px;
-        padding: 4px;
-        cursor: pointer;
-      }
-
-      .edit-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-
-      .edit-save-btn {
-        appearance: none;
-        border: 0;
-        border-radius: 12px;
-        padding: 12px 18px;
-        font: inherit;
-        font-weight: 700;
-        cursor: pointer;
-        background: var(--accent);
-        color: #fff;
-      }
-
-      .edit-save-btn:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
-
-      .edit-render-btn {
-        appearance: none;
-        border: 1px solid #d9dde0;
-        border-radius: 12px;
-        padding: 12px 18px;
-        font: inherit;
-        font-weight: 700;
-        cursor: pointer;
-        background: #fff;
-        color: var(--text);
-      }
-
-      .edit-render-btn:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
-
-      .edit-status {
-        margin-top: 14px;
-        font-size: 0.92rem;
-        line-height: 1.45;
-      }
-
-      .edit-status.ok {
-        color: #15803d;
-      }
-
-      .edit-status.err {
-        color: var(--red);
-      }
-
-      .edit-render-result {
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px solid #eef1f4;
-        font-size: 0.88rem;
-        color: var(--muted);
-      }
-
-      .edit-render-result img {
-        width: 100%;
-        max-width: 540px;
-        border-radius: 12px;
-        margin: 8px 0;
-        border: 1px solid #d9dde0;
-      }
-
-      .edit-render-result video {
-        width: 100%;
-        max-width: 540px;
-        border-radius: 12px;
-        margin: 8px 0;
-      }
-
-      .edit-render-result a {
-        color: var(--accent);
-        font-weight: 700;
-        text-decoration: none;
-      }
-
-      .render-result {
-        margin-top: 4px;
-        padding-top: 12px;
-        border-top: 1px solid #eef1f4;
-        font-size: 0.88rem;
-        color: var(--muted);
-      }
-
-      .render-result img {
-        width: 100%;
-        border-radius: 12px;
-        margin: 8px 0;
-        border: 1px solid #d9dde0;
-      }
-
-      .render-result video {
-        width: 100%;
-        border-radius: 12px;
-        margin: 8px 0;
-      }
-
-      .render-result a {
-        color: var(--accent);
-        font-weight: 700;
-        text-decoration: none;
-      }
-
+      .assets-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+      .assets-grid img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid #d9dde0; }
       .empty {
-        grid-column: 1 / -1;
-        padding: 28px;
+        padding: 32px;
         border-radius: 16px;
         border: 1px dashed #c8ccd0;
         color: var(--muted);
         text-align: center;
         background: rgba(255, 255, 255, 0.6);
       }
-
-      .hint {
-        margin-top: 28px;
-        color: var(--muted);
-        font-size: 0.9rem;
-        line-height: 1.5;
+      .status { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--muted); margin-bottom: 20px; }
+      .status .dot { width: 8px; height: 8px; border-radius: 50%; background: #f5a623; }
+      .status.ready .dot { background: #34c759; }
+      .status.error .dot { background: #d61e23; }
+      .edit-back {
+        appearance: none;
+        border: none;
+        background: none;
+        color: var(--accent);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 0;
+        margin-bottom: 16px;
       }
-
-      code {
-        background: #fff;
+      .card-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+      .card-tab {
+        appearance: none;
         border: 1px solid #d9dde0;
-        padding: 2px 6px;
-        border-radius: 6px;
+        border-radius: 999px;
+        padding: 8px 16px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        background: #fff;
       }
+      .card-tab.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+      .edit-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+      .edit-status { margin-top: 12px; font-size: 0.9rem; color: var(--muted); }
+      .edit-status.ok { color: #1a7f37; }
+      .edit-status.err { color: #d61e23; }
+      .posts-grid { display: flex; flex-direction: column; gap: 12px; }
+      .post-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 18px;
+        border: 1px solid #d9dde0;
+        border-radius: 14px;
+        background: #fff;
+      }
+      .post-row h3 { margin: 0; font-size: 1rem; }
+      .post-row .meta { font-size: 0.85rem; color: var(--muted); }
+      .render-results { margin-top: 20px; display: flex; flex-direction: column; gap: 20px; }
+      .render-card-result {
+        border: 1px solid #d9dde0;
+        border-radius: 14px;
+        padding: 16px;
+        background: #fafbfc;
+      }
+      .render-card-result h4 { margin: 0 0 12px; font-size: 1rem; }
+      .render-card-result img { max-width: 200px; border-radius: 8px; border: 1px solid #d9dde0; display: block; margin-bottom: 10px; }
+      .render-card-result video { max-width: 280px; border-radius: 8px; display: block; margin-bottom: 10px; }
+      .render-card-result a { color: var(--accent); font-weight: 600; margin-right: 12px; }
+      .render-btn { background: #1a7f37; color: #fff; }
+      .import-field.field-error input,
+      .import-field.field-error textarea,
+      .import-field.field-error select {
+        border-color: #d61e23;
+        box-shadow: 0 0 0 2px rgba(214, 30, 35, 0.15);
+      }
+      .import-field.field-error label { color: #d61e23; }
+      .post-downloads { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.88rem; }
+      .post-downloads a { color: var(--accent); font-weight: 600; text-decoration: none; }
+      .render-progress-panel {
+        margin: 16px 0;
+        padding: 14px 16px;
+        border: 1px solid #c5d4f5;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #f4f8ff 0%, #eef4ff 100%);
+      }
+      .render-progress-panel.complete {
+        border-color: #9ed4ad;
+        background: linear-gradient(180deg, #f3faf5 0%, #e8f6ec 100%);
+      }
+      .render-progress-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1a3a6b;
+      }
+      .render-progress-panel.complete .render-progress-head { color: #1a7f37; }
+      .render-progress-pct {
+        margin-left: auto;
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+      }
+      .render-progress-spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #c5d4f5;
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: render-spin 0.8s linear infinite;
+        flex-shrink: 0;
+      }
+      .render-progress-panel.complete .render-progress-spinner { display: none; }
+      @keyframes render-spin { to { transform: rotate(360deg); } }
+      .progress-bar {
+        height: 14px;
+        background: #dce6f8;
+        border-radius: 999px;
+        overflow: hidden;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+      }
+      .progress-bar span {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent) 0%, #4a8fff 100%);
+        width: 0%;
+        transition: width 0.35s ease;
+        border-radius: 999px;
+      }
+      .render-progress-panel.complete .progress-bar span {
+        background: linear-gradient(90deg, #1a7f37 0%, #34c759 100%);
+      }
+      .edit-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 28px;
+        align-items: start;
+      }
+      @media (max-width: 900px) {
+        .edit-layout { grid-template-columns: 1fr; }
+        .card-preview-panel { position: static; }
+      }
+      .card-preview-panel h3 {
+        margin: 0 0 12px;
+        font-size: 0.95rem;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .card-preview-panel { position: sticky; top: 20px; }
+      .card-preview-frame {
+        border: 1px solid #d9dde0;
+        border-radius: 14px;
+        background: #c8ccd0;
+        padding: 14px;
+        display: flex;
+        justify-content: center;
+        min-height: 120px;
+      }
+      .card-preview-canvas {
+        box-shadow: 0 8px 24px rgba(15, 15, 16, 0.12);
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .card-preview-note {
+        margin: 10px 0 0;
+        font-size: 0.78rem;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      [hidden] { display: none !important; }
     </style>
   </head>
   <body>
     <div class="wrap">
-      <h1>HelloIAM Studio</h1>
-      <p class="lead">
-        Импортируйте CSS, правьте props в галерее (кнопка «Редактировать») или откройте шаблон в
-        Remotion Studio — оба пути валидны.
-      </p>
+      <h1>HelloIAM Stories</h1>
+      <p class="lead">Конструктор сторис для SMM — alpha v001</p>
 
-      <div id="view-home">
-      <div class="projects" id="projects"></div>
-      <p class="project-desc" id="project-desc"></p>
+      <nav class="app-nav" id="app-nav">
+        <a href="#/" id="nav-generate" class="active">Генерация</a>
+        <a href="#/posts" id="nav-posts">Посты</a>
+      </nav>
 
-      <section class="import-panel">
-        <h2>Импорт из Figma CSS</h2>
-        <p>Загрузите <code>.css</code> или вставьте экспорт из Figma — шаблон создастся без нейросети.</p>
-        <div class="import-row">
-          <div class="import-field" style="flex: 1; min-width: 220px">
-            <label for="css-file">CSS файл</label>
-            <input id="css-file" type="file" accept=".css,text/css" />
-          </div>
-          <div class="import-field">
-            <label for="css-frame">Кадр</label>
-            <input id="css-frame" type="number" min="1" value="1" />
-          </div>
-          <div class="import-field">
-            <label for="css-project">Проект</label>
-            <select id="css-project"></select>
-          </div>
-          <button class="import-btn" id="css-import" disabled>Импортировать</button>
+      <div id="view-generate">
+        <div class="status" id="status">
+          <span class="dot"></span>
+          <span id="status-text">Загрузка…</span>
         </div>
-        <div class="import-field" style="margin-top: 14px">
-          <label for="css-paste">CSS (вставка или из файла)</label>
-          <textarea
-            id="css-paste"
-            placeholder="/* Instagram post - 103 */&#10;position: relative;&#10;width: 1080px;&#10;..."
-          ></textarea>
-        </div>
-        <div class="import-status" id="import-status"></div>
-      </section>
-
-      <section class="assets-panel">
-        <h2>Изображения</h2>
-        <p>Загрузите PNG/JPG/WEBP — путь появится в props <code>image</code> в Remotion Studio.</p>
-        <div class="assets-toolbar">
-          <div class="import-field" style="flex: 1; min-width: 220px">
-            <label for="asset-file">Файл</label>
-            <input id="asset-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
+        <div class="projects" id="projects"></div>
+        <section class="panel">
+          <h2>Изображения</h2>
+          <p>Загрузите PNG/JPG — используйте при заполнении карточек.</p>
+          <div class="assets-toolbar">
+            <div class="import-field" style="flex: 1; min-width: 220px">
+              <label for="asset-file">Файл</label>
+              <input id="asset-file" type="file" accept="image/png,image/jpeg,image/webp" />
+            </div>
+            <button class="assets-upload-btn" id="asset-upload" disabled>Загрузить</button>
           </div>
-          <button class="assets-upload-btn" id="asset-upload" disabled>Загрузить</button>
-        </div>
-        <div class="assets-status" id="assets-status"></div>
-        <div class="assets-grid" id="assets-grid"></div>
-      </section>
-
-      <div class="status" id="status">
-        <span class="dot"></span>
-        <span id="status-text">Запускаем Remotion Studio…</span>
+          <div id="assets-status" style="font-size:0.9rem;color:var(--muted);margin-top:8px"></div>
+          <div class="assets-grid" id="assets-grid"></div>
+        </section>
+        <div class="grid" id="template-grid"></div>
       </div>
 
-      <div class="grid" id="grid"></div>
-
-      <p class="hint">
-        <strong>Галерея:</strong> «Редактировать» → сохранение пишет <code>meta.json</code> (используется
-        при рендере). <strong>Studio:</strong> <code id="studio-url">http://localhost:3000</code> — кнопка
-        «Открыть» или <code>npm run studio</code>; правки в панели props сессионные, пока не сохраните через
-        галерею.
-      </p>
+      <div id="view-posts" hidden>
+        <section class="panel">
+          <h2>Мои посты</h2>
+          <p>Все сохранённые посты.</p>
+          <div id="posts-list" class="posts-grid"></div>
+        </section>
       </div>
 
-      <section class="edit-panel" id="view-edit" hidden>
-        <button type="button" class="edit-back" id="edit-back">← К галерее</button>
-        <h2 id="edit-title">Редактирование</h2>
-        <p class="edit-desc" id="edit-desc"></p>
-        <form class="props-form" id="props-form"></form>
-        <div class="edit-actions">
-          <button type="button" class="edit-save-btn" id="edit-save" disabled>Сохранить</button>
-          <button type="button" class="edit-render-btn" id="edit-render" disabled>Рендер PNG+MP4</button>
-        </div>
-        <div class="edit-status" id="edit-status"></div>
-        <div class="edit-render-result" id="edit-render-result" hidden></div>
-      </section>
+      <div id="view-post-edit" hidden>
+        <button type="button" class="edit-back" id="edit-back">← К постам</button>
+        <section class="panel">
+          <h2 id="edit-post-title">Редактирование поста</h2>
+          <p id="edit-post-desc"></p>
+          <div class="edit-layout">
+            <div class="edit-main">
+          <div class="card-tabs" id="card-tabs"></div>
+          <form id="card-form"></form>
+          <div class="render-progress-panel" id="render-progress" hidden>
+            <div class="render-progress-head">
+              <span class="render-progress-spinner" id="render-progress-spinner"></span>
+              <span id="render-progress-label">Рендер…</span>
+              <span class="render-progress-pct" id="render-progress-pct"></span>
+            </div>
+            <div class="progress-bar"><span id="render-progress-bar"></span></div>
+          </div>
+          <div class="edit-actions">
+            <button type="button" class="primary-btn" id="save-card-btn">Сохранить карточку</button>
+            <button type="button" class="secondary-btn" id="save-all-btn">Сохранить все карточки</button>
+            <button type="button" class="secondary-btn" id="render-card-btn">Рендер этой карточки</button>
+            <button type="button" class="primary-btn render-btn" id="render-post-btn">Создать видео (все карточки)</button>
+            <button type="button" class="secondary-btn danger-btn" id="delete-post-btn">Удалить пост</button>
+          </div>
+          <div class="edit-status" id="edit-status"></div>
+          <div class="render-results" id="render-results" hidden></div>
+            </div>
+            <aside class="card-preview-panel">
+              <h3>Превью карточки</h3>
+              <div class="card-preview-frame">
+                <div id="card-preview"></div>
+              </div>
+              <p class="card-preview-note">Обновляется при вводе. Финальный рендер может немного отличаться.</p>
+            </aside>
+          </div>
+        </section>
+      </div>
     </div>
 
     <script>
-      function resolveStudioOrigin() {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get("studioOrigin")) return params.get("studioOrigin");
-        const { protocol, hostname } = window.location;
-        if (hostname.startsWith("helloiam-studio-v001.")) {
-          return `${protocol}//${hostname.replace(
-            "helloiam-studio-v001.",
-            "helloiam-studio-v001-remotion."
-          )}`;
-        }
-        const port = params.get("studioPort") || "3000";
-        return `${protocol}//${hostname}:${port}`;
-      }
-      const STUDIO_ORIGIN = resolveStudioOrigin();
-      const STORAGE_KEY = "helloiam-studio-project";
-      const grid = document.getElementById("grid");
-      const projectsEl = document.getElementById("projects");
-      const projectDescEl = document.getElementById("project-desc");
-      const status = document.getElementById("status");
-      const statusText = document.getElementById("status-text");
-      const cssFileInput = document.getElementById("css-file");
-      const cssFrameInput = document.getElementById("css-frame");
-      const cssProjectSelect = document.getElementById("css-project");
-      const cssImportBtn = document.getElementById("css-import");
-      const cssPasteInput = document.getElementById("css-paste");
-      const importStatus = document.getElementById("import-status");
-      const assetFileInput = document.getElementById("asset-file");
-      const assetUploadBtn = document.getElementById("asset-upload");
-      const assetsStatus = document.getElementById("assets-status");
-      const assetsGrid = document.getElementById("assets-grid");
-      const viewHome = document.getElementById("view-home");
-      const viewEdit = document.getElementById("view-edit");
-      const editBack = document.getElementById("edit-back");
-      const editTitle = document.getElementById("edit-title");
-      const editDesc = document.getElementById("edit-desc");
-      const propsForm = document.getElementById("props-form");
-      const editSave = document.getElementById("edit-save");
-      const editRender = document.getElementById("edit-render");
-      const editStatus = document.getElementById("edit-status");
-      const editRenderResult = document.getElementById("edit-render-result");
-
-      let allTemplates = [];
-      let studioAssets = [];
+      const STORAGE_KEY = "helloiam-stories-project";
       let projects = [];
-      let activeProject = localStorage.getItem(STORAGE_KEY) || "am-news";
-      let galleryReady = false;
-      let studioReady = false;
-      let editCompositionId = null;
-      let editPropsFields = [];
-      let editDefaultProps = {};
+      let templates = [];
+      let assets = [];
+      let activeProject = localStorage.getItem(STORAGE_KEY) || "helloiam";
+      let appReady = false;
+      let currentPost = null;
+      let activeCardIndex = 0;
+      let previewLayouts = {};
+      let templateDetails = {};
+      let previewTimer = null;
+      let autoSaveTimer = null;
+      const PREVIEW_SCALE = 280 / 1080;
+      const COVER_SCALE = 200 / 1080;
 
-      function getCssText() {
-        return cssPasteInput.value.trim();
+      const viewGenerate = document.getElementById("view-generate");
+      const viewPosts = document.getElementById("view-posts");
+      const viewPostEdit = document.getElementById("view-post-edit");
+      const appNav = document.getElementById("app-nav");
+      const navGenerate = document.getElementById("nav-generate");
+      const navPosts = document.getElementById("nav-posts");
+
+      function escapeHtml(v) {
+        return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       }
 
-      function updateImportButton() {
-        cssImportBtn.disabled = !galleryReady || !getCssText();
-      }
-
-      function studioUrl(compositionId) {
-        return `${STUDIO_ORIGIN}/${encodeURIComponent(compositionId)}`;
-      }
-
-      function escapeHtml(value) {
-        return String(value)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
+      function formatDate(iso) {
+        if (!iso) return "";
+        try {
+          return new Date(iso).toLocaleString("ru-RU", {
+            day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
+          });
+        } catch { return iso; }
       }
 
       function parseRoute() {
-        const match = (window.location.hash || "").match(/^#\/edit\/([^/?#]+)/);
-        if (match) {
-          return { view: "edit", compositionId: decodeURIComponent(match[1]) };
-        }
-        return { view: "home" };
+        const hash = window.location.hash || "#/";
+        const postEdit = hash.match(/^#\/post\/([^/]+)$/);
+        if (postEdit) return { view: "post-edit", postId: decodeURIComponent(postEdit[1]) };
+        if (hash.startsWith("#/posts")) return { view: "posts" };
+        return { view: "generate" };
       }
 
-      function navigateToEdit(compositionId) {
-        window.location.hash = `#/edit/${encodeURIComponent(compositionId)}`;
+      function applyRoute() {
+        const route = parseRoute();
+        viewGenerate.hidden = route.view !== "generate";
+        viewPosts.hidden = route.view !== "posts";
+        viewPostEdit.hidden = route.view !== "post-edit";
+        appNav.hidden = route.view === "post-edit";
+        navGenerate.classList.toggle("active", route.view === "generate");
+        navPosts.classList.toggle("active", route.view === "posts");
+        if (route.view === "posts") loadPostsList();
+        if (route.view === "post-edit") openPostEditor(route.postId);
       }
 
-      function navigateToHome() {
-        window.location.hash = "";
+      async function createPost(templateId) {
+        const res = await fetch("/api/posts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ templateId }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Не удалось создать пост");
+        window.location.hash = `#/post/${data.post.id}`;
       }
 
-      function setEditStatus(text, kind = "") {
-        editStatus.textContent = text;
-        editStatus.className = `edit-status${kind ? ` ${kind}` : ""}`;
-      }
-
-      function normalizePropsFields(propsFields, defaultProps) {
-        if (Array.isArray(propsFields) && propsFields.length) {
-          return propsFields.map((field) => ({
-            key: field.key,
-            type: field.type || "string",
-            label: field.label || field.key,
-          }));
-        }
-        if (propsFields && typeof propsFields === "object") {
-          return Object.entries(propsFields).map(([key, type]) => ({
-            key,
-            type: String(type),
-            label: key,
-          }));
-        }
-        return Object.keys(defaultProps || {}).map((key) => ({
-          key,
-          type: "string",
-          label: key,
-        }));
-      }
-
-      function renderImageOptions(selected) {
-        if (!studioAssets.length) {
-          return '<option value="">Нет изображений — загрузите в галерее</option>';
-        }
-        return studioAssets
-          .map((asset) => {
-            const selectedAttr = asset.path === selected ? " selected" : "";
-            return `<option value="${escapeHtml(asset.path)}"${selectedAttr}>${escapeHtml(asset.path)}</option>`;
-          })
-          .join("");
-      }
-
-      function renderPropField(field, value) {
-        const id = `prop-${field.key}`;
-        const label = escapeHtml(field.label || field.key);
-        const safeValue = value ?? "";
-
-        if (field.type === "textarea") {
-          return `
-            <div class="import-field">
-              <label for="${id}">${label}</label>
-              <textarea id="${id}" name="${field.key}">${escapeHtml(safeValue)}</textarea>
+      async function loadPostsList() {
+        const el = document.getElementById("posts-list");
+        try {
+          const res = await fetch("/api/posts");
+          const data = await res.json();
+          const posts = data.posts || [];
+          if (!posts.length) {
+            el.innerHTML = '<div class="empty">Пока нет постов. Создайте первый на вкладке «Генерация».</div>';
+            return;
+          }
+          el.innerHTML = posts.map((p) => {
+            const bust = p.lastRender?.at ? `?t=${encodeURIComponent(p.lastRender.at)}` : "";
+            const downloads = (p.lastRender?.cards || []).map((c, i) => `
+              <a href="${c.stillUrl}${bust}" download="card-${i + 1}.png">PNG ${i + 1}</a>
+              <a href="${c.videoUrl}${bust}" download="card-${i + 1}.mp4">MP4 ${i + 1}</a>
+            `).join("");
+            return `
+            <div class="post-row">
+              <div style="flex:1;min-width:200px">
+                <h3>${escapeHtml(p.templateName || p.templateId)}</h3>
+                <div class="meta">${p.cardCount} карточки · ${formatDate(p.updatedAt)}${p.hasRender ? " · готово" : ""}</div>
+                ${downloads ? `<div class="post-downloads">${downloads}<a href="/api/posts/${p.id}/download.zip">ZIP</a></div>` : ""}
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start">
+                <button type="button" class="secondary-btn" data-open="${p.id}">Редактировать</button>
+                <button type="button" class="secondary-btn danger-btn" data-delete="${p.id}">Удалить</button>
+              </div>
             </div>`;
+          }).join("");
+          el.querySelectorAll("[data-open]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              window.location.hash = `#/post/${btn.dataset.open}`;
+            });
+          });
+          el.querySelectorAll("[data-delete]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              deletePostById(btn.dataset.delete).catch((e) => alert(e.message));
+            });
+          });
+        } catch (e) {
+          el.innerHTML = `<div class="empty">${escapeHtml(e.message)}</div>`;
         }
-        if (field.type === "color") {
-          const colorValue = /^#[0-9a-fA-F]{6}$/.test(safeValue) ? safeValue : "#000000";
-          return `
-            <div class="import-field">
-              <label for="${id}">${label}</label>
-              <input id="${id}" name="${field.key}" type="color" value="${escapeHtml(colorValue)}" />
-            </div>`;
-        }
-        if (field.type === "image") {
-          return `
-            <div class="import-field">
-              <label for="${id}">${label}</label>
-              <select id="${id}" name="${field.key}">${renderImageOptions(safeValue)}</select>
-            </div>`;
-        }
-        return `
-          <div class="import-field">
-            <label for="${id}">${label}</label>
-            <input id="${id}" name="${field.key}" type="text" value="${escapeHtml(safeValue)}" />
-          </div>`;
       }
 
-      function collectEditProps() {
+      async function openPostEditor(postId) {
+        const statusEl = document.getElementById("edit-status");
+        statusEl.textContent = "";
+        statusEl.className = "edit-status";
+        try {
+          const res = await fetch(`/api/posts/${postId}`);
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Пост не найден");
+          currentPost = data.post;
+          activeCardIndex = currentPost.cards[0]?.cardIndex ?? 0;
+          document.getElementById("edit-post-title").textContent = currentPost.templateName || "Пост";
+          document.getElementById("edit-post-desc").textContent =
+            `${currentPost.cards.length} карточки · 3 сек каждая`;
+          renderCardTabs();
+          renderCardForm();
+          showRenderResults(currentPost.lastRender);
+          await loadAssets();
+        } catch (e) {
+          statusEl.textContent = e.message;
+          statusEl.className = "edit-status err";
+        }
+      }
+
+      function renderCardTabs() {
+        const tabs = document.getElementById("card-tabs");
+        tabs.innerHTML = currentPost.cards.map((c) => `
+          <button type="button" class="card-tab${c.cardIndex === activeCardIndex ? " active" : ""}" data-idx="${c.cardIndex}">
+            ${escapeHtml(c.label || `Карточка ${c.cardIndex + 1}`)}
+          </button>
+        `).join("");
+        tabs.querySelectorAll(".card-tab").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            await saveCurrentCardForm({ silent: true });
+            activeCardIndex = Number(btn.dataset.idx);
+            renderCardTabs();
+            renderCardForm();
+          });
+        });
+      }
+
+      function getActiveCard() {
+        return currentPost?.cards.find((c) => c.cardIndex === activeCardIndex);
+      }
+
+      function previewFontFamily(style) {
+        if (!style) return '"Instrument Sans", sans-serif';
+        return style.fontFamily === "serif"
+          ? '"Instrument Serif", serif'
+          : '"Instrument Sans", sans-serif';
+      }
+
+      function scaledLineHeight(lineHeight, fontSize, scale) {
+        if (!lineHeight) return `${fontSize * 1.2}px`;
+        if (lineHeight.endsWith("px")) return `${parseFloat(lineHeight) * scale}px`;
+        return lineHeight;
+      }
+
+      function buildCardPreviewHtml(layout, props, scale = PREVIEW_SCALE) {
+        const s = scale;
+        const w = layout.card.width * s;
+        const h = layout.card.height * s;
+        const bg = props.background || layout.card.background || "#fff";
+        const parts = [
+          `<div class="card-preview-canvas" style="width:${w}px;height:${h}px;background:${escapeHtml(bg)};position:relative;overflow:hidden;">`,
+        ];
+
+        for (const box of layout.imageLayers || []) {
+          const imagePath = props.image;
+          if (!imagePath) continue;
+          const opacity = box.opacity != null ? box.opacity : 1;
+          const objectFit = box.objectFit || "cover";
+          parts.push(
+            `<img alt="" src="/public/${escapeHtml(imagePath)}" style="position:absolute;z-index:1;left:${box.left * s}px;top:${box.top * s}px;width:${box.width * s}px;height:${box.height * s}px;object-fit:${objectFit};opacity:${opacity};" />`,
+          );
+        }
+
+        for (const layer of layout.layers || []) {
+          const text = props[layer.key] ?? layer.defaultText ?? "";
+          const color =
+            props[`${layer.key}Color`] ??
+            props[`${layer.role}Color`] ??
+            layer.defaultColor ??
+            layer.textStyle?.color ??
+            "#0F0F10";
+          const ts = layer.textStyle || {};
+          const fontSize = (ts.fontSize ?? 26) * s;
+          const box = layer.box;
+          const alignItems = layer.alignItems ? `align-items:${layer.alignItems};` : "";
+          const display = layer.alignItems ? "display:flex;" : "";
+          const textAlign = ts.textAlign ? `text-align:${ts.textAlign};` : "";
+          const textTransform =
+            ts.textTransform && ts.textTransform !== "none" ? `text-transform:${ts.textTransform};` : "";
+          const fontStyle = ts.fontStyle === "italic" ? "font-style:italic;" : "";
+          parts.push(
+            `<div style="position:absolute;z-index:2;left:${box.left * s}px;top:${box.top * s}px;width:${box.width * s}px;height:${box.height * s}px;${display}${alignItems}font-family:${previewFontFamily(ts)};font-weight:${ts.fontWeight ?? 400};font-size:${fontSize}px;line-height:${scaledLineHeight(ts.lineHeight, ts.fontSize ?? 26, s)};${textAlign}${textTransform}${fontStyle}color:${escapeHtml(color)};white-space:pre-line;overflow:hidden;">${escapeHtml(text)}</div>`,
+          );
+        }
+
+        parts.push("</div>");
+        return parts.join("");
+      }
+
+      function updateCardPreview() {
+        const el = document.getElementById("card-preview");
+        const card = getActiveCard();
+        if (!el || !card) return;
+        const layout = previewLayouts[card.compositionId];
+        if (!layout) {
+          el.innerHTML = '<p class="card-preview-note" style="margin:0">Нет превью для этой карточки</p>';
+          return;
+        }
+        const props = { ...card.props, ...collectFormProps() };
+        el.innerHTML = buildCardPreviewHtml(layout, props);
+      }
+
+      function schedulePreviewUpdate() {
+        clearTimeout(previewTimer);
+        previewTimer = setTimeout(updateCardPreview, 60);
+        scheduleAutoSave();
+      }
+
+      function scheduleAutoSave() {
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(() => {
+          if (!currentPost || viewPostEdit.hidden) return;
+          saveCurrentCardForm({ silent: true }).catch(() => {});
+        }, 1500);
+      }
+
+      function templateCoverHtml(templateId) {
+        const detail = templateDetails[templateId];
+        const first = detail?.cards?.[0];
+        if (!first) return "";
+        const layout = previewLayouts[first.compositionId];
+        const props = first.defaultProps || {};
+        if (layout?.layers?.length) {
+          return `<div class="card-cover">${buildCardPreviewHtml(layout, props, COVER_SCALE)}</div>`;
+        }
+        const title = escapeHtml((props.title || props.quote || detail.name || "").split("\n")[0]);
+        const bg = escapeHtml(props.background || "#d9dde0");
+        return `<div class="card-cover"><div style="width:200px;height:250px;background:${bg};border-radius:8px;padding:12px;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2">${title}</div></div>`;
+      }
+
+      async function loadTemplateDetails() {
+        templateDetails = {};
+        await Promise.all(
+          templates.map(async (t) => {
+            try {
+              const res = await fetch(`/api/story-templates/${t.id}`);
+              if (res.ok) templateDetails[t.id] = await res.json();
+            } catch { /* skip */ }
+          }),
+        );
+      }
+
+      async function deletePostById(postId) {
+        if (!confirm("Удалить этот пост? Действие необратимо.")) return;
+        const res = await fetch(`/api/posts/${postId}`, { method: "DELETE" });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Не удалось удалить");
+        if (currentPost?.id === postId) {
+          currentPost = null;
+          window.location.hash = "#/posts";
+        } else {
+          loadPostsList();
+        }
+      }
+
+      function renderCardForm(highlightErrors = {}) {
+        const card = getActiveCard();
+        const form = document.getElementById("card-form");
+        if (!card) { form.innerHTML = ""; updateCardPreview(); return; }
+        form.innerHTML = (card.fields || []).map((field) => {
+          const val = card.props?.[field.key] ?? "";
+          const errClass = highlightErrors[field.key] ? " field-error" : "";
+          if (field.type === "textarea") {
+            return `<div class="import-field${errClass}"><label>${escapeHtml(field.label)}</label><textarea name="${field.key}">${escapeHtml(val)}</textarea></div>`;
+          }
+          if (field.type === "color") {
+            return `<div class="import-field${errClass}"><label>${escapeHtml(field.label)}</label><input type="color" name="${field.key}" value="${escapeHtml(val || "#000000")}" /></div>`;
+          }
+          if (field.type === "image") {
+            const opts = assets.map((a) =>
+              `<option value="${escapeHtml(a.path)}"${a.path === val ? " selected" : ""}>${escapeHtml(a.name || a.path)}</option>`
+            ).join("");
+            return `<div class="import-field${errClass}"><label>${escapeHtml(field.label)}</label><select name="${field.key}"><option value="">— выберите —</option>${opts}</select></div>`;
+          }
+          return `<div class="import-field${errClass}"><label>${escapeHtml(field.label)}</label><input type="text" name="${field.key}" value="${escapeHtml(val)}" /></div>`;
+        }).join("");
+        form.querySelectorAll("input, textarea, select").forEach((el) => {
+          el.addEventListener("input", schedulePreviewUpdate);
+          el.addEventListener("change", schedulePreviewUpdate);
+        });
+        schedulePreviewUpdate();
+      }
+
+      function syncActiveCardProps() {
+        const active = getActiveCard();
+        if (active) active.props = {...active.props, ...collectFormProps()};
+      }
+
+      function findValidationIssues() {
+        syncActiveCardProps();
+        const issues = [];
+        for (const card of currentPost.cards) {
+          for (const field of card.fields || []) {
+            const v = card.props?.[field.key];
+            if (v === undefined || v === "") {
+              issues.push({ cardIndex: card.cardIndex, key: field.key, label: field.label });
+            }
+          }
+        }
+        return issues;
+      }
+
+      function collectFormProps() {
+        const form = document.getElementById("card-form");
         const props = {};
-        for (const field of editPropsFields) {
-          const el = document.getElementById(`prop-${field.key}`);
-          if (el) props[field.key] = el.value;
-        }
+        if (!form) return props;
+        form.querySelectorAll("[name]").forEach((el) => {
+          props[el.name] = el.value;
+        });
         return props;
       }
 
-      function renderPropsForm() {
-        propsForm.innerHTML = editPropsFields
-          .map((field) => renderPropField(field, editDefaultProps[field.key]))
-          .join("");
-      }
-
-      function refreshImageSelects() {
-        for (const field of editPropsFields) {
-          if (field.type !== "image") continue;
-          const el = document.getElementById(`prop-${field.key}`);
-          if (!el) continue;
-          el.innerHTML = renderImageOptions(el.value);
-        }
-      }
-
-      async function fetchTemplate(compositionId) {
-        const res = await fetch(`/api/templates/${encodeURIComponent(compositionId)}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Не удалось загрузить шаблон");
-        return data;
-      }
-
-      async function openEditView(compositionId) {
-        editCompositionId = compositionId;
-        viewHome.hidden = true;
-        viewEdit.hidden = false;
-        editSave.disabled = true;
-        editRender.disabled = !galleryReady;
-        editRenderResult.hidden = true;
-        editRenderResult.textContent = "";
-        propsForm.innerHTML = '<div class="empty">Загружаем…</div>';
-        setEditStatus("");
-        editTitle.textContent = compositionId;
-        editDesc.textContent = "";
-
-        try {
-          const data = await fetchTemplate(compositionId);
-          const meta = data.meta || data;
-          editDefaultProps = { ...(data.defaultProps || meta.defaultProps || {}) };
-          editPropsFields = normalizePropsFields(
-            data.propsFields || meta.propsFields,
-            editDefaultProps
-          );
-
-          editTitle.textContent = meta.name || compositionId;
-          editDesc.textContent = meta.description || "";
-
-          if (meta.project && meta.project !== activeProject) {
-            activeProject = meta.project;
-            localStorage.setItem(STORAGE_KEY, activeProject);
-            renderProjectTabs();
-            renderCards();
-          }
-
-          renderPropsForm();
-          editSave.disabled = false;
-          editRender.disabled = !galleryReady;
-        } catch (error) {
-          propsForm.innerHTML = "";
-          setEditStatus(error.message, "err");
-        }
-      }
-
-      function closeEditView() {
-        editCompositionId = null;
-        viewEdit.hidden = true;
-        viewHome.hidden = false;
-      }
-
-      function handleRoute() {
-        const route = parseRoute();
-        if (route.view === "edit") {
-          openEditView(route.compositionId);
-        } else {
-          closeEditView();
-        }
-      }
-
-      async function saveEditProps() {
-        if (!editCompositionId) return;
-
-        editSave.disabled = true;
-        setEditStatus("Сохраняем…");
-
-        try {
-          const props = collectEditProps();
-          const res = await fetch(
-            `/api/templates/${encodeURIComponent(editCompositionId)}/props`,
-            {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ props }),
-            }
-          );
-          const data = await res.json();
-          if (!res.ok) {
-            const detail = Array.isArray(data.details) ? data.details.join("; ") : "";
-            throw new Error(detail || data.error || "Сохранение не удалось");
-          }
-
-          editDefaultProps = { ...props };
-          setEditStatus("Сохранено в meta.json", "ok");
-        } catch (error) {
-          setEditStatus(error.message, "err");
-        } finally {
-          editSave.disabled = false;
-        }
-      }
-
-      async function runEditRender() {
-        if (!editCompositionId) return;
-
-        editRender.disabled = true;
-        editRenderResult.hidden = false;
-        editRenderResult.textContent = "Рендерим PNG и MP4… (~30 сек)";
-        setEditStatus("");
-
-        try {
-          const res = await fetch("/api/render", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ compositionId: editCompositionId }),
-          });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || "Рендер не удался");
-
-          const cacheBust = `?t=${Date.now()}`;
-          editRenderResult.innerHTML = `
-            <div>Готово:</div>
-            <img src="${data.stillUrl}${cacheBust}" alt="PNG preview" />
-            <video src="${data.videoUrl}${cacheBust}" controls playsinline></video>
-            <div>
-              <a href="${data.stillUrl}" download>PNG</a>
-              ·
-              <a href="${data.videoUrl}" download>MP4</a>
-            </div>
-          `;
-        } catch (error) {
-          editRenderResult.textContent = error.message;
-        } finally {
-          editRender.disabled = !galleryReady;
-        }
-      }
-
-      function activeProjectMeta() {
-        return projects.find((p) => p.id === activeProject) || projects[0];
-      }
-
-      function renderProjectTabs() {
-        projectsEl.innerHTML = projects
-          .map(
-            (p) => `
-          <button
-            class="project-tab${p.id === activeProject ? " active" : ""}"
-            data-project="${p.id}"
-            style="--tab-accent: ${p.accent || "#4a7bff"}"
-          >
-            ${p.name}
-          </button>
-        `
-          )
-          .join("");
-
-        projectsEl.querySelectorAll(".project-tab").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            activeProject = btn.dataset.project;
-            localStorage.setItem(STORAGE_KEY, activeProject);
-            renderProjectTabs();
-            renderCards();
-          });
+      async function saveCurrentCardForm({ silent = false } = {}) {
+        if (!currentPost) return;
+        const statusEl = document.getElementById("edit-status");
+        const props = collectFormProps();
+        const res = await fetch(`/api/posts/${currentPost.id}/cards/${activeCardIndex}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ props, strict: false }),
         });
-
-        const meta = activeProjectMeta();
-        projectDescEl.textContent = meta?.description || "";
-
-        cssProjectSelect.innerHTML = projects
-          .map(
-            (p) =>
-              `<option value="${p.id}"${p.id === activeProject ? " selected" : ""}>${p.name}</option>`
-          )
-          .join("");
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.details?.join(", ") || data.error || "Ошибка сохранения");
+        currentPost = data.post;
+        const card = getActiveCard();
+        if (card) card.props = currentPost.cards.find((c) => c.cardIndex === activeCardIndex)?.props;
+        if (!silent) {
+          statusEl.textContent = "Карточка сохранена";
+          statusEl.className = "edit-status ok";
+        }
       }
 
-      function setImportStatus(text, kind = "") {
-        importStatus.textContent = text;
-        importStatus.className = `import-status${kind ? ` ${kind}` : ""}`;
-      }
-
-      function setAssetsStatus(text, kind = "") {
-        assetsStatus.textContent = text;
-        assetsStatus.className = `assets-status${kind ? ` ${kind}` : ""}`;
-      }
-
-      function publicUrl(assetPath) {
-        return `/public/${assetPath}`;
-      }
-
-      function updateAssetUploadButton() {
-        assetUploadBtn.disabled = !galleryReady || !assetFileInput.files?.[0];
-      }
-
-      function renderAssets() {
-        if (!studioAssets.length) {
-          assetsGrid.innerHTML =
-            '<div class="empty">Пока нет изображений. Загрузите файл выше.</div>';
+      function showRenderResults(lastRender) {
+        const el = document.getElementById("render-results");
+        if (!lastRender?.cards?.length) {
+          el.hidden = true;
+          el.innerHTML = "";
           return;
         }
-
-        assetsGrid.innerHTML = studioAssets
-          .map((asset) => {
-            const isRaster = /\.(png|jpe?g|webp)$/i.test(asset.path);
-            const thumb = isRaster
-              ? `<img src="${publicUrl(asset.path)}" alt="${asset.name}" loading="lazy" />`
-              : `<span style="color:#fff;font-size:0.75rem;padding:8px;text-align:center">${asset.name}</span>`;
-            return `
-          <article class="asset-card">
-            <div class="asset-thumb">${thumb}</div>
-            <div class="asset-meta">
-              <div class="asset-name">${asset.path}</div>
-              <button class="asset-copy" type="button" data-copy="${asset.path}">Скопировать путь</button>
+        const bust = `?t=${encodeURIComponent(lastRender.at || Date.now())}`;
+        el.hidden = false;
+        el.innerHTML = `
+          <p style="margin:0 0 8px;color:var(--muted);font-size:0.9rem">Последний рендер: ${formatDate(lastRender.at)}</p>
+          <p style="margin:0 0 12px"><a href="/api/posts/${currentPost.id}/download.zip" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:0.9rem;padding:10px 14px">Скачать всё (ZIP)</a></p>
+          ${lastRender.cards.map((c, i) => `
+            <div class="render-card-result">
+              <h4>${escapeHtml(c.label || `Карточка ${c.cardIndex + 1}`)}</h4>
+              <img src="${c.stillUrl}${bust}" alt="PNG" />
+              <video src="${c.videoUrl}${bust}" controls playsinline></video>
+              <div>
+                <a href="${c.stillUrl}${bust}" download="card-${i + 1}.png">PNG</a>
+                <a href="${c.videoUrl}${bust}" download="card-${i + 1}.mp4">MP4</a>
+              </div>
             </div>
-          </article>`;
-          })
-          .join("");
+          `).join("")}
+        `;
+      }
 
-        assetsGrid.querySelectorAll(".asset-copy").forEach((btn) => {
+      function setRenderProgress(done, total, label) {
+        const wrap = document.getElementById("render-progress");
+        const bar = document.getElementById("render-progress-bar");
+        const labelEl = document.getElementById("render-progress-label");
+        const pctEl = document.getElementById("render-progress-pct");
+        if (total <= 0 && !label) {
+          wrap.hidden = true;
+          wrap.classList.remove("complete");
+          bar.style.width = "0%";
+          pctEl.textContent = "";
+          return;
+        }
+        wrap.hidden = false;
+        const pct = total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 0;
+        bar.style.width = `${pct}%`;
+        pctEl.textContent = total > 0 ? `${pct}%` : "";
+        labelEl.textContent = label || (total > 0 ? `Карточка ${Math.min(done + 1, total)} из ${total}` : "Рендер…");
+        const complete = total > 0 && done >= total;
+        wrap.classList.toggle("complete", complete);
+        wrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      async function renderPost() {
+        const statusEl = document.getElementById("edit-status");
+        const btn = document.getElementById("render-post-btn");
+        btn.disabled = true;
+        setRenderProgress(0, 1, "Проверяем и сохраняем…");
+        statusEl.textContent = "Проверяем поля…";
+        statusEl.className = "edit-status";
+        try {
+          await saveAllCards({ silent: true });
+          const issues = findValidationIssues();
+          if (issues.length) {
+            const first = issues[0];
+            activeCardIndex = first.cardIndex;
+            renderCardTabs();
+            const highlight = {};
+            for (const i of issues.filter((x) => x.cardIndex === first.cardIndex)) {
+              highlight[i.key] = true;
+            }
+            renderCardForm(highlight);
+            throw new Error(`Заполните: ${issues.map((i) => i.label).join(", ")}`);
+          }
+
+          const cards = currentPost.cards;
+          const results = [];
+          setRenderProgress(0, cards.length, `Рендерим карточку 1 из ${cards.length}…`);
+
+          for (let i = 0; i < cards.length; i++) {
+            const card = cards[i];
+            const stepLabel = `Рендерим карточку ${i + 1} из ${cards.length}: ${card.label}…`;
+            statusEl.textContent = stepLabel;
+            setRenderProgress(i, cards.length, stepLabel);
+            const res = await fetch(`/api/posts/${currentPost.id}/render-card/${card.cardIndex}`, {
+              method: "POST",
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              const msg = data.details
+                ? data.details.map((d) => `${d.label}: ${d.errors.join(", ")}`).join("; ")
+                : data.error;
+              throw new Error(msg || "Рендер не удался");
+            }
+            currentPost = data.post;
+            results.push(data.result);
+            setRenderProgress(i + 1, cards.length, i + 1 === cards.length
+              ? "Готово — все карточки отрендерены"
+              : `Рендерим карточку ${i + 2} из ${cards.length}…`);
+          }
+
+          showRenderResults(currentPost.lastRender);
+          statusEl.textContent = "Готово — все карточки отрендерены";
+          statusEl.className = "edit-status ok";
+        } catch (e) {
+          statusEl.textContent = e.message;
+          statusEl.className = "edit-status err";
+          setRenderProgress(0, 0);
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      async function renderActiveCard() {
+        const statusEl = document.getElementById("edit-status");
+        const btn = document.getElementById("render-card-btn");
+        btn.disabled = true;
+        setRenderProgress(0, 1, "Сохраняем…");
+        try {
+          await saveAllCards({ silent: true });
+          const issues = findValidationIssues().filter((i) => i.cardIndex === activeCardIndex);
+          if (issues.length) {
+            const highlight = {};
+            for (const i of issues) highlight[i.key] = true;
+            renderCardForm(highlight);
+            throw new Error(`Заполните: ${issues.map((i) => i.label).join(", ")}`);
+          }
+          const card = getActiveCard();
+          setRenderProgress(0, 1, `Рендерим: ${card.label}…`);
+          const res = await fetch(`/api/posts/${currentPost.id}/render-card/${card.cardIndex}`, { method: "POST" });
+          const data = await res.json();
+          if (!res.ok) {
+            const msg = data.details
+              ? data.details.map((d) => `${d.label}: ${d.errors.join(", ")}`).join("; ")
+              : data.error;
+            throw new Error(msg || "Рендер не удался");
+          }
+          currentPost = data.post;
+          showRenderResults(currentPost.lastRender);
+          setRenderProgress(1, 1, "Готово");
+          statusEl.textContent = "Карточка отрендерена";
+          statusEl.className = "edit-status ok";
+        } catch (e) {
+          statusEl.textContent = e.message;
+          statusEl.className = "edit-status err";
+          setRenderProgress(0, 0);
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      async function saveAllCards({ silent = false } = {}) {
+        const statusEl = document.getElementById("edit-status");
+        if (!silent) statusEl.textContent = "Сохраняем…";
+        try {
+          const active = getActiveCard();
+          if (active) active.props = collectFormProps();
+          for (const card of currentPost.cards) {
+            const res = await fetch(`/api/posts/${currentPost.id}/cards/${card.cardIndex}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ props: card.props, strict: false }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Ошибка сохранения");
+            currentPost = data.post;
+          }
+          renderCardForm();
+          if (!silent) {
+            statusEl.textContent = "Все карточки сохранены";
+            statusEl.className = "edit-status ok";
+          }
+        } catch (e) {
+          statusEl.textContent = e.message;
+          statusEl.className = "edit-status err";
+          throw e;
+        }
+      }
+
+      function renderProjects() {
+        const el = document.getElementById("projects");
+        el.innerHTML = projects.map((p) =>
+          `<button type="button" class="project-tab${p.id === activeProject ? " active" : ""}" data-id="${p.id}" style="--tab-accent:${p.accent || "#4a7bff"}">${escapeHtml(p.name)}</button>`
+        ).join("");
+        el.querySelectorAll(".project-tab").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            activeProject = btn.dataset.id;
+            localStorage.setItem(STORAGE_KEY, activeProject);
+            renderProjects();
+            renderTemplates();
+          });
+        });
+      }
+
+      function renderTemplates() {
+        const grid = document.getElementById("template-grid");
+        const filtered = templates.filter((t) => t.project === activeProject);
+        if (!filtered.length) {
+          grid.innerHTML = '<div class="empty">Нет шаблонов в этом проекте.</div>';
+          return;
+        }
+        grid.innerHTML = filtered.map((t) => `
+          <article class="card">
+            ${templateCoverHtml(t.id)}
+            <span class="tag">${escapeHtml(t.tag || "Шаблон")}</span>
+            <h2>${escapeHtml(t.name)}</h2>
+            <p>${escapeHtml(t.description)}</p>
+            <div class="card-meta">${t.cardCount ? `${t.cardCount} карточки · 3 сек каждая` : ""}</div>
+            <button type="button" class="primary-btn create-post-btn" data-id="${t.id}" ${appReady ? "" : "disabled"}>Создать пост</button>
+          </article>
+        `).join("");
+        grid.querySelectorAll(".create-post-btn").forEach((btn) => {
           btn.addEventListener("click", async () => {
-            const value = btn.dataset.copy || "";
+            btn.disabled = true;
             try {
-              await navigator.clipboard.writeText(value);
-              setAssetsStatus(`Скопировано: ${value}`, "ok");
-            } catch {
-              setAssetsStatus(value, "ok");
+              await createPost(btn.dataset.id);
+            } catch (e) {
+              alert(e.message);
+              btn.disabled = false;
             }
           });
         });
@@ -1121,325 +968,87 @@
       async function loadAssets() {
         const res = await fetch("/api/assets");
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Не удалось загрузить изображения");
-        studioAssets = data.assets || [];
-        renderAssets();
-        if (editCompositionId) refreshImageSelects();
+        assets = data.assets || [];
+        const grid = document.getElementById("assets-grid");
+        if (grid) {
+          grid.innerHTML = assets.length
+            ? assets.map((a) => `<img src="/public/${a.path}" alt="" title="${escapeHtml(a.path)}" />`).join("")
+            : "";
+        }
+        if (currentPost && !viewPostEdit.hidden) {
+          renderCardForm();
+          schedulePreviewUpdate();
+        }
       }
 
-      async function uploadAsset() {
-        const file = assetFileInput.files?.[0];
-        if (!file) {
-          setAssetsStatus("Выберите файл.", "err");
-          return;
-        }
-
-        assetUploadBtn.disabled = true;
-        setAssetsStatus("Загружаем…");
-
-        try {
-          const dataUrl = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(String(reader.result || ""));
-            reader.onerror = () => reject(new Error("Не удалось прочитать файл"));
-            reader.readAsDataURL(file);
+      async function init() {
+        window.addEventListener("hashchange", applyRoute);
+        document.getElementById("edit-back").addEventListener("click", () => {
+          window.location.hash = "#/posts";
+        });
+        document.getElementById("save-card-btn").addEventListener("click", () => {
+          saveCurrentCardForm().catch((e) => {
+            const s = document.getElementById("edit-status");
+            s.textContent = e.message;
+            s.className = "edit-status err";
           });
+        });
+        document.getElementById("save-all-btn").addEventListener("click", saveAllCards);
+        document.getElementById("render-post-btn").addEventListener("click", renderPost);
+        document.getElementById("render-card-btn").addEventListener("click", renderActiveCard);
+        document.getElementById("delete-post-btn").addEventListener("click", () => {
+          if (currentPost) deletePostById(currentPost.id).catch((e) => alert(e.message));
+        });
 
-          const res = await fetch("/api/assets/upload", {
+        const assetFile = document.getElementById("asset-file");
+        const assetUpload = document.getElementById("asset-upload");
+        assetFile.addEventListener("change", () => {
+          assetUpload.disabled = !appReady || !assetFile.files?.length;
+        });
+        assetUpload.addEventListener("click", async () => {
+          const file = assetFile.files?.[0];
+          if (!file) return;
+          const dataUrl = await new Promise((res, rej) => {
+            const r = new FileReader();
+            r.onload = () => res(r.result);
+            r.onerror = rej;
+            r.readAsDataURL(file);
+          });
+          const r = await fetch("/api/assets/upload", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: file.name, data: dataUrl }),
           });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || "Загрузка не удалась");
-
-          assetFileInput.value = "";
+          const data = await r.json();
+          if (!r.ok) throw new Error(data.error);
+          document.getElementById("assets-status").textContent = `Загружено: ${data.path}`;
+          assetFile.value = "";
+          assetUpload.disabled = true;
           await loadAssets();
-          setAssetsStatus(
-            `Готово: ${data.path}. Обновите Remotion Studio (F5), чтобы увидеть в списке image.`,
-            "ok"
-          );
-        } catch (error) {
-          setAssetsStatus(error.message, "err");
-        } finally {
-          updateAssetUploadButton();
-        }
-      }
-
-      async function reloadCatalog() {
-        const catalog = await fetch("./templates.json").then((r) => r.json());
-        if (Array.isArray(catalog)) {
-          allTemplates = catalog.map((t) => ({ ...t, project: t.project || "am-news" }));
-        } else {
-          projects = catalog.projects || projects;
-          allTemplates = catalog.templates || [];
-        }
-        renderProjectTabs();
-        renderCards();
-      }
-
-      async function analyzeCss(css) {
-        const res = await fetch("/api/css-frames", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ css }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Не удалось разобрать CSS");
-
-        const count = data.frames?.length || 0;
-        if (count === 0) {
-          throw new Error("CSS пустой или не распознан. Нужен экспорт Figma 1080×1350.");
-        }
-
-        cssFrameInput.max = String(count);
-        if (Number(cssFrameInput.value) > count) cssFrameInput.value = "1";
-        setImportStatus(`Найдено кадров: ${count}. Family определится автоматически.`);
-        updateImportButton();
-      }
-
-      async function onCssFileSelected() {
-        const file = cssFileInput.files?.[0];
-        setImportStatus("");
-        updateImportButton();
-
-        if (!file) return;
-
-        const text = await file.text();
-        cssPasteInput.value = text;
-
-        if (!text.trim()) {
-          setImportStatus(
-            `Файл «${file.name}» пустой на диске. Сохраните файл (⌘S) или вставьте CSS в поле ниже.`,
-            "err"
-          );
-          return;
-        }
-
-        try {
-          await analyzeCss(text);
-        } catch (error) {
-          setImportStatus(error.message, "err");
-        }
-      }
-
-      async function onCssPasteInput() {
-        const css = getCssText();
-        updateImportButton();
-        if (!css) {
-          setImportStatus("");
-          return;
-        }
-
-        try {
-          await analyzeCss(css);
-        } catch (error) {
-          setImportStatus(error.message, "err");
-        }
-      }
-
-      async function runCssImport() {
-        const css = getCssText();
-        if (!css) {
-          setImportStatus("Выберите файл или вставьте CSS в поле ниже.", "err");
-          return;
-        }
-
-        cssImportBtn.disabled = true;
-        setImportStatus("Импортируем…");
-
-        try {
-          const res = await fetch("/api/import-css", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              css,
-              frameIndex: Number(cssFrameInput.value) || 1,
-              project: cssProjectSelect.value,
-            }),
-          });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || "Импорт не удался");
-
-          activeProject = data.project || cssProjectSelect.value;
-          localStorage.setItem(STORAGE_KEY, activeProject);
-          await reloadCatalog();
-          const projectLabel =
-            projects.find((p) => p.id === activeProject)?.name || activeProject;
-          setImportStatus(
-            `Готово: ${data.compositionId} (${data.layerCount} слоёв). Открываем редактор…`,
-            "ok"
-          );
-          navigateToEdit(data.compositionId);
-        } catch (error) {
-          setImportStatus(error.message, "err");
-        } finally {
-          updateImportButton();
-        }
-      }
-
-      function renderCards() {
-        const filtered = allTemplates.filter((t) => t.project === activeProject);
-
-        if (filtered.length === 0) {
-          grid.innerHTML =
-            '<div class="empty">В этом проекте пока нет шаблонов. Импортируй CSS или добавь meta.json с полем <code>project</code>.</div>';
-          return;
-        }
-
-        grid.innerHTML = filtered
-          .map(
-            (t) => `
-          <article class="card">
-            <span class="tag">${t.tag}</span>
-            <h2>${t.name}</h2>
-            <p>${t.description}</p>
-            <div class="card-actions">
-              <button class="edit-btn" data-edit="${t.id}" ${galleryReady ? "" : "disabled"}>
-                Редактировать
-              </button>
-              <button class="open" data-id="${t.id}" ${studioReady ? "" : "disabled"}>
-                Открыть
-              </button>
-              <button class="render-btn" data-render="${t.id}" ${galleryReady ? "" : "disabled"}>
-                Рендер PNG+MP4
-              </button>
-            </div>
-            <div class="render-result" data-result="${t.id}" hidden></div>
-          </article>
-        `
-          )
-          .join("");
-
-        grid.querySelectorAll(".edit-btn").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            navigateToEdit(btn.dataset.edit);
-          });
         });
 
-        grid.querySelectorAll(".open").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            window.open(studioUrl(btn.dataset.id), "_blank", "noopener");
-          });
-        });
-
-        grid.querySelectorAll(".render-btn").forEach((btn) => {
-          btn.addEventListener("click", () => runRender(btn.dataset.render, btn));
-        });
-      }
-
-      async function runRender(compositionId, button) {
-        const resultEl = grid.querySelector(`[data-result="${compositionId}"]`);
-        if (!resultEl) return;
-
-        button.disabled = true;
-        resultEl.hidden = false;
-        resultEl.textContent = "Рендерим PNG и MP4… (~30 сек)";
-
         try {
-          const res = await fetch("/api/render", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ compositionId }),
-          });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || "Рендер не удался");
-
-          const cacheBust = `?t=${Date.now()}`;
-          resultEl.innerHTML = `
-            <div>Готово:</div>
-            <img src="${data.stillUrl}${cacheBust}" alt="PNG preview" />
-            <video src="${data.videoUrl}${cacheBust}" controls playsinline></video>
-            <div>
-              <a href="${data.stillUrl}" download>PNG</a>
-              ·
-              <a href="${data.videoUrl}" download>MP4</a>
-            </div>
-          `;
-        } catch (error) {
-          resultEl.textContent = error.message;
-        } finally {
-          button.disabled = !galleryReady;
-        }
-      }
-
-      async function waitForGallery() {
-        for (let i = 0; i < 30; i++) {
-          try {
-            const res = await fetch("./templates.json");
-            if (res.ok) return true;
-          } catch {
-            // retry
-          }
-          await new Promise((r) => setTimeout(r, 500));
-        }
-        return false;
-      }
-
-      async function waitForStudio() {
-        for (let i = 0; i < 60; i++) {
-          try {
-            const res = await fetch(STUDIO_ORIGIN, { mode: "no-cors", credentials: "include" });
-            void res;
-            return true;
-          } catch {
-            await new Promise((r) => setTimeout(r, 500));
-          }
-        }
-        return false;
-      }
-
-      async function init() {
-        const catalog = await fetch("./templates.json").then((r) => r.json());
-
-        if (Array.isArray(catalog)) {
-          projects = [
-            { id: "am-news", name: "AM News", description: "", accent: "#4A7BFF" },
-            { id: "am-food", name: "AM Food", description: "", accent: "#D61E23" },
-          ];
-          allTemplates = catalog.map((t) => ({ ...t, project: t.project || "am-news" }));
-        } else {
+          const [catalogRes, previewRes] = await Promise.all([
+            fetch("/api/story-templates"),
+            fetch("/preview-layouts.json"),
+          ]);
+          const catalog = await catalogRes.json();
+          previewLayouts = await previewRes.json().catch(() => ({}));
           projects = catalog.projects || [];
-          allTemplates = catalog.templates || [];
+          templates = catalog.templates || [];
+          appReady = true;
+          document.getElementById("status").classList.add("ready");
+          document.getElementById("status-text").textContent = "Готово — выберите шаблон";
+        } catch {
+          document.getElementById("status").classList.add("error");
+          document.getElementById("status-text").textContent = "Ошибка загрузки";
         }
 
-        if (!projects.some((p) => p.id === activeProject)) {
-          activeProject = projects[0]?.id || "am-news";
-        }
-
-        renderProjectTabs();
-        renderCards();
-        cssFileInput.addEventListener("change", onCssFileSelected);
-        cssPasteInput.addEventListener("input", onCssPasteInput);
-        cssImportBtn.addEventListener("click", runCssImport);
-        assetFileInput.addEventListener("change", updateAssetUploadButton);
-        assetUploadBtn.addEventListener("click", uploadAsset);
-        editBack.addEventListener("click", navigateToHome);
-        editSave.addEventListener("click", saveEditProps);
-        editRender.addEventListener("click", runEditRender);
-        window.addEventListener("hashchange", handleRoute);
-
-        galleryReady = await waitForGallery();
-        updateImportButton();
-        updateAssetUploadButton();
-        loadAssets().catch((error) => setAssetsStatus(error.message, "err"));
-        if (galleryReady) {
-          status.classList.add("ready");
-          statusText.textContent =
-            "Галерея готова — импорт CSS, правка props или открытие в Studio";
-        } else {
-          status.classList.add("error");
-          statusText.textContent = "Галерея не отвечает";
-        }
-        renderCards();
-        waitForStudio().then((ready) => {
-          studioReady = ready;
-          if (ready) {
-            statusText.textContent = "Готово — выберите шаблон или импортируйте CSS";
-          }
-          renderCards();
-        });
-        handleRoute();
+        await loadTemplateDetails();
+        renderProjects();
+        renderTemplates();
+        loadAssets().catch(() => {});
+        applyRoute();
       }
 
       init();

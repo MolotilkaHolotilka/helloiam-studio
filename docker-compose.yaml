@@ -1,5 +1,4 @@
-# HelloIAM Studio — VPS deploy
-# UI: http://SERVER_IP:3456
+# HelloIAM Stories — локальный Docker
 
 services:
   helloiam-studio_v0.0.1:
@@ -9,16 +8,17 @@ services:
     restart: unless-stopped
     ports:
       - "0.0.0.0:3456:3456"
-      - "0.0.0.0:3000:3000"
     environment:
       HOST: 0.0.0.0
-      STUDIO_PORT: 3000
       GALLERY_PORT: 3456
       NODE_ENV: production
     volumes:
       - ./public/generated:/app/public/generated
       - ./out/renders:/app/out/renders
+      - ./data/posts:/app/data/posts
+      - ./data/story-templates:/app/data/story-templates
       - ./src/templates:/app/src/templates
       - ./src/lib:/app/src/lib
+      - ./src/gallery:/app/src/gallery
     shm_size: "2gb"
-    mem_limit: 2g
+    mem_limit: 3g

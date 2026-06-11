@@ -77,6 +77,8 @@ export const GeneratedSoftFloat: React.FC<{
         const floatY = wave(localFrame, segmentFrames, 8, phase);
         const tilt = wave(localFrame, segmentFrames, 1.2, phase + 6);
         const isIntroHero = layout.family === 'intro-hero';
+        const objectFit = box.objectFit ?? (isIntroHero ? 'contain' : 'cover');
+        const baseOpacity = box.opacity ?? 1;
         return (
           <div
             key={`img-${index}`}
@@ -87,7 +89,7 @@ export const GeneratedSoftFloat: React.FC<{
               width: box.width,
               height: box.height,
               overflow: 'hidden',
-              opacity: imageEnter,
+              opacity: baseOpacity * imageEnter,
               transform: isIntroHero
                 ? `translateY(${imageFloatY}px)`
                 : `translateY(${floatY}px) rotate(${index % 2 === 0 ? tilt : -tilt}deg)`,
@@ -98,8 +100,8 @@ export const GeneratedSoftFloat: React.FC<{
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: isIntroHero ? 'contain' : 'cover',
-                objectPosition: isIntroHero ? 'center center' : 'center top',
+                objectFit,
+                objectPosition: objectFit === 'contain' ? 'center center' : 'center top',
                 transform: isIntroHero ? `scale(${imageScale})` : undefined,
                 transformOrigin: 'center center',
               }}
@@ -158,8 +160,9 @@ export const GeneratedSoftFloat: React.FC<{
               textAlign: style?.textAlign ?? 'left',
               whiteSpace: 'pre-line',
               color,
-              display: layer.role === 'label' ? 'flex' : undefined,
-              alignItems: layer.role === 'label' ? 'flex-end' : undefined,
+              display: layer.alignItems || layer.role === 'label' ? 'flex' : undefined,
+              alignItems:
+                layer.alignItems ?? (layer.role === 'label' ? 'flex-end' : undefined),
               ...motion,
             }}
           >

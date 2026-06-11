@@ -17,9 +17,8 @@ picker.on('error', (error) => {
 });
 
 picker.listen(GALLERY_PORT, HOST, () => {
-  console.log(`HelloIAM Gallery (lightweight)`);
-  console.log(`Gallery: http://${HOST}:${GALLERY_PORT}`);
-  console.log(`Remotion Studio not started — use npm start or npm run studio`);
+  console.log(`HelloIAM Stories alpha v001`);
+  console.log(`App: http://${HOST}:${GALLERY_PORT}`);
 });
 
 function shutdown() {

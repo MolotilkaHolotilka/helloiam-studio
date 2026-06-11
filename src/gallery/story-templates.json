@@ -1,0 +1,132 @@
+{
+  "projects": [
+    {
+      "id": "helloiam",
+      "name": "HelloIAM",
+      "description": "Брендовые сторис и карусели",
+      "accent": "#4A7BFF"
+    }
+  ],
+  "templates": [
+    {
+      "id": "ArmenianFoodCarousel",
+      "project": "helloiam",
+      "name": "Armenian Cards Carousel",
+      "description": "Rubric: armenian-food-carousel",
+      "tag": "Карусель",
+      "cardCount": 6
+    },
+    {
+      "id": "DeepDiveThemeBlue",
+      "project": "helloiam",
+      "name": "Deep Dive Quote — Blue (Figma 124)",
+      "description": "Rubric: deep-dive-theme-blue",
+      "tag": "Карусель",
+      "cardCount": 1
+    },
+    {
+      "id": "DeepDiveThemeDark",
+      "project": "helloiam",
+      "name": "Deep Dive Quote — Dark (Figma 125)",
+      "description": "Rubric: deep-dive-theme-dark",
+      "tag": "Карусель",
+      "cardCount": 1
+    },
+    {
+      "id": "DeepDiveThemeGray",
+      "project": "helloiam",
+      "name": "Deep Dive Quote — Gray (Figma 117)",
+      "description": "Rubric: deep-dive-theme-gray",
+      "tag": "Карусель",
+      "cardCount": 1
+    },
+    {
+      "id": "GreenPlateIntro",
+      "project": "helloiam",
+      "name": "Green Plate Intro",
+      "description": "Rubric: green-plate-intro",
+      "tag": "Карусель",
+      "cardCount": 3
+    },
+    {
+      "id": "IAm7Cards",
+      "project": "helloiam",
+      "name": "I Am — 7 Cards Carousel",
+      "description": "Rubric: i-am-7-cards",
+      "tag": "Карусель",
+      "cardCount": 7
+    },
+    {
+      "id": "IAmCultureIntro",
+      "project": "helloiam",
+      "name": "I Am Culture Intro",
+      "description": "Rubric: i-am-culture-intro",
+      "tag": "Карусель",
+      "cardCount": 7
+    },
+    {
+      "id": "IAmDolmaDeepDive",
+      "project": "helloiam",
+      "name": "I Am Dolma Deep Dive",
+      "description": "Rubric: i-am-dolma-deep-dive",
+      "tag": "Карусель",
+      "cardCount": 7
+    },
+    {
+      "id": "IAmFoodIntro",
+      "project": "helloiam",
+      "name": "I Am Food Intro",
+      "description": "Rubric: i-am-food-intro",
+      "tag": "Карусель",
+      "cardCount": 7
+    },
+    {
+      "id": "IAmKhachkarDeepDive",
+      "project": "helloiam",
+      "name": "I Am Khachkar Deep Dive",
+      "description": "Rubric: i-am-khachkar-deep-dive",
+      "tag": "Карусель",
+      "cardCount": 7
+    },
+    {
+      "id": "IAmLavashDeepDive",
+      "project": "helloiam",
+      "name": "I Am Lavash Deep Dive",
+      "description": "Rubric: i-am-lavash-deep-dive",
+      "tag": "Карусель",
+      "cardCount": 7
+    },
+    {
+      "id": "IAmMatsunDeepDive",
+      "project": "helloiam",
+      "name": "I Am Matsun Deep Dive",
+      "description": "Rubric: i-am-matsun-deep-dive",
+      "tag": "Карусель",
+      "cardCount": 7
+    },
+    {
+      "id": "IAmStreetsIntro",
+      "project": "helloiam",
+      "name": "I Am Streets Intro",
+      "description": "Rubric: i-am-streets-intro",
+      "tag": "Карусель",
+      "cardCount": 7
+    },
+    {
+      "id": "IAmWineDeepDive",
+      "project": "helloiam",
+      "name": "I Am Wine Deep Dive",
+      "description": "Rubric: i-am-wine-deep-dive",
+      "tag": "Карусель",
+      "cardCount": 7
+    },
+    {
+      "id": "WizzLondonYerevan",
+      "project": "helloiam",
+      "name": "Wizz Air London Yerevan",
+      "description": "Rubric: wizz-london-yerevan",
+      "tag": "Карусель",
+      "cardCount": 3
+    }
+  ]
+}

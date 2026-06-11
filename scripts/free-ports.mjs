@@ -16,7 +16,6 @@ for (const port of ports) {
 }
 
 // Старые Remotion Studio из helloiam-remotion и studio
-run(`pkill -f "remotion studio" 2>/dev/null`);
 run(`pkill -f "preview-gallery.mjs" 2>/dev/null`);
 
 for (const port of ports) {

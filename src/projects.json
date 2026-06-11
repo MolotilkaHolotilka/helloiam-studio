@@ -1,16 +1,10 @@
 {
   "projects": [
     {
-      "id": "am-news",
-      "name": "AM News",
-      "description": "Новостные карточки, цитаты, статистика",
+      "id": "helloiam",
+      "name": "HelloIAM",
+      "description": "Брендовые сторис",
       "accent": "#4A7BFF"
-    },
-    {
-      "id": "am-food",
-      "name": "AM Food",
-      "description": "Еда, intro-карточки, категории",
-      "accent": "#D61E23"
     }
   ]
 }

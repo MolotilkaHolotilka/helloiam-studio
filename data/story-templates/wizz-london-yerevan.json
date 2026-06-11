@@ -1,0 +1,278 @@
+{
+  "id": "WizzLondonYerevan",
+  "project": "helloiam",
+  "name": "Wizz Air London Yerevan",
+  "description": "Rubric: wizz-london-yerevan",
+  "tag": "Карусель",
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardSec": 7,
+  "cards": [
+    {
+      "cardIndex": 0,
+      "compositionId": "RubricCardCss",
+      "label": "Заголовок + фото",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleAccent",
+          "type": "string",
+          "label": "Акцент"
+        },
+        {
+          "key": "quote",
+          "type": "textarea",
+          "label": "Текст"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "quoteColor",
+          "type": "color",
+          "label": "Цвет текста"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        },
+        {
+          "key": "imageTop",
+          "type": "string",
+          "label": "Отступ фото (px)"
+        },
+        {
+          "key": "imageHeight",
+          "type": "string",
+          "label": "Высота фото (px)"
+        }
+      ],
+      "defaultProps": {
+        "engine": "wizz",
+        "cardKind": "headline",
+        "cardIndex": 0,
+        "cardCount": 3,
+        "title": "HELLO,",
+        "titleAccent": "I AM",
+        "quote": "Wizz Air launches London — Yerevan route.",
+        "label": "AM NEWS",
+        "background": "#D9DDE0",
+        "quoteColor": "#D61E23",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "generated/helloiam-chair-field.png",
+        "imageTop": "406",
+        "imageHeight": "829"
+      },
+      "durationFrames": 210
+    },
+    {
+      "cardIndex": 1,
+      "compositionId": "RubricCardCss",
+      "label": "Текст под фото",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleAccent",
+          "type": "string",
+          "label": "Акцент"
+        },
+        {
+          "key": "body",
+          "type": "textarea",
+          "label": "Текст"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "bodyColor",
+          "type": "color",
+          "label": "Цвет текста"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        },
+        {
+          "key": "imageHeight",
+          "type": "string",
+          "label": "Высота фото"
+        },
+        {
+          "key": "imageFocus",
+          "type": "string",
+          "label": "Фокус фото"
+        },
+        {
+          "key": "imageScale",
+          "type": "string",
+          "label": "Масштаб фото"
+        }
+      ],
+      "defaultProps": {
+        "engine": "wizz",
+        "cardKind": "body-below",
+        "cardIndex": 1,
+        "cardCount": 3,
+        "title": "HELLO,",
+        "titleAccent": "I AM",
+        "body": "Fly direct to Yerevan.\nDiscover Armenia.",
+        "label": "AM NEWS",
+        "background": "#D9DDE0",
+        "bodyColor": "#0F0F10",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "generated/helloiam-wine-armenia.png",
+        "cardLayout": "body-below",
+        "imageHeight": "556",
+        "imageFocus": "50% 30%",
+        "imageScale": "1.12"
+      },
+      "durationFrames": 210
+    },
+    {
+      "cardIndex": 2,
+      "compositionId": "RubricCardCss",
+      "label": "Финал",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleAccent",
+          "type": "string",
+          "label": "Акцент"
+        },
+        {
+          "key": "quote",
+          "type": "textarea",
+          "label": "Текст"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "quoteColor",
+          "type": "color",
+          "label": "Цвет текста"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        },
+        {
+          "key": "imageTop",
+          "type": "string",
+          "label": "Отступ фото (px)"
+        },
+        {
+          "key": "imageHeight",
+          "type": "string",
+          "label": "Высота фото (px)"
+        }
+      ],
+      "defaultProps": {
+        "engine": "wizz",
+        "cardKind": "headline",
+        "cardIndex": 2,
+        "cardCount": 3,
+        "title": "HELLO,",
+        "titleAccent": "ARMENIA",
+        "quote": "Your next adventure starts here.",
+        "label": "AM NEWS",
+        "background": "#D9DDE0",
+        "quoteColor": "#D61E23",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "generated/helloiam-chair-field.png",
+        "imageTop": "350",
+        "imageHeight": "700"
+      },
+      "durationFrames": 210
+    }
+  ]
+}

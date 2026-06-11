@@ -1,11 +1,20 @@
 import {createServer} from 'node:http';
 import {readdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
-import {importCssFromString, listCssFrames} from '../tools/css-import/run-import.mjs';
-import {syncGalleryManifest} from '../tools/css-import/sync-gallery-manifest-lib.mjs';
+import {syncGalleryManifest} from '../tools/gallery-sync.mjs';
 import {renderComposition} from '../tools/render/render-composition.mjs';
 import {loadCompositionProps} from '../tools/render/load-composition-props.mjs';
 import {listStudioAssets, uploadStudioAsset} from '../tools/assets/studio-assets-service.mjs';
+import {
+  createPost,
+  deletePost,
+  getPost,
+  listPosts,
+  updatePostCard,
+} from '../tools/posts/posts-service.mjs';
+import {renderPost, renderPostCard} from '../tools/posts/render-post.mjs';
+import {buildPostZip} from '../tools/posts/download-post-zip.mjs';
+import {loadStoryTemplate} from '../tools/story-templates-service.mjs';
 
 const HEX_COLOR = /^#[0-9A-Fa-f]{6}$/;
 const TEXTAREA_KEYS = new Set(['quote', 'body']);
@@ -161,25 +170,147 @@ export function createGalleryServer({studioRoot, galleryDir}) {
     const urlPath = req.url?.split('?')[0] || '/';
     const method = req.method || 'GET';
 
-    if (method === 'POST' && urlPath === '/api/css-frames') {
+    if (method === 'GET' && urlPath === '/api/story-templates') {
       try {
-        const body = await readJsonBody(req);
-        if (typeof body.css !== 'string' || !body.css.trim()) {
-          sendJson(res, 400, {
-            error: 'CSS пустой. Сохраните файл (⌘S) или вставьте экспорт Figma в поле ниже.',
-          });
-          return;
-        }
-        const frames = listCssFrames(body.css);
-        if (frames.length === 0) {
-          sendJson(res, 400, {
-            error: 'CSS не распознан. Нужен flat-экспорт Figma с кадром 1080×1350.',
-          });
-          return;
-        }
-        sendJson(res, 200, {frames});
+        const raw = await readFile(path.join(galleryDir, 'story-templates.json'), 'utf8');
+        sendJson(res, 200, JSON.parse(raw));
       } catch (error) {
-        sendJson(res, 400, {error: error.message || 'Не удалось разобрать CSS'});
+        sendJson(res, 500, {error: error.message || 'Не удалось загрузить шаблоны'});
+      }
+      return;
+    }
+
+    const storyTemplateMatch = urlPath.match(/^\/api\/story-templates\/([^/]+)$/);
+    if (method === 'GET' && storyTemplateMatch) {
+      const templateId = decodeURIComponent(storyTemplateMatch[1]);
+      try {
+        const data = await loadStoryTemplate(studioRoot, templateId);
+        sendJson(res, 200, data);
+      } catch (error) {
+        sendJson(res, 404, {error: error.message || `Шаблон не найден: ${templateId}`});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/posts') {
+      try {
+        const posts = await listPosts(studioRoot);
+        sendJson(res, 200, {posts});
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Не удалось загрузить посты'});
+      }
+      return;
+    }
+
+    if (method === 'POST' && urlPath === '/api/posts') {
+      try {
+        const body = await readJsonBody(req, 50_000);
+        const templateId = body.templateId;
+        if (typeof templateId !== 'string' || !templateId.trim()) {
+          sendJson(res, 400, {error: 'Укажите templateId'});
+          return;
+        }
+        const post = await createPost(studioRoot, templateId.trim());
+        sendJson(res, 201, {ok: true, post});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Не удалось создать пост'});
+      }
+      return;
+    }
+
+    const postGetMatch = urlPath.match(/^\/api\/posts\/([^/]+)$/);
+    if (postGetMatch) {
+      const postId = decodeURIComponent(postGetMatch[1]);
+      if (method === 'GET') {
+        try {
+          const post = await getPost(studioRoot, postId);
+          sendJson(res, 200, {post});
+        } catch (error) {
+          sendJson(res, 404, {error: error.message || 'Пост не найден'});
+        }
+        return;
+      }
+      if (method === 'DELETE') {
+        try {
+          await deletePost(studioRoot, postId);
+          sendJson(res, 200, {ok: true, id: postId});
+        } catch (error) {
+          sendJson(res, 404, {error: error.message || 'Пост не найден'});
+        }
+        return;
+      }
+    }
+
+    const postRenderMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/render$/);
+    if (method === 'POST' && postRenderMatch) {
+      const postId = decodeURIComponent(postRenderMatch[1]);
+      try {
+        const {post, results} = await renderPost(studioRoot, postId);
+        sendJson(res, 200, {ok: true, post, results});
+      } catch (error) {
+        if (error.details) {
+          sendJson(res, 400, {error: error.message, details: error.details});
+          return;
+        }
+        sendJson(res, 500, {error: error.message || 'Рендер не удался'});
+      }
+      return;
+    }
+
+    const postRenderCardMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/render-card\/(\d+)$/);
+    if (method === 'POST' && postRenderCardMatch) {
+      const postId = decodeURIComponent(postRenderCardMatch[1]);
+      const cardIndex = Number(postRenderCardMatch[2]);
+      try {
+        const {post, result} = await renderPostCard(studioRoot, postId, cardIndex);
+        sendJson(res, 200, {ok: true, post, result});
+      } catch (error) {
+        if (error.details) {
+          sendJson(res, 400, {error: error.message, details: error.details});
+          return;
+        }
+        sendJson(res, 500, {error: error.message || 'Рендер не удался'});
+      }
+      return;
+    }
+
+    const postZipMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/download\.zip$/);
+    if (method === 'GET' && postZipMatch) {
+      const postId = decodeURIComponent(postZipMatch[1]);
+      try {
+        const {zipPath, filename} = await buildPostZip(studioRoot, postId);
+        const body = await readFile(zipPath);
+        res.writeHead(200, {
+          'Content-Type': 'application/zip',
+          'Content-Disposition': `attachment; filename="${filename}"`,
+        });
+        res.end(body);
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Не удалось собрать ZIP'});
+      }
+      return;
+    }
+
+    const postCardMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/cards\/(\d+)$/);
+    if (method === 'PUT' && postCardMatch) {
+      const postId = decodeURIComponent(postCardMatch[1]);
+      const cardIndex = Number(postCardMatch[2]);
+      try {
+        const body = await readJsonBody(req, 200_000);
+        if (!body.props || typeof body.props !== 'object' || Array.isArray(body.props)) {
+          sendJson(res, 400, {error: 'Body must be { props: { ... } }'});
+          return;
+        }
+        const post = await updatePostCard(studioRoot, postId, cardIndex, body.props, {
+          strict: body.strict !== false,
+        });
+        sendJson(res, 200, {ok: true, post});
+      } catch (error) {
+        if (error.details) {
+          sendJson(res, 400, {error: error.message, details: error.details});
+          return;
+        }
+        sendJson(res, 400, {error: error.message || 'Не удалось сохранить карточку'});
       }
       return;
     }
@@ -231,27 +362,6 @@ export function createGalleryServer({studioRoot, galleryDir}) {
         sendJson(res, 200, {ok: true, ...result});
       } catch (error) {
         sendJson(res, 400, {error: error.message || 'Загрузка не удалась'});
-      }
-      return;
-    }
-
-    if (method === 'POST' && urlPath === '/api/import-css') {
-      try {
-        const body = await readJsonBody(req);
-        if (typeof body.css !== 'string' || !body.css.trim()) {
-          sendJson(res, 400, {
-            error: 'CSS пустой. Сохраните файл (⌘S) или вставьте экспорт Figma в поле ниже.',
-          });
-          return;
-        }
-        const frameIndex = Number(body.frameIndex) || 1;
-        const result = await importCssFromString(body.css, {
-          frameIndex,
-          project: body.project,
-        });
-        sendJson(res, 200, {ok: true, ...result});
-      } catch (error) {
-        sendJson(res, 500, {error: error.message || 'Импорт не удался'});
       }
       return;
     }
@@ -336,7 +446,11 @@ export function createGalleryServer({studioRoot, galleryDir}) {
         ? path.join(galleryDir, 'picker.html')
         : urlPath === '/projects.json'
           ? path.join(srcDir, 'projects.json')
-          : urlPath.startsWith('/renders/')
+          : urlPath === '/story-templates.json' || urlPath === '/templates.json'
+            ? path.join(galleryDir, 'story-templates.json')
+            : urlPath === '/preview-layouts.json'
+              ? path.join(galleryDir, 'preview-layouts.json')
+            : urlPath.startsWith('/renders/')
             ? path.join(rendersDir, urlPath.slice('/renders/'.length))
             : urlPath.startsWith('/public/')
               ? path.join(publicDir, urlPath.slice('/public/'.length))

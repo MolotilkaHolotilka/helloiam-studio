@@ -27,7 +27,7 @@ RSYNC_EXCLUDES=(
 )
 
 echo "==> Remote prep: ${REMOTE}:${REMOTE_DIR}"
-"${SSH[@]}" "$REMOTE" "mkdir -p ${REMOTE_DIR}/public/generated ${REMOTE_DIR}/out/renders ${REMOTE_DIR}/src/lib ${REMOTE_DIR}/src/templates"
+"${SSH[@]}" "$REMOTE" "mkdir -p ${REMOTE_DIR}/public/generated ${REMOTE_DIR}/out/renders ${REMOTE_DIR}/data/posts ${REMOTE_DIR}/data/story-templates ${REMOTE_DIR}/src/lib ${REMOTE_DIR}/src/templates ${REMOTE_DIR}/src/gallery"
 
 echo "==> Rsync code"
 "${RSYNC[@]}" "${RSYNC_EXCLUDES[@]}" "${LOCAL_DIR}/" "${REMOTE}:${REMOTE_DIR}/"
@@ -39,7 +39,7 @@ echo "==> Docker build & up (${COMPOSE_FILE})"
 "${SSH[@]}" "$REMOTE" "cd ${REMOTE_DIR} && docker compose -f ${COMPOSE_FILE} --env-file .env up -d --build"
 
 echo "==> Health check"
-"${SSH[@]}" "$REMOTE" "curl -sf -o /dev/null -w '%{http_code}' http://127.0.0.1:3456/ -H 'Host: helloiam-studio-v001.srv1681126.hstgr.cloud' || docker exec helloiam-studio_v0.0.1 node -e \"fetch('http://127.0.0.1:3456/templates.json').then(r=>process.exit(r.ok?0:1))\""
+"${SSH[@]}" "$REMOTE" "docker exec helloiam-studio_v0.0.1 node -e \"fetch('http://127.0.0.1:3456/api/story-templates').then(r=>r.json()).then(d=>{if(!d.templates?.length)process.exit(1);console.log('templates:',d.templates.length)}).catch(()=>process.exit(1))\""
 
 echo ""
 echo "Done. Gallery: https://helloiam-studio-v001.srv1681126.hstgr.cloud"

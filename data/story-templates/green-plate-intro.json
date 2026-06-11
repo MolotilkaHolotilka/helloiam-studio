@@ -1,0 +1,199 @@
+{
+  "id": "GreenPlateIntro",
+  "project": "helloiam",
+  "name": "Green Plate Intro",
+  "description": "Rubric: green-plate-intro",
+  "tag": "Карусель",
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardSec": 3,
+  "cards": [
+    {
+      "cardIndex": 0,
+      "compositionId": "RubricCardCss",
+      "label": "Интро",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleAccent",
+          "type": "string",
+          "label": "Акцент заголовка"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        },
+        {
+          "key": "introLayout",
+          "type": "string",
+          "label": "Раскладка (lavash/dolma/matsun)"
+        }
+      ],
+      "defaultProps": {
+        "engine": "green-plate",
+        "cardKind": "hello",
+        "cardIndex": 0,
+        "cardCount": 3,
+        "title": "HELLO, I AM",
+        "titleAccent": "FOOD",
+        "label": "AM FOOD",
+        "background": "#D9DDE0",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "generated/helloiam-lavash.png",
+        "introLayout": "lavash"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 1,
+      "compositionId": "RubricCardCss",
+      "label": "Цитата",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleAccent",
+          "type": "string",
+          "label": "Акцент заголовка"
+        },
+        {
+          "key": "quote",
+          "type": "textarea",
+          "label": "Цитата"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "quoteColor",
+          "type": "color",
+          "label": "Цвет цитаты"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        }
+      ],
+      "defaultProps": {
+        "engine": "green-plate",
+        "cardKind": "quote",
+        "cardIndex": 1,
+        "cardCount": 3,
+        "title": "HELLO, I AM",
+        "titleAccent": "FOOD",
+        "quote": "Thin bread baked in stone oven.\nA taste of Armenia.",
+        "label": "AM FOOD",
+        "background": "#D9DDE0",
+        "quoteColor": "#D61E23",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "generated/helloiam-lavash.png"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 2,
+      "compositionId": "RubricCardCss",
+      "label": "Бренд",
+      "fields": [
+        {
+          "key": "brandLeft",
+          "type": "string",
+          "label": "Текст слева"
+        },
+        {
+          "key": "brandRight",
+          "type": "string",
+          "label": "Текст справа"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Эмодзи / фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "brandColor",
+          "type": "color",
+          "label": "Цвет бренда"
+        }
+      ],
+      "defaultProps": {
+        "engine": "green-plate",
+        "cardKind": "brand",
+        "cardIndex": 2,
+        "cardCount": 3,
+        "brandLeft": "helloiam",
+        "brandRight": "am",
+        "background": "#D9DDE0",
+        "brandColor": "#420000",
+        "image": "generated/helloiam-lavash.png"
+      },
+      "durationFrames": 90
+    }
+  ]
+}

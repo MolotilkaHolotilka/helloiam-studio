@@ -24,11 +24,17 @@ export type LayoutLayer = {
   defaultText?: string;
   defaultColor?: string;
   imageIndex?: number;
+  alignItems?: 'flex-start' | 'center' | 'flex-end';
+};
+
+export type LayoutImageLayer = LayoutBox & {
+  opacity?: number;
+  objectFit?: 'cover' | 'contain';
 };
 
 export type LayoutSpec = {
   family: 'news-126' | 'intro-hero' | 'generic';
   card: {width: number; height: number; background: string};
   layers: LayoutLayer[];
-  imageLayers: LayoutBox[];
+  imageLayers: LayoutImageLayer[];
 };

@@ -1,72 +1,64 @@
-# helloiam-studio
+# HelloIAM Stories (alpha v001)
 
-HelloIAM Template Studio — галерея шаблонов, импорт Figma CSS, Remotion Studio, рендер PNG/MP4.
+Конструктор сторис для SMM — выбор шаблона, заполнение карточек, рендер PNG/MP4.
 
-**Полностью независим** от репозитория `hello-iam-v2` (legacy `post-ops-ui` + `helloiam-remotion`).
-
-## Запуск (macOS)
-
-Двойной клик: `Open Template Gallery.command`
+## Запуск
 
 ```bash
 npm install
-npm start          # галерея :3456 + Remotion Studio :3000 (полный режим)
-npm run gallery    # только галерея :3456 (лёгкий режим, без Studio)
-npm run studio     # только Remotion Studio :3000
+npm start          # приложение на :3456
 npm run stop
+npm run render -- Post126SoftFloat   # CLI-рендер одной карточки
 ```
 
-`npm run restart` — то же, что `preview`: освобождает порты, запускает галерею + Studio и открывает браузер.
+Откройте http://localhost:3456
 
-## Два пути правки props
+## Пайплайн пользователя
 
-Оба варианта рабочие — выбирайте по задаче.
+1. **Генерация** — выбрать шаблон → «Создать пост»
+2. Заполнить текст, изображения, цвета **для каждой карточки**
+3. **Посты** — список сохранённых постов
+4. Рендер — PNG + MP4 (3 сек на карточку)
 
-### Галерея (импорт → редактировать → рендер)
+## Шаблоны
 
-1. Импортируйте CSS в галерее или `npm run import:css -- file.css`
-2. Нажмите **«Редактировать»** у шаблона — форма props в галерее
-3. **Сохранить** записывает `src/templates/<slug>/meta.json` и обновляет manifest
-4. **Рендер PNG+MP4** читает props из `meta.json`
+15 rubric-шаблонов из `rubric-templates-tsx/` (7-карточные карусели, deep dive, food carousel, Wizz и др.).
 
-### Remotion Studio (открыть → править в панели)
+Импорт / обновление каталога:
 
-1. `npm start` (или `npm run studio` отдельно)
-2. Нажмите **«Открыть»** у шаблона — откроется Studio с composition
-3. Правьте props в правой панели Studio (defaultProps из `composition-manifest`)
-4. Рендер из галереи использует сохранённый `meta.json`, не сессию Studio
+```bash
+npm run import:rubric
+```
 
-> **MVP:** сохранение в галерее пишет `meta.json`. Правки в Remotion Studio живут только в сессии браузера, пока не сохраните через API галереи (кнопка «Сохранить» в режиме редактирования). Props sync Studio → meta.json автоматически — в roadmap.
+Файлы: `data/story-templates/*.json` · рендер: `RubricCardCss`
 
-## Возможности
+## Деплой (VPS)
 
-| Функция | Как |
-|---|---|
-| Галерея шаблонов | http://localhost:3456 |
-| Проекты AM News / AM Food | Переключатель в галерее |
-| Импорт CSS | Блок в галерее или `npm run import:css -- file.css` |
-| Правка props (галерея) | «Редактировать» → сохранение в `meta.json` |
-| Правка props (Studio) | «Открыть» → панель props http://localhost:3000 |
-| Рендер | Кнопка в галерее или `npm run render -- Post126SoftFloat` |
+```bash
+REMOTE=helloiam-studio ./scripts/deploy-hostinger.sh
+```
+
+Gallery: https://helloiam-studio-v001.srv1681126.hstgr.cloud
 
 ## Структура
 
 ```
 helloiam-studio/
-├── src/
-│   ├── gallery/          # picker, Root, manifest
-│   ├── templates/        # шаблоны (layout, schema, meta.json)
-│   └── projects.json
-├── packages/css-pipeline/  # Figma CSS → components (без legacy)
-├── tools/
-│   ├── css-import/
-│   └── render/
-├── public/generated/     # картинки для рендера
-└── out/renders/          # PNG + MP4 (gitignored)
+├── src/gallery/           # UI (picker.html)
+├── src/templates/         # Remotion-композиции карточек
+├── data/story-templates/  # Описание шаблонов постов (карточки, поля)
+├── tools/render/          # Рендер PNG/MP4
+├── tools/gallery-sync.mjs # Синхронизация composition-manifest
+├── _archive/              # Legacy: CSS-импорт, Studio (не использовать)
+└── docs/PRODUCT_TZ.md       # Техническое задание
 ```
 
-## Roadmap (следующие шаги)
+## Roadmap alpha v001
 
-- Docker + хостинг на VPS
-- Props sync Studio → meta.json (автоматически)
-- Очередь рендеров
+- [x] Промпт 1: зачистка, архив legacy, пилотный шаблон
+- [x] Промпт 2–3: посты в `data/posts/`, мастер карточек, список «Посты»
+- [x] Промпт 4: рендер всех карточек (PNG + MP4)
+- [x] Промпт 5: прогресс рендера, валидация, ZIP-скачивание
+- [x] Промпт 6: шаблоны HelloIAM (9 карточек + вино)
+- [x] Промпт 7: деплой VPS, русский UI, HelloIAM Stories
+- [x] Live-превью карточек, обложки шаблонов, очередь рендера, удаление постов

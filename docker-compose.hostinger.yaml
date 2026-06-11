@@ -1,8 +1,6 @@
 # Hostinger VPS + Traefik (HTTPS). Порт 3456 снаружи закрыт — только через Traefik.
 #
-# URL:
-#   https://helloiam-studio-v001.${TRAEFIK_HOST}           — галерея
-#   https://helloiam-studio-v001-remotion.${TRAEFIK_HOST} — Remotion Studio
+# URL: https://helloiam-studio-v001.${TRAEFIK_HOST}
 
 services:
   helloiam-studio_v0.0.1:
@@ -12,19 +10,20 @@ services:
     restart: unless-stopped
     expose:
       - "3456"
-      - "3000"
     environment:
       HOST: 0.0.0.0
-      STUDIO_PORT: 3000
       GALLERY_PORT: 3456
       NODE_ENV: production
     volumes:
       - ./public/generated:/app/public/generated
       - ./out/renders:/app/out/renders
+      - ./data/posts:/app/data/posts
       - ./src/templates:/app/src/templates
       - ./src/lib:/app/src/lib
+      - ./src/gallery:/app/src/gallery
+      - ./data/story-templates:/app/data/story-templates
     shm_size: "2gb"
-    mem_limit: 2g
+    mem_limit: 3g
     labels:
       - traefik.enable=true
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.${TRAEFIK_HOST}`)
@@ -33,10 +32,4 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=${COMPOSE_PROJECT_NAME}-auth
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3456
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-remotion.rule=Host(`${COMPOSE_PROJECT_NAME}-remotion.${TRAEFIK_HOST}`)
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-remotion.entrypoints=websecure
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-remotion.tls.certresolver=letsencrypt
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-remotion.middlewares=${COMPOSE_PROJECT_NAME}-auth
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-remotion.service=${COMPOSE_PROJECT_NAME}-remotion
-      - traefik.http.services.${COMPOSE_PROJECT_NAME}-remotion.loadbalancer.server.port=3000
       - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-auth.basicauth.users=${BASIC_AUTH_USER}:${BASIC_AUTH_HASH}

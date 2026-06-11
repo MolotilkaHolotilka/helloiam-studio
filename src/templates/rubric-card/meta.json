@@ -1,0 +1,26 @@
+{
+  "id": "RubricCardCss",
+  "project": "helloiam",
+  "name": "Rubric — карточка",
+  "description": "Универсальный рендер rubric-шаблонов",
+  "tag": "Rubric",
+  "templateDir": "rubric-card",
+  "preset": "soft-float",
+  "durationFrames": 210,
+  "propsFields": [],
+  "defaultProps": {
+    "engine": "green-plate",
+    "cardKind": "hello",
+    "cardIndex": 0,
+    "cardCount": 3,
+    "title": "HELLO, I AM",
+    "titleAccent": "FOOD",
+    "label": "AM FOOD",
+    "background": "#D9DDE0",
+    "titleColor": "#0F0F10",
+    "accentColor": "#D61E23",
+    "labelColor": "#000000",
+    "image": "generated/helloiam-lavash.png",
+    "introLayout": "lavash"
+  }
+}

@@ -1,12 +1,12 @@
-import {zColor, zTextarea} from '@remotion/zod-types';
+import {zColor} from '@remotion/zod-types';
 import {z} from 'zod';
 import {STUDIO_IMAGE_OPTIONS} from '../../lib/asset-options';
 
 export const schema = z.object({
-  body: zTextarea(),
   body2: z.string(),
-  body3: z.string(),
+  body2Color: zColor(),
   body4: z.string(),
+  body4Color: zColor(),
   image: z.enum(STUDIO_IMAGE_OPTIONS),
   background: zColor(),
 });

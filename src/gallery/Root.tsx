@@ -2,12 +2,10 @@ import '../index.css';
 import React from 'react';
 import {Composition} from 'remotion';
 import {GALLERY_COMPOSITIONS} from './composition-manifest';
-import {ManualCompositions} from './manual-compositions';
 
 export const GalleryRoot: React.FC = () => {
   return (
     <>
-      <ManualCompositions />
       {GALLERY_COMPOSITIONS.map((entry) => (
         <Composition
           key={entry.id}
