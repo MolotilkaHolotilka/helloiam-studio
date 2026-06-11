@@ -15,7 +15,7 @@ function postPath(studioRoot, postId) {
 export function collectPostValidationErrors(post, assetPaths) {
   const validationErrors = [];
   for (const card of post.cards) {
-    const errors = validateCardProps(card.props || {}, card.fields || [], assetPaths);
+    const errors = validateCardProps(card.props || {}, card.fields || [], assetPaths, card.metaPropKeys);
     if (errors.length > 0) {
       validationErrors.push({
         cardIndex: card.cardIndex,
@@ -52,7 +52,7 @@ export async function renderPostCard(studioRoot, postId, cardIndex) {
 
   const assets = await listStudioAssets(studioRoot);
   const assetPaths = new Set(assets.map((a) => a.path));
-  const errors = validateCardProps(card.props || {}, card.fields || [], assetPaths);
+  const errors = validateCardProps(card.props || {}, card.fields || [], assetPaths, card.metaPropKeys);
   if (errors.length > 0) {
     const err = new Error('Заполните все поля карточки');
     err.details = [{cardIndex, label: card.label, errors}];

@@ -60,6 +60,13 @@
           "label": "Раскладка (lavash/dolma/matsun)"
         }
       ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
       "defaultProps": {
         "engine": "green-plate",
         "cardKind": "hello",
@@ -132,6 +139,13 @@
           "type": "color",
           "label": "Цвет метки"
         }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
       ],
       "defaultProps": {
         "engine": "green-plate",
@@ -207,6 +221,13 @@
           "label": "Цвет метки"
         }
       ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
       "defaultProps": {
         "engine": "green-plate",
         "cardKind": "quote",
@@ -280,6 +301,13 @@
           "type": "color",
           "label": "Цвет метки"
         }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
       ],
       "defaultProps": {
         "engine": "green-plate",
@@ -355,6 +383,13 @@
           "label": "Цвет метки"
         }
       ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
       "defaultProps": {
         "engine": "green-plate",
         "cardKind": "quote",
@@ -429,6 +464,13 @@
           "label": "Цвет метки"
         }
       ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
       "defaultProps": {
         "engine": "green-plate",
         "cardKind": "quote",
@@ -477,6 +519,13 @@
           "type": "color",
           "label": "Цвет бренда"
         }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
       ],
       "defaultProps": {
         "engine": "green-plate",

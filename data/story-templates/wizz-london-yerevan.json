@@ -75,6 +75,13 @@
           "label": "Высота фото (px)"
         }
       ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
       "defaultProps": {
         "engine": "wizz",
         "cardKind": "headline",
@@ -166,6 +173,13 @@
           "label": "Масштаб фото"
         }
       ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
       "defaultProps": {
         "engine": "wizz",
         "cardKind": "body-below",
@@ -253,6 +267,13 @@
           "type": "string",
           "label": "Высота фото (px)"
         }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
       ],
       "defaultProps": {
         "engine": "wizz",

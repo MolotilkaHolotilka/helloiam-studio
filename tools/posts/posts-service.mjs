@@ -2,6 +2,7 @@ import {mkdir, readdir, readFile, unlink, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {listStudioAssets} from '../assets/studio-assets-service.mjs';
+import {RUBRIC_META_PROP_KEY_SET} from '../rubric-meta-props.mjs';
 import {loadStoryTemplate} from '../story-templates-service.mjs';
 
 const HEX_COLOR = /^#[0-9A-Fa-f]{6}$/;
@@ -18,10 +19,12 @@ function postPath(studioRoot, postId) {
  * @param {Record<string, string>} props
  * @param {Array<{ key: string, type: string }>} fields
  * @param {Set<string>} assetPaths
+ * @param {string[]} [metaPropKeys]
  */
-export function validateCardProps(props, fields, assetPaths) {
+export function validateCardProps(props, fields, assetPaths, metaPropKeys = []) {
   const errors = [];
   const allowedKeys = new Set(fields.map((f) => f.key));
+  const internalKeys = new Set([...RUBRIC_META_PROP_KEY_SET, ...metaPropKeys]);
 
   for (const field of fields) {
     const value = props[field.key];
@@ -50,6 +53,7 @@ export function validateCardProps(props, fields, assetPaths) {
   }
 
   for (const key of Object.keys(props)) {
+    if (internalKeys.has(key)) continue;
     if (!allowedKeys.has(key)) errors.push(`Неизвестное поле: ${key}`);
   }
 
@@ -76,6 +80,7 @@ export async function createPost(studioRoot, templateId) {
       compositionId: card.compositionId,
       label: card.label,
       fields: card.fields,
+      metaPropKeys: card.metaPropKeys ?? [],
       props: {...card.defaultProps},
       durationFrames: card.durationFrames,
     })),
@@ -148,7 +153,7 @@ export async function updatePostCard(studioRoot, postId, cardIndex, props, optio
   if (options.strict) {
     const assets = await listStudioAssets(studioRoot);
     const assetPaths = new Set(assets.map((a) => a.path));
-    const errors = validateCardProps(props, card.fields || [], assetPaths);
+    const errors = validateCardProps(props, card.fields || [], assetPaths, card.metaPropKeys);
     if (errors.length > 0) {
       const err = new Error('Validation failed');
       err.details = errors;

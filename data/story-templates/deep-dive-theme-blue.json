@@ -65,6 +65,13 @@
           "label": "Цвет метки"
         }
       ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
       "defaultProps": {
         "engine": "green-plate",
         "cardKind": "quote",

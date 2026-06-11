@@ -2,6 +2,7 @@
 import {readdir, readFile, writeFile, unlink} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {RUBRIC_META_PROP_KEYS} from './rubric-meta-props.mjs';
 
 const studioRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rubricRoot = path.join(studioRoot, 'rubric-templates-tsx');
@@ -12,6 +13,24 @@ const IMG = {
   lavash: 'generated/helloiam-lavash.png',
   wine: 'generated/helloiam-wine-armenia.png',
   field: 'generated/helloiam-chair-field.png',
+};
+
+const DOLMA_IMG = {
+  cover: 'generated/dolma-102-1.png',
+  slide2: 'generated/dolma-102-2.png',
+  slide3: 'generated/dolma-102-3.png',
+  slide4: 'generated/dolma-102-4.png',
+  slide5: 'generated/dolma-102-5.png',
+  slide6: 'generated/dolma-102-6.png',
+  emoji: 'generated/dolma-102-emoji.png',
+};
+
+const QUOTE_GRAY = {
+  background: '#D9DDE0',
+  quoteColor: '#D61E23',
+  titleColor: '#0F0F10',
+  accentColor: '#D61E23',
+  labelColor: '#000000',
 };
 
 const FIELD = {
@@ -187,6 +206,93 @@ function greenPlate7Cards(introLayout, theme) {
   return cards;
 }
 
+function dolmaDeepDiveCards() {
+  const count = 7;
+  const dur = 210;
+  const quoteSlides = [
+    {
+      label: 'Слайд 2',
+      image: DOLMA_IMG.slide2,
+      quote:
+        'Dolma starts as a pile of grape leaves and filling. The dish only exists after every piece has been rolled by hand.',
+    },
+    {
+      label: 'Слайд 3',
+      image: DOLMA_IMG.slide3,
+      quote:
+        'In most Armenian kitchens, dolma is not made alone. It is made in groups, with each person rolling at their own pace.',
+    },
+    {
+      label: 'Слайд 4',
+      image: DOLMA_IMG.slide4,
+      quote:
+        'There is no definitive dolma. Grape leaves, cabbage leaves, or stuffed peppers and aubergines — all of them count.',
+    },
+    {
+      label: 'Слайд 5',
+      image: DOLMA_IMG.slide5,
+      quote:
+        'Dolma is almost always served with matsun. The cool dairy against the warm filling is not a suggestion. It is the point.',
+    },
+    {
+      label: 'Слайд 6',
+      image: DOLMA_IMG.slide6,
+      quote:
+        'After the table is cleared, the grape leaves and bowl and cloth tell you exactly what happened here.',
+    },
+  ];
+
+  const cards = [
+    {
+      label: 'Обложка',
+      kind: 'hello',
+      fields: FIELD.hello,
+      props: baseMeta('green-plate', 'hello', 0, count, {
+        title: 'HELLO, I AM',
+        titleAccent: 'DOLMA',
+        label: 'AM FOOD',
+        background: '#D9DDE0',
+        titleColor: '#0F0F10',
+        accentColor: '#D61E23',
+        labelColor: '#000000',
+        image: DOLMA_IMG.cover,
+        introLayout: 'dolma',
+      }, dur),
+    },
+  ];
+
+  quoteSlides.forEach((slide, i) => {
+    cards.push({
+      label: slide.label,
+      kind: 'quote',
+      fields: FIELD.quote,
+      props: baseMeta('green-plate', 'quote', i + 1, count, {
+        title: 'HELLO, I AM',
+        titleAccent: 'DOLMA',
+        quote: slide.quote,
+        label: 'AM FOOD',
+        image: slide.image,
+        ...QUOTE_GRAY,
+      }, dur),
+    });
+  });
+
+  cards.push({
+    label: 'Бренд',
+    kind: 'brand',
+    fields: FIELD.brand,
+    props: baseMeta('green-plate', 'brand', count - 1, count, {
+      brandLeft: 'helloiam',
+      brandRight: 'am',
+      background: '#D9DDE0',
+      brandColor: '#420000',
+      image: DOLMA_IMG.emoji,
+    }, dur),
+  });
+
+  return cards;
+}
+
 function greenPlate3Cards() {
   const count = 3;
   return [
@@ -351,7 +457,7 @@ const TEMPLATE_BUILDERS = {
   'i-am-culture-intro': () => greenPlate7Cards('dolma', 'culture'),
   'i-am-streets-intro': () => greenPlate7Cards('matsun', 'streets'),
   'i-am-lavash-deep-dive': () => greenPlate7Cards('lavash', 'lavash'),
-  'i-am-dolma-deep-dive': () => greenPlate7Cards('dolma', 'dolma'),
+  'i-am-dolma-deep-dive': () => dolmaDeepDiveCards(),
   'i-am-matsun-deep-dive': () => greenPlate7Cards('matsun', 'matsun'),
   'i-am-khachkar-deep-dive': () => greenPlate7Cards('lavash', 'khachkar'),
   'i-am-wine-deep-dive': () => greenPlate7Cards('lavash', 'wine'),
@@ -379,6 +485,7 @@ function buildStoryTemplate(workflow) {
       compositionId: 'RubricCardCss',
       label: spec.label,
       fields: spec.fields,
+      metaPropKeys: RUBRIC_META_PROP_KEYS,
       defaultProps,
       durationFrames: dur,
     };
