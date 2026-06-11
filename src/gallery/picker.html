@@ -408,7 +408,9 @@
     </div>
 
     <script>
-      const STUDIO_ORIGIN = "http://localhost:3000";
+      const STUDIO_PORT =
+        new URLSearchParams(window.location.search).get("studioPort") || "3000";
+      const STUDIO_ORIGIN = `${window.location.protocol}//${window.location.hostname}:${STUDIO_PORT}`;
       const STORAGE_KEY = "helloiam-studio-project";
       const grid = document.getElementById("grid");
       const projectsEl = document.getElementById("projects");
