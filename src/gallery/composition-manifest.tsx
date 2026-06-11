@@ -86,14 +86,14 @@ export const GALLERY_COMPOSITIONS = [
     duration: duration_post_130,
     schema: schema_post_130,
     defaultProps: {
-          "image": "generated/post-126.png",
-          "background": "#D9DDE0",
           "quote": "Travel platforms and international media increasingly describe Armenia as Europe’s next rising tourism star. Visitors are drawn by the country’s mix of ancient history, dramatic landscapes, Soviet-modernist aesthetics and famously overwhelming hospitality. Unfortunately for tourists, “light local dinner” in Armenia still translates to approximately 14 dishes, emotional toasts and a grandmother personally monitoring whether you finished your food.",
-          "quoteColor": "#0F0F10",
           "label": "AM NEWS",
-          "labelColor": "#4A7BFF",
           "title": "Hello, WORLD",
-          "titleColor": "#0F0F10"
+          "quoteColor": "#0F0F10",
+          "labelColor": "#4A7BFF",
+          "titleColor": "#0F0F10",
+          "image": "generated/post-126.png",
+          "background": "#D9DDE0"
     },
     Component: makeComposition(Card_post_130, duration_post_130),
   },

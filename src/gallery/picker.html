@@ -419,6 +419,162 @@
         border-color: #b8c0c8;
       }
 
+      .edit-btn {
+        appearance: none;
+        border: 1px solid var(--accent);
+        border-radius: 12px;
+        padding: 14px 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        background: var(--accent-soft);
+        color: var(--accent);
+        transition: transform 0.15s ease, opacity 0.15s ease;
+      }
+
+      .edit-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .edit-btn:not(:disabled):hover {
+        transform: translateY(-1px);
+      }
+
+      .edit-panel {
+        background: #fff;
+        border: 1px solid #d9dde0;
+        border-radius: 20px;
+        padding: 22px;
+        margin-bottom: 28px;
+        box-shadow: 0 10px 30px rgba(15, 15, 16, 0.05);
+      }
+
+      .edit-panel h2 {
+        margin: 0 0 8px;
+        font-size: 1.25rem;
+      }
+
+      .edit-panel .edit-desc {
+        margin: 0 0 20px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+
+      .edit-back {
+        appearance: none;
+        border: 0;
+        background: none;
+        padding: 0;
+        margin: 0 0 18px;
+        font: inherit;
+        font-weight: 700;
+        color: var(--accent);
+        cursor: pointer;
+      }
+
+      .edit-back:hover {
+        text-decoration: underline;
+      }
+
+      .props-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .props-form .import-field input[type="color"] {
+        width: 100%;
+        height: 44px;
+        padding: 4px;
+        cursor: pointer;
+      }
+
+      .edit-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .edit-save-btn {
+        appearance: none;
+        border: 0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .edit-save-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .edit-render-btn {
+        appearance: none;
+        border: 1px solid #d9dde0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        background: #fff;
+        color: var(--text);
+      }
+
+      .edit-render-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .edit-status {
+        margin-top: 14px;
+        font-size: 0.92rem;
+        line-height: 1.45;
+      }
+
+      .edit-status.ok {
+        color: #15803d;
+      }
+
+      .edit-status.err {
+        color: var(--red);
+      }
+
+      .edit-render-result {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #eef1f4;
+        font-size: 0.88rem;
+        color: var(--muted);
+      }
+
+      .edit-render-result img {
+        width: 100%;
+        max-width: 540px;
+        border-radius: 12px;
+        margin: 8px 0;
+        border: 1px solid #d9dde0;
+      }
+
+      .edit-render-result video {
+        width: 100%;
+        max-width: 540px;
+        border-radius: 12px;
+        margin: 8px 0;
+      }
+
+      .edit-render-result a {
+        color: var(--accent);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
       .render-result {
         margin-top: 4px;
         padding-top: 12px;
@@ -474,8 +630,12 @@
   <body>
     <div class="wrap">
       <h1>HelloIAM Studio</h1>
-      <p class="lead">Выберите проект и шаблон — откроется Remotion Studio с props справа.</p>
+      <p class="lead">
+        Импортируйте CSS, правьте props в галерее (кнопка «Редактировать») или откройте шаблон в
+        Remotion Studio — оба пути валидны.
+      </p>
 
+      <div id="view-home">
       <div class="projects" id="projects"></div>
       <p class="project-desc" id="project-desc"></p>
 
@@ -529,9 +689,25 @@
       <div class="grid" id="grid"></div>
 
       <p class="hint">
-        Студия: <code id="studio-url">http://localhost:3000</code>.
-        Props (текст, цвета, картинка) правятся в правой панели Studio.
+        <strong>Галерея:</strong> «Редактировать» → сохранение пишет <code>meta.json</code> (используется
+        при рендере). <strong>Studio:</strong> <code id="studio-url">http://localhost:3000</code> — кнопка
+        «Открыть» или <code>npm run studio</code>; правки в панели props сессионные, пока не сохраните через
+        галерею.
       </p>
+      </div>
+
+      <section class="edit-panel" id="view-edit" hidden>
+        <button type="button" class="edit-back" id="edit-back">← К галерее</button>
+        <h2 id="edit-title">Редактирование</h2>
+        <p class="edit-desc" id="edit-desc"></p>
+        <form class="props-form" id="props-form"></form>
+        <div class="edit-actions">
+          <button type="button" class="edit-save-btn" id="edit-save" disabled>Сохранить</button>
+          <button type="button" class="edit-render-btn" id="edit-render" disabled>Рендер PNG+MP4</button>
+        </div>
+        <div class="edit-status" id="edit-status"></div>
+        <div class="edit-render-result" id="edit-render-result" hidden></div>
+      </section>
     </div>
 
     <script>
@@ -565,6 +741,16 @@
       const assetUploadBtn = document.getElementById("asset-upload");
       const assetsStatus = document.getElementById("assets-status");
       const assetsGrid = document.getElementById("assets-grid");
+      const viewHome = document.getElementById("view-home");
+      const viewEdit = document.getElementById("view-edit");
+      const editBack = document.getElementById("edit-back");
+      const editTitle = document.getElementById("edit-title");
+      const editDesc = document.getElementById("edit-desc");
+      const propsForm = document.getElementById("props-form");
+      const editSave = document.getElementById("edit-save");
+      const editRender = document.getElementById("edit-render");
+      const editStatus = document.getElementById("edit-status");
+      const editRenderResult = document.getElementById("edit-render-result");
 
       let allTemplates = [];
       let studioAssets = [];
@@ -572,6 +758,9 @@
       let activeProject = localStorage.getItem(STORAGE_KEY) || "am-news";
       let galleryReady = false;
       let studioReady = false;
+      let editCompositionId = null;
+      let editPropsFields = [];
+      let editDefaultProps = {};
 
       function getCssText() {
         return cssPasteInput.value.trim();
@@ -583,6 +772,256 @@
 
       function studioUrl(compositionId) {
         return `${STUDIO_ORIGIN}/${encodeURIComponent(compositionId)}`;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function parseRoute() {
+        const match = (window.location.hash || "").match(/^#\/edit\/([^/?#]+)/);
+        if (match) {
+          return { view: "edit", compositionId: decodeURIComponent(match[1]) };
+        }
+        return { view: "home" };
+      }
+
+      function navigateToEdit(compositionId) {
+        window.location.hash = `#/edit/${encodeURIComponent(compositionId)}`;
+      }
+
+      function navigateToHome() {
+        window.location.hash = "";
+      }
+
+      function setEditStatus(text, kind = "") {
+        editStatus.textContent = text;
+        editStatus.className = `edit-status${kind ? ` ${kind}` : ""}`;
+      }
+
+      function normalizePropsFields(propsFields, defaultProps) {
+        if (Array.isArray(propsFields) && propsFields.length) {
+          return propsFields.map((field) => ({
+            key: field.key,
+            type: field.type || "string",
+            label: field.label || field.key,
+          }));
+        }
+        if (propsFields && typeof propsFields === "object") {
+          return Object.entries(propsFields).map(([key, type]) => ({
+            key,
+            type: String(type),
+            label: key,
+          }));
+        }
+        return Object.keys(defaultProps || {}).map((key) => ({
+          key,
+          type: "string",
+          label: key,
+        }));
+      }
+
+      function renderImageOptions(selected) {
+        if (!studioAssets.length) {
+          return '<option value="">Нет изображений — загрузите в галерее</option>';
+        }
+        return studioAssets
+          .map((asset) => {
+            const selectedAttr = asset.path === selected ? " selected" : "";
+            return `<option value="${escapeHtml(asset.path)}"${selectedAttr}>${escapeHtml(asset.path)}</option>`;
+          })
+          .join("");
+      }
+
+      function renderPropField(field, value) {
+        const id = `prop-${field.key}`;
+        const label = escapeHtml(field.label || field.key);
+        const safeValue = value ?? "";
+
+        if (field.type === "textarea") {
+          return `
+            <div class="import-field">
+              <label for="${id}">${label}</label>
+              <textarea id="${id}" name="${field.key}">${escapeHtml(safeValue)}</textarea>
+            </div>`;
+        }
+        if (field.type === "color") {
+          const colorValue = /^#[0-9a-fA-F]{6}$/.test(safeValue) ? safeValue : "#000000";
+          return `
+            <div class="import-field">
+              <label for="${id}">${label}</label>
+              <input id="${id}" name="${field.key}" type="color" value="${escapeHtml(colorValue)}" />
+            </div>`;
+        }
+        if (field.type === "image") {
+          return `
+            <div class="import-field">
+              <label for="${id}">${label}</label>
+              <select id="${id}" name="${field.key}">${renderImageOptions(safeValue)}</select>
+            </div>`;
+        }
+        return `
+          <div class="import-field">
+            <label for="${id}">${label}</label>
+            <input id="${id}" name="${field.key}" type="text" value="${escapeHtml(safeValue)}" />
+          </div>`;
+      }
+
+      function collectEditProps() {
+        const props = {};
+        for (const field of editPropsFields) {
+          const el = document.getElementById(`prop-${field.key}`);
+          if (el) props[field.key] = el.value;
+        }
+        return props;
+      }
+
+      function renderPropsForm() {
+        propsForm.innerHTML = editPropsFields
+          .map((field) => renderPropField(field, editDefaultProps[field.key]))
+          .join("");
+      }
+
+      function refreshImageSelects() {
+        for (const field of editPropsFields) {
+          if (field.type !== "image") continue;
+          const el = document.getElementById(`prop-${field.key}`);
+          if (!el) continue;
+          el.innerHTML = renderImageOptions(el.value);
+        }
+      }
+
+      async function fetchTemplate(compositionId) {
+        const res = await fetch(`/api/templates/${encodeURIComponent(compositionId)}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Не удалось загрузить шаблон");
+        return data;
+      }
+
+      async function openEditView(compositionId) {
+        editCompositionId = compositionId;
+        viewHome.hidden = true;
+        viewEdit.hidden = false;
+        editSave.disabled = true;
+        editRender.disabled = !galleryReady;
+        editRenderResult.hidden = true;
+        editRenderResult.textContent = "";
+        propsForm.innerHTML = '<div class="empty">Загружаем…</div>';
+        setEditStatus("");
+        editTitle.textContent = compositionId;
+        editDesc.textContent = "";
+
+        try {
+          const data = await fetchTemplate(compositionId);
+          const meta = data.meta || data;
+          editDefaultProps = { ...(data.defaultProps || meta.defaultProps || {}) };
+          editPropsFields = normalizePropsFields(
+            data.propsFields || meta.propsFields,
+            editDefaultProps
+          );
+
+          editTitle.textContent = meta.name || compositionId;
+          editDesc.textContent = meta.description || "";
+
+          if (meta.project && meta.project !== activeProject) {
+            activeProject = meta.project;
+            localStorage.setItem(STORAGE_KEY, activeProject);
+            renderProjectTabs();
+            renderCards();
+          }
+
+          renderPropsForm();
+          editSave.disabled = false;
+          editRender.disabled = !galleryReady;
+        } catch (error) {
+          propsForm.innerHTML = "";
+          setEditStatus(error.message, "err");
+        }
+      }
+
+      function closeEditView() {
+        editCompositionId = null;
+        viewEdit.hidden = true;
+        viewHome.hidden = false;
+      }
+
+      function handleRoute() {
+        const route = parseRoute();
+        if (route.view === "edit") {
+          openEditView(route.compositionId);
+        } else {
+          closeEditView();
+        }
+      }
+
+      async function saveEditProps() {
+        if (!editCompositionId) return;
+
+        editSave.disabled = true;
+        setEditStatus("Сохраняем…");
+
+        try {
+          const props = collectEditProps();
+          const res = await fetch(
+            `/api/templates/${encodeURIComponent(editCompositionId)}/props`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ props }),
+            }
+          );
+          const data = await res.json();
+          if (!res.ok) {
+            const detail = Array.isArray(data.details) ? data.details.join("; ") : "";
+            throw new Error(detail || data.error || "Сохранение не удалось");
+          }
+
+          editDefaultProps = { ...props };
+          setEditStatus("Сохранено в meta.json", "ok");
+        } catch (error) {
+          setEditStatus(error.message, "err");
+        } finally {
+          editSave.disabled = false;
+        }
+      }
+
+      async function runEditRender() {
+        if (!editCompositionId) return;
+
+        editRender.disabled = true;
+        editRenderResult.hidden = false;
+        editRenderResult.textContent = "Рендерим PNG и MP4… (~30 сек)";
+        setEditStatus("");
+
+        try {
+          const res = await fetch("/api/render", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ compositionId: editCompositionId }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Рендер не удался");
+
+          const cacheBust = `?t=${Date.now()}`;
+          editRenderResult.innerHTML = `
+            <div>Готово:</div>
+            <img src="${data.stillUrl}${cacheBust}" alt="PNG preview" />
+            <video src="${data.videoUrl}${cacheBust}" controls playsinline></video>
+            <div>
+              <a href="${data.stillUrl}" download>PNG</a>
+              ·
+              <a href="${data.videoUrl}" download>MP4</a>
+            </div>
+          `;
+        } catch (error) {
+          editRenderResult.textContent = error.message;
+        } finally {
+          editRender.disabled = !galleryReady;
+        }
       }
 
       function activeProjectMeta() {
@@ -685,6 +1124,7 @@
         if (!res.ok) throw new Error(data.error || "Не удалось загрузить изображения");
         studioAssets = data.assets || [];
         renderAssets();
+        if (editCompositionId) refreshImageSelects();
       }
 
       async function uploadAsset() {
@@ -827,9 +1267,10 @@
           const projectLabel =
             projects.find((p) => p.id === activeProject)?.name || activeProject;
           setImportStatus(
-            `Готово: ${data.compositionId} (${data.layerCount} слоёв). Смотрите вкладку «${projectLabel}».`,
+            `Готово: ${data.compositionId} (${data.layerCount} слоёв). Открываем редактор…`,
             "ok"
           );
+          navigateToEdit(data.compositionId);
         } catch (error) {
           setImportStatus(error.message, "err");
         } finally {
@@ -854,6 +1295,9 @@
             <h2>${t.name}</h2>
             <p>${t.description}</p>
             <div class="card-actions">
+              <button class="edit-btn" data-edit="${t.id}" ${galleryReady ? "" : "disabled"}>
+                Редактировать
+              </button>
               <button class="open" data-id="${t.id}" ${studioReady ? "" : "disabled"}>
                 Открыть
               </button>
@@ -866,6 +1310,12 @@
         `
           )
           .join("");
+
+        grid.querySelectorAll(".edit-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            navigateToEdit(btn.dataset.edit);
+          });
+        });
 
         grid.querySelectorAll(".open").forEach((btn) => {
           btn.addEventListener("click", () => {
@@ -964,6 +1414,10 @@
         cssImportBtn.addEventListener("click", runCssImport);
         assetFileInput.addEventListener("change", updateAssetUploadButton);
         assetUploadBtn.addEventListener("click", uploadAsset);
+        editBack.addEventListener("click", navigateToHome);
+        editSave.addEventListener("click", saveEditProps);
+        editRender.addEventListener("click", runEditRender);
+        window.addEventListener("hashchange", handleRoute);
 
         galleryReady = await waitForGallery();
         updateImportButton();
@@ -972,7 +1426,7 @@
         if (galleryReady) {
           status.classList.add("ready");
           statusText.textContent =
-            "Галерея готова — можно импортировать CSS (Remotion Studio стартует параллельно)";
+            "Галерея готова — импорт CSS, правка props или открытие в Studio";
         } else {
           status.classList.add("error");
           statusText.textContent = "Галерея не отвечает";
@@ -985,6 +1439,7 @@
           }
           renderCards();
         });
+        handleRoute();
       }
 
       init();

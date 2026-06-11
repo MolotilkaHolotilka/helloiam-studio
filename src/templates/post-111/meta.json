@@ -8,6 +8,12 @@
   "preset": "soft-float",
   "durationFrames": 90,
   "imported": true,
+  "propsFields": [
+    {"key": "title", "type": "string", "label": "Title"},
+    {"key": "titleColor", "type": "color", "label": "Title color"},
+    {"key": "image", "type": "image", "label": "Image"},
+    {"key": "background", "type": "color", "label": "Background"}
+  ],
   "defaultProps": {
     "image": "generated/post-91-hero.png",
     "background": "#0F0F10",

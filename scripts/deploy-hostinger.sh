@@ -7,18 +7,17 @@ REMOTE="${REMOTE:-root@187.124.164.63}"
 REMOTE_DIR="${REMOTE_DIR:-/docker/helloiam-studio_v0.0.1}"
 COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.hostinger.yaml}"
 
-if [[ -z "${SSHPASS:-}" ]]; then
-  echo "Set SSHPASS to the root password, e.g.: export SSHPASS='...'" >&2
-  exit 1
+if [[ -n "${SSHPASS:-}" ]]; then
+  if ! command -v sshpass >/dev/null; then
+    echo "Install sshpass: brew install hudochenkov/sshpass/sshpass" >&2
+    exit 1
+  fi
+  SSH=(sshpass -e ssh -o StrictHostKeyChecking=no)
+  RSYNC=(rsync -avz --progress -e "sshpass -e ssh -o StrictHostKeyChecking=no")
+else
+  SSH=(ssh -o StrictHostKeyChecking=accept-new)
+  RSYNC=(rsync -avz --progress -e "ssh -o StrictHostKeyChecking=accept-new")
 fi
-
-if ! command -v sshpass >/dev/null; then
-  echo "Install sshpass: brew install hudochenkov/sshpass/sshpass" >&2
-  exit 1
-fi
-
-SSH=(sshpass -e ssh -o StrictHostKeyChecking=no)
-RSYNC=(rsync -avz --progress -e "sshpass -e ssh -o StrictHostKeyChecking=no")
 
 RSYNC_EXCLUDES=(
   --exclude node_modules

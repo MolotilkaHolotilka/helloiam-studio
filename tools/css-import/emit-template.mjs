@@ -1,5 +1,6 @@
 import {writeFile, mkdir} from 'node:fs/promises';
 import path from 'node:path';
+import {buildPropsFieldsFromSpec} from './build-props-fields.mjs';
 import {projectFromFamily} from './project-from-family.mjs';
 
 function slugFromFrameId(frameId) {
@@ -126,6 +127,7 @@ export const SoftFloatCard: React.FC<{
     durationFrames: 90,
     imported: true,
     defaultProps,
+    propsFields: buildPropsFieldsFromSpec(spec),
   };
 
   await writeFile(path.join(templateDir, 'layout.ts'), layoutTs);

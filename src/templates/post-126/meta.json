@@ -7,6 +7,16 @@
   "templateDir": "post-126",
   "preset": "soft-float",
   "durationFrames": 90,
+  "propsFields": [
+    {"key": "title", "type": "string", "label": "Title"},
+    {"key": "quote", "type": "textarea", "label": "Quote"},
+    {"key": "label", "type": "string", "label": "Label"},
+    {"key": "image", "type": "image", "label": "Image"},
+    {"key": "background", "type": "color", "label": "Background"},
+    {"key": "titleColor", "type": "color", "label": "Title color"},
+    {"key": "quoteColor", "type": "color", "label": "Quote color"},
+    {"key": "labelColor", "type": "color", "label": "Label color"}
+  ],
   "defaultProps": {
     "title": "Hello, WORLD",
     "quote": "Armenia welcomed 172,705 international visitors in April 2026",

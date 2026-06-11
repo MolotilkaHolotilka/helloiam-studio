@@ -6,6 +6,7 @@
   "description": "HelloIAM template studio — compositions, gallery, CSS import (v2)",
   "scripts": {
     "start": "node scripts/server.mjs",
+    "gallery": "node scripts/gallery-only.mjs",
     "preview": "node scripts/preview-gallery.mjs",
     "stop": "node scripts/free-ports.mjs 3000 3456",
     "restart": "node scripts/free-ports.mjs 3000 3456 && node scripts/preview-gallery.mjs",

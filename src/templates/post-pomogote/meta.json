@@ -8,6 +8,16 @@
   "preset": "soft-float",
   "durationFrames": 90,
   "imported": true,
+  "propsFields": [
+    {"key": "quote", "type": "textarea", "label": "Quote"},
+    {"key": "label", "type": "string", "label": "Label"},
+    {"key": "title", "type": "string", "label": "Title"},
+    {"key": "quoteColor", "type": "color", "label": "Quote color"},
+    {"key": "labelColor", "type": "color", "label": "Label color"},
+    {"key": "titleColor", "type": "color", "label": "Title color"},
+    {"key": "image", "type": "image", "label": "Image"},
+    {"key": "background", "type": "color", "label": "Background"}
+  ],
   "defaultProps": {
     "image": "generated/post-126.png",
     "background": "#D9DDE0",

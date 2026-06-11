@@ -3,6 +3,10 @@ import path from 'node:path';
 
 const SKIP_DIRS = new Set(['_shared', '_generated']);
 
+// Post126SlideFly: manual composition in manual-compositions.tsx (slide-fly preset).
+// No template meta.json — reuses post-126/schema.ts propsFields at sync time.
+const MANUAL_PICKER_IDS = ['Post126SlideFly'];
+
 export async function syncGalleryManifest(studioRoot) {
   const templatesRoot = path.join(studioRoot, 'src', 'templates');
   const galleryDir = path.join(studioRoot, 'src', 'gallery');
@@ -81,15 +85,22 @@ ${compositions}
     name: m.name,
     description: m.description || '',
     tag: m.tag || 'Template',
+    propsFields: m.propsFields ?? [],
   }));
 
-  pickerEntries.push({
-    id: 'Post126SlideFly',
-    project: 'am-news',
-    name: 'AM News — Slide Fly',
-    description: 'Влет слева, справа и снизу, затем лёгкий горизонтальный drift.',
-    tag: 'Динамичная',
-  });
+  const post126Meta = metas.find((m) => m.id === 'Post126SoftFloat');
+  for (const manualId of MANUAL_PICKER_IDS) {
+    if (manualId === 'Post126SlideFly') {
+      pickerEntries.push({
+        id: 'Post126SlideFly',
+        project: 'am-news',
+        name: 'AM News — Slide Fly',
+        description: 'Влет слева, справа и снизу, затем лёгкий горизонтальный drift.',
+        tag: 'Динамичная',
+        propsFields: post126Meta?.propsFields ?? [],
+      });
+    }
+  }
 
   pickerEntries.sort((a, b) => a.name.localeCompare(b.name));
 
