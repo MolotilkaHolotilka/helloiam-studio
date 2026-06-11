@@ -178,6 +178,119 @@
         color: var(--red);
       }
 
+      .assets-panel {
+        background: #fff;
+        border: 1px solid #d9dde0;
+        border-radius: 20px;
+        padding: 22px;
+        margin-bottom: 28px;
+        box-shadow: 0 10px 30px rgba(15, 15, 16, 0.05);
+      }
+
+      .assets-panel h2 {
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+      }
+
+      .assets-panel p {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+
+      .assets-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: end;
+        margin-bottom: 16px;
+      }
+
+      .assets-upload-btn {
+        appearance: none;
+        border: 0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        background: #0f0f10;
+        color: #fff;
+      }
+
+      .assets-upload-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .assets-status {
+        font-size: 0.92rem;
+        line-height: 1.45;
+        margin-bottom: 12px;
+      }
+
+      .assets-status.ok {
+        color: #15803d;
+      }
+
+      .assets-status.err {
+        color: var(--red);
+      }
+
+      .assets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+      }
+
+      .asset-card {
+        border: 1px solid #d9dde0;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #f8fafc;
+      }
+
+      .asset-thumb {
+        aspect-ratio: 1;
+        background: #0f0f10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .asset-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .asset-meta {
+        padding: 10px;
+      }
+
+      .asset-name {
+        font-size: 0.78rem;
+        font-weight: 700;
+        word-break: break-all;
+        margin-bottom: 8px;
+      }
+
+      .asset-copy {
+        appearance: none;
+        border: 1px solid #d9dde0;
+        border-radius: 8px;
+        padding: 6px 10px;
+        font: inherit;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        background: #fff;
+        width: 100%;
+      }
+
       .status {
         display: inline-flex;
         align-items: center;
@@ -394,6 +507,20 @@
         <div class="import-status" id="import-status"></div>
       </section>
 
+      <section class="assets-panel">
+        <h2>Изображения</h2>
+        <p>Загрузите PNG/JPG/WEBP — путь появится в props <code>image</code> в Remotion Studio.</p>
+        <div class="assets-toolbar">
+          <div class="import-field" style="flex: 1; min-width: 220px">
+            <label for="asset-file">Файл</label>
+            <input id="asset-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
+          </div>
+          <button class="assets-upload-btn" id="asset-upload" disabled>Загрузить</button>
+        </div>
+        <div class="assets-status" id="assets-status"></div>
+        <div class="assets-grid" id="assets-grid"></div>
+      </section>
+
       <div class="status" id="status">
         <span class="dot"></span>
         <span id="status-text">Запускаем Remotion Studio…</span>
@@ -434,10 +561,16 @@
       const cssImportBtn = document.getElementById("css-import");
       const cssPasteInput = document.getElementById("css-paste");
       const importStatus = document.getElementById("import-status");
+      const assetFileInput = document.getElementById("asset-file");
+      const assetUploadBtn = document.getElementById("asset-upload");
+      const assetsStatus = document.getElementById("assets-status");
+      const assetsGrid = document.getElementById("assets-grid");
 
       let allTemplates = [];
+      let studioAssets = [];
       let projects = [];
       let activeProject = localStorage.getItem(STORAGE_KEY) || "am-news";
+      let galleryReady = false;
       let studioReady = false;
 
       function getCssText() {
@@ -445,7 +578,7 @@
       }
 
       function updateImportButton() {
-        cssImportBtn.disabled = !studioReady || !getCssText();
+        cssImportBtn.disabled = !galleryReady || !getCssText();
       }
 
       function studioUrl(compositionId) {
@@ -494,6 +627,103 @@
       function setImportStatus(text, kind = "") {
         importStatus.textContent = text;
         importStatus.className = `import-status${kind ? ` ${kind}` : ""}`;
+      }
+
+      function setAssetsStatus(text, kind = "") {
+        assetsStatus.textContent = text;
+        assetsStatus.className = `assets-status${kind ? ` ${kind}` : ""}`;
+      }
+
+      function publicUrl(assetPath) {
+        return `/public/${assetPath}`;
+      }
+
+      function updateAssetUploadButton() {
+        assetUploadBtn.disabled = !galleryReady || !assetFileInput.files?.[0];
+      }
+
+      function renderAssets() {
+        if (!studioAssets.length) {
+          assetsGrid.innerHTML =
+            '<div class="empty">Пока нет изображений. Загрузите файл выше.</div>';
+          return;
+        }
+
+        assetsGrid.innerHTML = studioAssets
+          .map((asset) => {
+            const isRaster = /\.(png|jpe?g|webp)$/i.test(asset.path);
+            const thumb = isRaster
+              ? `<img src="${publicUrl(asset.path)}" alt="${asset.name}" loading="lazy" />`
+              : `<span style="color:#fff;font-size:0.75rem;padding:8px;text-align:center">${asset.name}</span>`;
+            return `
+          <article class="asset-card">
+            <div class="asset-thumb">${thumb}</div>
+            <div class="asset-meta">
+              <div class="asset-name">${asset.path}</div>
+              <button class="asset-copy" type="button" data-copy="${asset.path}">Скопировать путь</button>
+            </div>
+          </article>`;
+          })
+          .join("");
+
+        assetsGrid.querySelectorAll(".asset-copy").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            const value = btn.dataset.copy || "";
+            try {
+              await navigator.clipboard.writeText(value);
+              setAssetsStatus(`Скопировано: ${value}`, "ok");
+            } catch {
+              setAssetsStatus(value, "ok");
+            }
+          });
+        });
+      }
+
+      async function loadAssets() {
+        const res = await fetch("/api/assets");
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Не удалось загрузить изображения");
+        studioAssets = data.assets || [];
+        renderAssets();
+      }
+
+      async function uploadAsset() {
+        const file = assetFileInput.files?.[0];
+        if (!file) {
+          setAssetsStatus("Выберите файл.", "err");
+          return;
+        }
+
+        assetUploadBtn.disabled = true;
+        setAssetsStatus("Загружаем…");
+
+        try {
+          const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result || ""));
+            reader.onerror = () => reject(new Error("Не удалось прочитать файл"));
+            reader.readAsDataURL(file);
+          });
+
+          const res = await fetch("/api/assets/upload", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: file.name, data: dataUrl }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Загрузка не удалась");
+
+          assetFileInput.value = "";
+          await loadAssets();
+          setAssetsStatus(
+            `Готово: ${data.path}. Обновите Remotion Studio (F5), чтобы увидеть в списке image.`,
+            "ok"
+          );
+        } catch (error) {
+          setAssetsStatus(error.message, "err");
+        } finally {
+          updateAssetUploadButton();
+        }
       }
 
       async function reloadCatalog() {
@@ -594,8 +824,10 @@
           activeProject = data.project || cssProjectSelect.value;
           localStorage.setItem(STORAGE_KEY, activeProject);
           await reloadCatalog();
+          const projectLabel =
+            projects.find((p) => p.id === activeProject)?.name || activeProject;
           setImportStatus(
-            `Готово: ${data.compositionId} (${data.layerCount} слоёв). Откройте в Studio — список обновится.`,
+            `Готово: ${data.compositionId} (${data.layerCount} слоёв). Смотрите вкладку «${projectLabel}».`,
             "ok"
           );
         } catch (error) {
@@ -625,7 +857,7 @@
               <button class="open" data-id="${t.id}" ${studioReady ? "" : "disabled"}>
                 Открыть
               </button>
-              <button class="render-btn" data-render="${t.id}" ${studioReady ? "" : "disabled"}>
+              <button class="render-btn" data-render="${t.id}" ${galleryReady ? "" : "disabled"}>
                 Рендер PNG+MP4
               </button>
             </div>
@@ -677,14 +909,27 @@
         } catch (error) {
           resultEl.textContent = error.message;
         } finally {
-          button.disabled = !studioReady;
+          button.disabled = !galleryReady;
         }
+      }
+
+      async function waitForGallery() {
+        for (let i = 0; i < 30; i++) {
+          try {
+            const res = await fetch("./templates.json");
+            if (res.ok) return true;
+          } catch {
+            // retry
+          }
+          await new Promise((r) => setTimeout(r, 500));
+        }
+        return false;
       }
 
       async function waitForStudio() {
         for (let i = 0; i < 60; i++) {
           try {
-            const res = await fetch(STUDIO_ORIGIN, { mode: "no-cors" });
+            const res = await fetch(STUDIO_ORIGIN, { mode: "no-cors", credentials: "include" });
             void res;
             return true;
           } catch {
@@ -717,17 +962,29 @@
         cssFileInput.addEventListener("change", onCssFileSelected);
         cssPasteInput.addEventListener("input", onCssPasteInput);
         cssImportBtn.addEventListener("click", runCssImport);
+        assetFileInput.addEventListener("change", updateAssetUploadButton);
+        assetUploadBtn.addEventListener("click", uploadAsset);
 
-        studioReady = await waitForStudio();
-        if (studioReady) {
+        galleryReady = await waitForGallery();
+        updateImportButton();
+        updateAssetUploadButton();
+        loadAssets().catch((error) => setAssetsStatus(error.message, "err"));
+        if (galleryReady) {
           status.classList.add("ready");
-          statusText.textContent = "Studio готова — выберите шаблон";
+          statusText.textContent =
+            "Галерея готова — можно импортировать CSS (Remotion Studio стартует параллельно)";
         } else {
           status.classList.add("error");
-          statusText.textContent = "Studio не ответила на порту 3000";
+          statusText.textContent = "Галерея не отвечает";
         }
         renderCards();
-        updateImportButton();
+        waitForStudio().then((ready) => {
+          studioReady = ready;
+          if (ready) {
+            statusText.textContent = "Готово — выберите шаблон или импортируйте CSS";
+          }
+          renderCards();
+        });
       }
 
       init();

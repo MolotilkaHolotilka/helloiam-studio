@@ -1,16 +1,17 @@
 {
-  "id": "Post91Css",
+  "id": "Post1Css",
   "project": "am-food",
-  "name": "CSS Import — post 91",
-  "description": "Импортировано из Figma CSS (post 91), family: intro-hero",
+  "name": "CSS Import — post 1",
+  "description": "Импортировано из Figma CSS (post 1), family: intro-hero",
   "tag": "Import",
-  "templateDir": "post-91",
+  "templateDir": "post-1",
   "preset": "soft-float",
   "durationFrames": 90,
   "imported": true,
   "defaultProps": {
     "image": "generated/post-91-hero.png",
-    "background": "#0F0F10",
+    "background": "#D9DDE0",
+    "body": "Zadolbalo Shablon",
     "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
     "titleColor": "#FFFFFF"
   }

@@ -1,6 +1,16 @@
 const FRAME_COMMENT_RE = /\/\*\s*Instagram\s+post\s*-\s*(\d+)\s*\*\//gi;
 const FRAME_SIZE_MARKER =
   /position:\s*relative;\s*width:\s*1080px;\s*height:\s*1350px;/gi;
+const LEADING_COMMENT_RE = /^\/\*\s*([^*]+?)\s*\*\//;
+
+function slugFrameId(label) {
+  const slug = String(label || "")
+    .trim()
+    .replace(/[^a-z0-9]+/gi, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
+  return slug || "1";
+}
 
 /**
  * Detect Figma Dev Mode flat CSS (property blocks + layer comments, no rule braces).
@@ -60,10 +70,16 @@ export function splitCssFrames(css) {
     });
   }
 
+  const leadingComment = trimmed.match(LEADING_COMMENT_RE)?.[1]?.trim() || null;
+  const frameId =
+    leadingComment && !/^instagram\s+post\b/i.test(leadingComment)
+      ? slugFrameId(leadingComment)
+      : "1";
+
   return [
     {
-      frameId: "1",
-      label: null,
+      frameId,
+      label: leadingComment,
       css: trimmed,
       index: 1
     }

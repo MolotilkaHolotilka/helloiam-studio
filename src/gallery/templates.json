@@ -29,10 +29,24 @@
       "tag": "Спокойная"
     },
     {
+      "id": "Post1Css",
+      "project": "am-food",
+      "name": "CSS Import — post 1",
+      "description": "Импортировано из Figma CSS (post 1), family: intro-hero",
+      "tag": "Import"
+    },
+    {
       "id": "Post103Css",
       "project": "am-food",
       "name": "CSS Import — post 103",
       "description": "Импортировано из Figma CSS (post 103), family: generic",
+      "tag": "Import"
+    },
+    {
+      "id": "Post111Css",
+      "project": "am-food",
+      "name": "CSS Import — post 111",
+      "description": "Импортировано из Figma CSS (post 111), family: intro-hero",
       "tag": "Import"
     },
     {
@@ -44,9 +58,23 @@
     },
     {
       "id": "Post91Css",
-      "project": "am-news",
+      "project": "am-food",
       "name": "CSS Import — post 91",
       "description": "Импортировано из Figma CSS (post 91), family: intro-hero",
+      "tag": "Import"
+    },
+    {
+      "id": "PostpomogoteCss",
+      "project": "am-news",
+      "name": "CSS Import — post pomogote",
+      "description": "Импортировано из Figma CSS (post pomogote), family: news-126",
+      "tag": "Import"
+    },
+    {
+      "id": "PostzadolbaloshablonCss",
+      "project": "am-food",
+      "name": "CSS Import — post zadolbalo-shablon",
+      "description": "Импортировано из Figma CSS (post zadolbalo-shablon), family: intro-hero",
       "tag": "Import"
     },
     {

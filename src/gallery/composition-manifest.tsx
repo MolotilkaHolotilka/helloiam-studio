@@ -3,14 +3,22 @@ import React from 'react';
 import {AbsoluteFill, staticFile, useCurrentFrame} from 'remotion';
 import {schema as schema_post_103, DURATION as duration_post_103} from '../templates/post-103/schema';
 import {SoftFloatCard as Card_post_103} from '../templates/post-103/presets/soft-float';
+import {schema as schema_post_111, DURATION as duration_post_111} from '../templates/post-111/schema';
+import {SoftFloatCard as Card_post_111} from '../templates/post-111/presets/soft-float';
 import {schema as schema_post_126, DURATION as duration_post_126} from '../templates/post-126/schema';
 import {SoftFloatCard as Card_post_126} from '../templates/post-126/presets/soft-float';
 import {schema as schema_post_130, DURATION as duration_post_130} from '../templates/post-130/schema';
 import {SoftFloatCard as Card_post_130} from '../templates/post-130/presets/soft-float';
+import {schema as schema_post_1, DURATION as duration_post_1} from '../templates/post-1/schema';
+import {SoftFloatCard as Card_post_1} from '../templates/post-1/presets/soft-float';
 import {schema as schema_post_58, DURATION as duration_post_58} from '../templates/post-58/schema';
 import {SoftFloatCard as Card_post_58} from '../templates/post-58/presets/soft-float';
 import {schema as schema_post_91, DURATION as duration_post_91} from '../templates/post-91/schema';
 import {SoftFloatCard as Card_post_91} from '../templates/post-91/presets/soft-float';
+import {schema as schema_post_pomogote, DURATION as duration_post_pomogote} from '../templates/post-pomogote/schema';
+import {SoftFloatCard as Card_post_pomogote} from '../templates/post-pomogote/presets/soft-float';
+import {schema as schema_post_zadolbalo_shablon, DURATION as duration_post_zadolbalo_shablon} from '../templates/post-zadolbalo-shablon/schema';
+import {SoftFloatCard as Card_post_zadolbalo_shablon} from '../templates/post-zadolbalo-shablon/presets/soft-float';
 
 function makeComposition(Card: React.ComponentType<any>, segmentFrames: number) {
   const Wrapped: React.FC<Record<string, unknown>> = (props) => {
@@ -46,6 +54,18 @@ export const GALLERY_COMPOSITIONS = [
     Component: makeComposition(Card_post_103, duration_post_103),
   },
   {
+    id: 'Post111Css',
+    duration: duration_post_111,
+    schema: schema_post_111,
+    defaultProps: {
+          "image": "generated/post-91-hero.png",
+          "background": "#0F0F10",
+          "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+          "titleColor": "#FFFFFF"
+    },
+    Component: makeComposition(Card_post_111, duration_post_111),
+  },
+  {
     id: 'Post126SoftFloat',
     duration: duration_post_126,
     schema: schema_post_126,
@@ -78,6 +98,19 @@ export const GALLERY_COMPOSITIONS = [
     Component: makeComposition(Card_post_130, duration_post_130),
   },
   {
+    id: 'Post1Css',
+    duration: duration_post_1,
+    schema: schema_post_1,
+    defaultProps: {
+          "image": "generated/post-91-hero.png",
+          "background": "#D9DDE0",
+          "body": "Zadolbalo Shablon",
+          "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+          "titleColor": "#FFFFFF"
+    },
+    Component: makeComposition(Card_post_1, duration_post_1),
+  },
+  {
     id: 'Post58LavashIntro',
     duration: duration_post_58,
     schema: schema_post_58,
@@ -102,5 +135,33 @@ export const GALLERY_COMPOSITIONS = [
           "titleColor": "#FFFFFF"
     },
     Component: makeComposition(Card_post_91, duration_post_91),
+  },
+  {
+    id: 'PostpomogoteCss',
+    duration: duration_post_pomogote,
+    schema: schema_post_pomogote,
+    defaultProps: {
+          "image": "generated/post-126.png",
+          "background": "#D9DDE0",
+          "quote": "Armenia welcomed 172,705 international visitors in April 2026",
+          "quoteColor": "#D61E23",
+          "label": "AM NEWS",
+          "labelColor": "#4A7BFF",
+          "title": "Hello, WORLD",
+          "titleColor": "#0F0F10"
+    },
+    Component: makeComposition(Card_post_pomogote, duration_post_pomogote),
+  },
+  {
+    id: 'PostzadolbaloshablonCss',
+    duration: duration_post_zadolbalo_shablon,
+    schema: schema_post_zadolbalo_shablon,
+    defaultProps: {
+          "image": "generated/zadolbalo-hero.png",
+          "background": "#0F0F10",
+          "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+          "titleColor": "#FFFFFF"
+    },
+    Component: makeComposition(Card_post_zadolbalo_shablon, duration_post_zadolbalo_shablon),
   }
 ] as const;

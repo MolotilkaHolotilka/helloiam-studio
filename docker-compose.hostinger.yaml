@@ -22,6 +22,7 @@ services:
       - ./public/generated:/app/public/generated
       - ./out/renders:/app/out/renders
       - ./src/templates:/app/src/templates
+      - ./src/lib:/app/src/lib
     shm_size: "2gb"
     mem_limit: 2g
     labels:

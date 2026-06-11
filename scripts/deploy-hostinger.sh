@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Deploy helloiam-studio to Hostinger VPS (run from your Mac).
+set -euo pipefail
+
+LOCAL_DIR="${LOCAL_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
+REMOTE="${REMOTE:-root@187.124.164.63}"
+REMOTE_DIR="${REMOTE_DIR:-/docker/helloiam-studio_v0.0.1}"
+COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.hostinger.yaml}"
+
+if [[ -z "${SSHPASS:-}" ]]; then
+  echo "Set SSHPASS to the root password, e.g.: export SSHPASS='...'" >&2
+  exit 1
+fi
+
+if ! command -v sshpass >/dev/null; then
+  echo "Install sshpass: brew install hudochenkov/sshpass/sshpass" >&2
+  exit 1
+fi
+
+SSH=(sshpass -e ssh -o StrictHostKeyChecking=no)
+RSYNC=(rsync -avz --progress -e "sshpass -e ssh -o StrictHostKeyChecking=no")
+
+RSYNC_EXCLUDES=(
+  --exclude node_modules
+  --exclude .git
+  --exclude out/renders
+  --exclude .env
+)
+
+echo "==> Remote prep: ${REMOTE}:${REMOTE_DIR}"
+"${SSH[@]}" "$REMOTE" "mkdir -p ${REMOTE_DIR}/public/generated ${REMOTE_DIR}/out/renders ${REMOTE_DIR}/src/lib ${REMOTE_DIR}/src/templates"
+
+echo "==> Rsync code"
+"${RSYNC[@]}" "${RSYNC_EXCLUDES[@]}" "${LOCAL_DIR}/" "${REMOTE}:${REMOTE_DIR}/"
+
+echo "==> Ensure .env on server"
+"${SSH[@]}" "$REMOTE" "cd ${REMOTE_DIR} && test -f .env || cp .env.hostinger.example .env"
+
+echo "==> Docker build & up (${COMPOSE_FILE})"
+"${SSH[@]}" "$REMOTE" "cd ${REMOTE_DIR} && docker compose -f ${COMPOSE_FILE} --env-file .env up -d --build"
+
+echo "==> Health check"
+"${SSH[@]}" "$REMOTE" "curl -sf -o /dev/null -w '%{http_code}' http://127.0.0.1:3456/ -H 'Host: helloiam-studio-v001.srv1681126.hstgr.cloud' || docker exec helloiam-studio_v0.0.1 node -e \"fetch('http://127.0.0.1:3456/templates.json').then(r=>process.exit(r.ok?0:1))\""
+
+echo ""
+echo "Done. Gallery: https://helloiam-studio-v001.srv1681126.hstgr.cloud"

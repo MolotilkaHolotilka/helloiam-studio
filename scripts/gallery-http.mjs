@@ -3,6 +3,7 @@ import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {importCssFromString, listCssFrames} from '../tools/css-import/run-import.mjs';
 import {renderComposition} from '../tools/render/render-composition.mjs';
+import {listStudioAssets, uploadStudioAsset} from '../tools/assets/studio-assets-service.mjs';
 
 function readJsonBody(req, limit = 6_000_000) {
   return new Promise((resolve, reject) => {
@@ -36,10 +37,15 @@ function sendJson(res, status, payload) {
 export function createGalleryServer({studioRoot, galleryDir}) {
   const srcDir = path.join(studioRoot, 'src');
   const rendersDir = path.join(studioRoot, 'out', 'renders');
+  const publicDir = path.join(studioRoot, 'public');
   const mime = {
     '.html': 'text/html; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
     '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.webp': 'image/webp',
+    '.svg': 'image/svg+xml',
     '.mp4': 'video/mp4',
   };
 
@@ -90,6 +96,37 @@ export function createGalleryServer({studioRoot, galleryDir}) {
       return;
     }
 
+    if (method === 'GET' && urlPath === '/api/assets') {
+      try {
+        const assets = await listStudioAssets(studioRoot);
+        sendJson(res, 200, {assets});
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Не удалось загрузить список изображений'});
+      }
+      return;
+    }
+
+    if (method === 'POST' && urlPath === '/api/assets/upload') {
+      try {
+        const body = await readJsonBody(req, 16_000_000);
+        if (typeof body.data !== 'string' || !body.data.trim()) {
+          sendJson(res, 400, {error: 'Нет данных файла'});
+          return;
+        }
+        const match = body.data.match(/^data:([^;]+);base64,(.+)$/s);
+        const base64 = match ? match[2] : body.data;
+        const buffer = Buffer.from(base64, 'base64');
+        const result = await uploadStudioAsset(studioRoot, {
+          buffer,
+          originalName: typeof body.name === 'string' ? body.name : 'image.png',
+        });
+        sendJson(res, 200, {ok: true, ...result});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Загрузка не удалась'});
+      }
+      return;
+    }
+
     if (method === 'POST' && urlPath === '/api/import-css') {
       try {
         const body = await readJsonBody(req);
@@ -118,9 +155,19 @@ export function createGalleryServer({studioRoot, galleryDir}) {
           ? path.join(srcDir, 'projects.json')
           : urlPath.startsWith('/renders/')
             ? path.join(rendersDir, urlPath.slice('/renders/'.length))
-            : path.join(galleryDir, path.basename(urlPath));
+            : urlPath.startsWith('/public/')
+              ? path.join(publicDir, urlPath.slice('/public/'.length))
+              : path.join(galleryDir, path.basename(urlPath));
 
     try {
+      if (urlPath.startsWith('/public/')) {
+        const resolved = path.resolve(filePath);
+        if (!resolved.startsWith(path.resolve(publicDir))) {
+          res.writeHead(403);
+          res.end('Forbidden');
+          return;
+        }
+      }
       const body = await readFile(filePath);
       const ext = path.extname(filePath);
       res.writeHead(200, {'Content-Type': mime[ext] || 'text/plain'});

@@ -1,17 +1,43 @@
 import {componentizeCss} from '../../packages/css-pipeline/css-componentizer-service.js';
 import {splitCssFrames} from '../../packages/css-pipeline/css-split-service.js';
 
-function num(box, axis) {
+const CARD_W = 1080;
+const CARD_H = 1350;
+
+function resolveAxis(raw, frameSize, boxSize) {
+  if (raw == null) return 0;
+  if (typeof raw === 'number') return raw;
+  const text = typeof raw === 'string' ? raw : raw.raw;
+  if (typeof text !== 'string') {
+    return typeof raw?.value === 'number' ? raw.value : 0;
+  }
+  const trimmed = text.trim();
+  const calcCenter = trimmed.match(/^calc\s*\(\s*50%\s*-\s*([\d.]+)px\s*\/\s*2\s*\)$/i);
+  if (calcCenter && boxSize) {
+    return Math.round(frameSize / 2 - Number(calcCenter[1]) / 2);
+  }
+  const px = trimmed.match(/^(-?[\d.]+)px$/);
+  if (px) return Number(px[1]);
+  if (typeof raw?.value === 'number') return raw.value;
+  return 0;
+}
+
+function num(box, axis, frameSize = CARD_W, boxSize = 0) {
   const entry = box?.[axis];
-  return typeof entry?.value === 'number' ? entry.value : 0;
+  if (!entry) return 0;
+  if (axis === 'x') return resolveAxis(entry, frameSize, boxSize);
+  if (axis === 'y') return resolveAxis(entry, CARD_H, boxSize);
+  return typeof entry?.value === 'number' ? entry.value : resolveAxis(entry, frameSize, boxSize);
 }
 
 function boxFromComponent(component) {
+  const width = num(component.box, 'width');
+  const height = num(component.box, 'height');
   return {
-    left: num(component.box, 'x'),
-    top: num(component.box, 'y'),
-    width: num(component.box, 'width'),
-    height: num(component.box, 'height'),
+    left: num(component.box, 'x', CARD_W, width),
+    top: num(component.box, 'y', CARD_H, height),
+    width,
+    height,
   };
 }
 
@@ -56,13 +82,23 @@ function applyGroupOffsets(components) {
 
   for (const component of components) {
     if (isGroupElement(component)) {
-      activeGroup = {x: num(component.box, 'x'), y: num(component.box, 'y')};
+      const groupBox = boxFromComponent(component);
+      activeGroup = {x: groupBox.left, y: groupBox.top};
       continue;
     }
 
-    const left = num(component.box, 'x');
-    const top = num(component.box, 'y');
-    const isGroupChild = activeGroup && left === 0 && top === 0;
+    const width = num(component.box, 'width');
+    const height = num(component.box, 'height');
+    const left = num(component.box, 'x', CARD_W, width);
+    const top = num(component.box, 'y', CARD_H, height);
+    const rawLeft = component.box?.x?.raw;
+    const rawTop = component.box?.y?.raw;
+    const isGroupChild =
+      activeGroup &&
+      left === 0 &&
+      top === 0 &&
+      (!rawLeft || /^0(px)?$/i.test(String(rawLeft).trim())) &&
+      (!rawTop || /^0(px)?$/i.test(String(rawTop).trim()));
     const offsetX = isGroupChild ? activeGroup.x : 0;
     const offsetY = isGroupChild ? activeGroup.y : 0;
 

@@ -249,12 +249,21 @@ function buildBoxFromFigmaProps(properties = {}) {
   };
 }
 
+function isRootFrameProperties(properties = {}) {
+  const fontSize = Number.parseFloat(properties["font-size"] || "0");
+  return (
+    properties.position === "relative" &&
+    String(properties.width || "").trim() === "1080px" &&
+    String(properties.height || "").trim() === "1350px" &&
+    !fontSize
+  );
+}
+
 function inferFigmaRole(element) {
   const comment = element.comment || "";
   const properties = element.properties || {};
-  const commentLower = comment.toLowerCase();
 
-  if (/^instagram\s+post\b/i.test(comment)) {
+  if (/^instagram\s+post\b/i.test(comment) || isRootFrameProperties(properties)) {
     return { role: "container", text: "", skip: false };
   }
   if (/^image\s+\d+/i.test(comment) || /url\(/i.test(properties.background || "")) {
@@ -272,6 +281,9 @@ function inferFigmaRole(element) {
   const color = String(properties.color || "").toUpperCase();
   const fontWeight = String(properties["font-weight"] || "");
 
+  if (fontSize >= 120 && fontFamily.includes("instrument sans")) {
+    return { role: "title", text: comment, skip: false };
+  }
   if (fontSize === 44 && fontFamily.includes("instrument sans")) {
     return { role: "title", text: comment, skip: false };
   }
@@ -285,7 +297,7 @@ function inferFigmaRole(element) {
   if (fontSize === 64 && fontFamily.includes("instrument serif")) {
     return { role: "quote", text: comment, skip: false };
   }
-  if (fontSize >= 26 && comment.length > 40) {
+  if (fontSize >= 26 && fontSize < 120 && comment.length > 40) {
     return { role: "quote", text: comment, skip: false };
   }
 
