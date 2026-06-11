@@ -1,0 +1,97 @@
+/* Instagram post - 103 */
+
+position: relative;
+width: 1080px;
+height: 1350px;
+
+background: #D9DDE0;
+
+
+/* Thin armenian bread baked in stone oven */
+
+position: absolute;
+visibility: hidden;
+width: 460px;
+height: 132px;
+left: 50px;
+top: 587px;
+
+font-family: 'Instrument Serif';
+font-style: italic;
+font-weight: 400;
+font-size: 64px;
+line-height: 44px;
+/* or 69% */
+
+color: #1E1E1E;
+
+
+
+/* image 18 */
+
+position: absolute;
+width: 180px;
+height: 180px;
+left: 579px;
+top: 542px;
+
+background: url(bg_removal [Background removed].png);
+
+
+/* Group 1 */
+
+position: absolute;
+width: 687px;
+height: 92px;
+left: 197px;
+top: 586px;
+
+
+
+/* helloiam am */
+
+position: absolute;
+width: 687px;
+height: 92px;
+left: 197px;
+top: 586px;
+
+font-family: 'Instrument Sans';
+font-style: normal;
+font-weight: 700;
+font-size: 96px;
+line-height: 92px;
+/* identical to box height, or 96% */
+text-align: center;
+
+color: #420000;
+
+
+
+/* Group 2 */
+
+position: absolute;
+width: 288px;
+height: 88px;
+left: 525px;
+top: 719px;
+
+
+
+/* Say Hello to Armenian Wine */
+
+position: absolute;
+width: 288px;
+height: 88px;
+left: 525px;
+top: 719px;
+
+font-family: 'Instrument Serif';
+font-style: italic;
+font-weight: 400;
+font-size: 44px;
+line-height: 44px;
+/* or 100% */
+text-align: center;
+
+color: #420000;

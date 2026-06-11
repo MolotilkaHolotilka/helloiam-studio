@@ -1,0 +1,18 @@
+{
+  "id": "Post58LavashIntro",
+  "project": "am-food",
+  "name": "Lavash Intro",
+  "description": "Большой заголовок и hero-фото. Instagram post 58.",
+  "tag": "Intro",
+  "templateDir": "post-58",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "defaultProps": {
+    "title": "Hello, I Am\nLAVASH",
+    "label": "AM FOOD",
+    "image": "generated/post-126.png",
+    "background": "#D9DDE0",
+    "titleColor": "#0F0F10",
+    "labelColor": "#000000"
+  }
+}

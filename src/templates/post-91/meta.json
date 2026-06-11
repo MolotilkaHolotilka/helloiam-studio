@@ -1,0 +1,17 @@
+{
+  "id": "Post91Css",
+  "project": "am-news",
+  "name": "CSS Import — post 91",
+  "description": "Импортировано из Figma CSS (post 91), family: intro-hero",
+  "tag": "Import",
+  "templateDir": "post-91",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "imported": true,
+  "defaultProps": {
+    "image": "generated/post-91-hero.png",
+    "background": "#0F0F10",
+    "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+    "titleColor": "#FFFFFF"
+  }
+}

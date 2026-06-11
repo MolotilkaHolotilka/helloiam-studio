@@ -1,0 +1,60 @@
+{
+  "projects": [
+    {
+      "id": "am-news",
+      "name": "AM News",
+      "description": "Новостные карточки, цитаты, статистика",
+      "accent": "#4A7BFF"
+    },
+    {
+      "id": "am-food",
+      "name": "AM Food",
+      "description": "Еда, intro-карточки, категории",
+      "accent": "#D61E23"
+    }
+  ],
+  "templates": [
+    {
+      "id": "Post126SlideFly",
+      "project": "am-news",
+      "name": "AM News — Slide Fly",
+      "description": "Влет слева, справа и снизу, затем лёгкий горизонтальный drift.",
+      "tag": "Динамичная"
+    },
+    {
+      "id": "Post126SoftFloat",
+      "project": "am-news",
+      "name": "AM News — Soft Float",
+      "description": "Мягкое покачивание всех блоков и плавное появление.",
+      "tag": "Спокойная"
+    },
+    {
+      "id": "Post103Css",
+      "project": "am-food",
+      "name": "CSS Import — post 103",
+      "description": "Импортировано из Figma CSS (post 103), family: generic",
+      "tag": "Import"
+    },
+    {
+      "id": "Post130Css",
+      "project": "am-news",
+      "name": "CSS Import — post 130",
+      "description": "Импортировано из Figma CSS (post 130), family: news-126",
+      "tag": "Import"
+    },
+    {
+      "id": "Post91Css",
+      "project": "am-news",
+      "name": "CSS Import — post 91",
+      "description": "Импортировано из Figma CSS (post 91), family: intro-hero",
+      "tag": "Import"
+    },
+    {
+      "id": "Post58LavashIntro",
+      "project": "am-food",
+      "name": "Lavash Intro",
+      "description": "Большой заголовок и hero-фото. Instagram post 58.",
+      "tag": "Intro"
+    }
+  ]
+}

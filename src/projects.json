@@ -1,0 +1,16 @@
+{
+  "projects": [
+    {
+      "id": "am-news",
+      "name": "AM News",
+      "description": "Новостные карточки, цитаты, статистика",
+      "accent": "#4A7BFF"
+    },
+    {
+      "id": "am-food",
+      "name": "AM Food",
+      "description": "Еда, intro-карточки, категории",
+      "accent": "#D61E23"
+    }
+  ]
+}

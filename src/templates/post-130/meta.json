@@ -1,0 +1,21 @@
+{
+  "id": "Post130Css",
+  "project": "am-news",
+  "name": "CSS Import — post 130",
+  "description": "Импортировано из Figma CSS (post 130), family: news-126",
+  "tag": "Import",
+  "templateDir": "post-130",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "imported": true,
+  "defaultProps": {
+    "image": "generated/post-126.png",
+    "background": "#D9DDE0",
+    "quote": "Travel platforms and international media increasingly describe Armenia as Europe’s next rising tourism star. Visitors are drawn by the country’s mix of ancient history, dramatic landscapes, Soviet-modernist aesthetics and famously overwhelming hospitality. Unfortunately for tourists, “light local dinner” in Armenia still translates to approximately 14 dishes, emotional toasts and a grandmother personally monitoring whether you finished your food.",
+    "quoteColor": "#0F0F10",
+    "label": "AM NEWS",
+    "labelColor": "#4A7BFF",
+    "title": "Hello, WORLD",
+    "titleColor": "#0F0F10"
+  }
+}

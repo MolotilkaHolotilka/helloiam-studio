@@ -1,0 +1,46 @@
+/* Instagram post - 91 */
+
+position: relative;
+width: 1080px;
+height: 1350px;
+
+background: #0F0F10;
+
+
+/* image 1 */
+
+position: absolute;
+width: 1977px;
+height: 1977px;
+left: -448px;
+top: -470px;
+
+background: url(image.png);
+
+
+/* Group 1 */
+
+position: absolute;
+width: 758px;
+height: 780px;
+left: 161px;
+top: 285px;
+
+
+
+/* HELLO I AM AM MEANS ARMENIA */
+
+position: absolute;
+width: 758px;
+height: 780px;
+left: 0px;
+top: 0px;
+
+font-family: 'Instrument Sans';
+font-style: normal;
+font-weight: 700;
+font-size: 164px;
+line-height: 156px;
+text-align: center;
+
+color: #FFFFFF;

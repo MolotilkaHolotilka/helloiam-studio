@@ -1,0 +1,31 @@
+{
+  "name": "helloiam-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "HelloIAM template studio — compositions, gallery, CSS import (v2)",
+  "scripts": {
+    "preview": "node scripts/preview-gallery.mjs",
+    "stop": "node scripts/free-ports.mjs 3000 3456",
+    "restart": "node scripts/free-ports.mjs 3000 3456 && node scripts/preview-gallery.mjs",
+    "sync:gallery": "node tools/css-import/sync-gallery-manifest.mjs",
+    "import:css": "node tools/css-import/import-css.mjs",
+    "render": "node tools/render/render-cli.mjs",
+    "studio": "remotion studio src/gallery/index.ts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "postcss": "^8.5.10",
+    "@remotion/cli": "4.0.460",
+    "@remotion/google-fonts": "4.0.460",
+    "@remotion/zod-types": "4.0.460",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.460",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  }
+}

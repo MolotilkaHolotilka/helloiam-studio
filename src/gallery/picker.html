@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HelloIAM Studio</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #eef1f4;
+        --card: #ffffff;
+        --text: #0f0f10;
+        --muted: #5c6670;
+        --accent: #4a7bff;
+        --accent-soft: #e8efff;
+        --red: #d61e23;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+        background: radial-gradient(circle at top left, #f8fafc, var(--bg));
+        color: var(--text);
+      }
+
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 48px 24px 64px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+      }
+
+      .lead {
+        margin: 0 0 28px;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.5;
+      }
+
+      .projects {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 22px;
+      }
+
+      .project-tab {
+        appearance: none;
+        border: 1px solid #d9dde0;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font: inherit;
+        font-weight: 700;
+        font-size: 0.92rem;
+        cursor: pointer;
+        background: #fff;
+        color: var(--text);
+        transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      }
+
+      .project-tab:hover {
+        border-color: #b8c0c8;
+      }
+
+      .project-tab.active {
+        color: #fff;
+        border-color: transparent;
+        background: var(--tab-accent, var(--accent));
+      }
+
+      .project-desc {
+        margin: 0 0 22px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+
+      .import-panel {
+        background: #fff;
+        border: 1px solid #d9dde0;
+        border-radius: 20px;
+        padding: 22px;
+        margin-bottom: 28px;
+        box-shadow: 0 10px 30px rgba(15, 15, 16, 0.05);
+      }
+
+      .import-panel h2 {
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+      }
+
+      .import-panel p {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+
+      .import-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: end;
+      }
+
+      .import-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 140px;
+      }
+
+      .import-field label {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .import-field input,
+      .import-field select,
+      .import-field textarea {
+        font: inherit;
+        padding: 10px 12px;
+        border: 1px solid #d9dde0;
+        border-radius: 10px;
+        background: #fff;
+      }
+
+      .import-field textarea {
+        width: 100%;
+        min-height: 120px;
+        resize: vertical;
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 0.82rem;
+        line-height: 1.4;
+      }
+
+      .import-btn {
+        appearance: none;
+        border: 0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .import-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .import-status {
+        margin-top: 14px;
+        font-size: 0.92rem;
+        line-height: 1.45;
+      }
+
+      .import-status.ok {
+        color: #15803d;
+      }
+
+      .import-status.err {
+        color: var(--red);
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid #d9dde0;
+        font-size: 0.92rem;
+        margin-bottom: 28px;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #f59e0b;
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+
+      .status.ready .dot {
+        background: #22c55e;
+        animation: none;
+      }
+
+      .status.error .dot {
+        background: var(--red);
+        animation: none;
+      }
+
+      @keyframes pulse {
+        50% {
+          opacity: 0.45;
+        }
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid #d9dde0;
+        border-radius: 20px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        box-shadow: 0 10px 30px rgba(15, 15, 16, 0.05);
+      }
+
+      .tag {
+        align-self: flex-start;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .card h2 {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.45;
+        flex: 1;
+      }
+
+      .open {
+        appearance: none;
+        border: 0;
+        border-radius: 12px;
+        padding: 14px 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        background: var(--text);
+        color: #fff;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+      }
+
+      .open:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .open:not(:disabled):hover {
+        transform: translateY(-1px);
+      }
+
+      .card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .render-btn {
+        appearance: none;
+        border: 1px solid #d9dde0;
+        border-radius: 12px;
+        padding: 14px 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        background: #fff;
+        color: var(--text);
+        transition: transform 0.15s ease, opacity 0.15s ease;
+      }
+
+      .render-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .render-btn:not(:disabled):hover {
+        transform: translateY(-1px);
+        border-color: #b8c0c8;
+      }
+
+      .render-result {
+        margin-top: 4px;
+        padding-top: 12px;
+        border-top: 1px solid #eef1f4;
+        font-size: 0.88rem;
+        color: var(--muted);
+      }
+
+      .render-result img {
+        width: 100%;
+        border-radius: 12px;
+        margin: 8px 0;
+        border: 1px solid #d9dde0;
+      }
+
+      .render-result video {
+        width: 100%;
+        border-radius: 12px;
+        margin: 8px 0;
+      }
+
+      .render-result a {
+        color: var(--accent);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .empty {
+        grid-column: 1 / -1;
+        padding: 28px;
+        border-radius: 16px;
+        border: 1px dashed #c8ccd0;
+        color: var(--muted);
+        text-align: center;
+        background: rgba(255, 255, 255, 0.6);
+      }
+
+      .hint {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      code {
+        background: #fff;
+        border: 1px solid #d9dde0;
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>HelloIAM Studio</h1>
+      <p class="lead">Выберите проект и шаблон — откроется Remotion Studio с props справа.</p>
+
+      <div class="projects" id="projects"></div>
+      <p class="project-desc" id="project-desc"></p>
+
+      <section class="import-panel">
+        <h2>Импорт из Figma CSS</h2>
+        <p>Загрузите <code>.css</code> или вставьте экспорт из Figma — шаблон создастся без нейросети.</p>
+        <div class="import-row">
+          <div class="import-field" style="flex: 1; min-width: 220px">
+            <label for="css-file">CSS файл</label>
+            <input id="css-file" type="file" accept=".css,text/css" />
+          </div>
+          <div class="import-field">
+            <label for="css-frame">Кадр</label>
+            <input id="css-frame" type="number" min="1" value="1" />
+          </div>
+          <div class="import-field">
+            <label for="css-project">Проект</label>
+            <select id="css-project"></select>
+          </div>
+          <button class="import-btn" id="css-import" disabled>Импортировать</button>
+        </div>
+        <div class="import-field" style="margin-top: 14px">
+          <label for="css-paste">CSS (вставка или из файла)</label>
+          <textarea
+            id="css-paste"
+            placeholder="/* Instagram post - 103 */&#10;position: relative;&#10;width: 1080px;&#10;..."
+          ></textarea>
+        </div>
+        <div class="import-status" id="import-status"></div>
+      </section>
+
+      <div class="status" id="status">
+        <span class="dot"></span>
+        <span id="status-text">Запускаем Remotion Studio…</span>
+      </div>
+
+      <div class="grid" id="grid"></div>
+
+      <p class="hint">
+        Студия: <code id="studio-url">http://localhost:3000</code>.
+        Props (текст, цвета, картинка) правятся в правой панели Studio.
+      </p>
+    </div>
+
+    <script>
+      const STUDIO_ORIGIN = "http://localhost:3000";
+      const STORAGE_KEY = "helloiam-studio-project";
+      const grid = document.getElementById("grid");
+      const projectsEl = document.getElementById("projects");
+      const projectDescEl = document.getElementById("project-desc");
+      const status = document.getElementById("status");
+      const statusText = document.getElementById("status-text");
+      const cssFileInput = document.getElementById("css-file");
+      const cssFrameInput = document.getElementById("css-frame");
+      const cssProjectSelect = document.getElementById("css-project");
+      const cssImportBtn = document.getElementById("css-import");
+      const cssPasteInput = document.getElementById("css-paste");
+      const importStatus = document.getElementById("import-status");
+
+      let allTemplates = [];
+      let projects = [];
+      let activeProject = localStorage.getItem(STORAGE_KEY) || "am-news";
+      let studioReady = false;
+
+      function getCssText() {
+        return cssPasteInput.value.trim();
+      }
+
+      function updateImportButton() {
+        cssImportBtn.disabled = !studioReady || !getCssText();
+      }
+
+      function studioUrl(compositionId) {
+        return `${STUDIO_ORIGIN}/${encodeURIComponent(compositionId)}`;
+      }
+
+      function activeProjectMeta() {
+        return projects.find((p) => p.id === activeProject) || projects[0];
+      }
+
+      function renderProjectTabs() {
+        projectsEl.innerHTML = projects
+          .map(
+            (p) => `
+          <button
+            class="project-tab${p.id === activeProject ? " active" : ""}"
+            data-project="${p.id}"
+            style="--tab-accent: ${p.accent || "#4a7bff"}"
+          >
+            ${p.name}
+          </button>
+        `
+          )
+          .join("");
+
+        projectsEl.querySelectorAll(".project-tab").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            activeProject = btn.dataset.project;
+            localStorage.setItem(STORAGE_KEY, activeProject);
+            renderProjectTabs();
+            renderCards();
+          });
+        });
+
+        const meta = activeProjectMeta();
+        projectDescEl.textContent = meta?.description || "";
+
+        cssProjectSelect.innerHTML = projects
+          .map(
+            (p) =>
+              `<option value="${p.id}"${p.id === activeProject ? " selected" : ""}>${p.name}</option>`
+          )
+          .join("");
+      }
+
+      function setImportStatus(text, kind = "") {
+        importStatus.textContent = text;
+        importStatus.className = `import-status${kind ? ` ${kind}` : ""}`;
+      }
+
+      async function reloadCatalog() {
+        const catalog = await fetch("./templates.json").then((r) => r.json());
+        if (Array.isArray(catalog)) {
+          allTemplates = catalog.map((t) => ({ ...t, project: t.project || "am-news" }));
+        } else {
+          projects = catalog.projects || projects;
+          allTemplates = catalog.templates || [];
+        }
+        renderProjectTabs();
+        renderCards();
+      }
+
+      async function analyzeCss(css) {
+        const res = await fetch("/api/css-frames", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ css }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Не удалось разобрать CSS");
+
+        const count = data.frames?.length || 0;
+        if (count === 0) {
+          throw new Error("CSS пустой или не распознан. Нужен экспорт Figma 1080×1350.");
+        }
+
+        cssFrameInput.max = String(count);
+        if (Number(cssFrameInput.value) > count) cssFrameInput.value = "1";
+        setImportStatus(`Найдено кадров: ${count}. Family определится автоматически.`);
+        updateImportButton();
+      }
+
+      async function onCssFileSelected() {
+        const file = cssFileInput.files?.[0];
+        setImportStatus("");
+        updateImportButton();
+
+        if (!file) return;
+
+        const text = await file.text();
+        cssPasteInput.value = text;
+
+        if (!text.trim()) {
+          setImportStatus(
+            `Файл «${file.name}» пустой на диске. Сохраните файл (⌘S) или вставьте CSS в поле ниже.`,
+            "err"
+          );
+          return;
+        }
+
+        try {
+          await analyzeCss(text);
+        } catch (error) {
+          setImportStatus(error.message, "err");
+        }
+      }
+
+      async function onCssPasteInput() {
+        const css = getCssText();
+        updateImportButton();
+        if (!css) {
+          setImportStatus("");
+          return;
+        }
+
+        try {
+          await analyzeCss(css);
+        } catch (error) {
+          setImportStatus(error.message, "err");
+        }
+      }
+
+      async function runCssImport() {
+        const css = getCssText();
+        if (!css) {
+          setImportStatus("Выберите файл или вставьте CSS в поле ниже.", "err");
+          return;
+        }
+
+        cssImportBtn.disabled = true;
+        setImportStatus("Импортируем…");
+
+        try {
+          const res = await fetch("/api/import-css", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              css,
+              frameIndex: Number(cssFrameInput.value) || 1,
+              project: cssProjectSelect.value,
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Импорт не удался");
+
+          activeProject = data.project || cssProjectSelect.value;
+          localStorage.setItem(STORAGE_KEY, activeProject);
+          await reloadCatalog();
+          setImportStatus(
+            `Готово: ${data.compositionId} (${data.layerCount} слоёв). Откройте в Studio — список обновится.`,
+            "ok"
+          );
+        } catch (error) {
+          setImportStatus(error.message, "err");
+        } finally {
+          updateImportButton();
+        }
+      }
+
+      function renderCards() {
+        const filtered = allTemplates.filter((t) => t.project === activeProject);
+
+        if (filtered.length === 0) {
+          grid.innerHTML =
+            '<div class="empty">В этом проекте пока нет шаблонов. Импортируй CSS или добавь meta.json с полем <code>project</code>.</div>';
+          return;
+        }
+
+        grid.innerHTML = filtered
+          .map(
+            (t) => `
+          <article class="card">
+            <span class="tag">${t.tag}</span>
+            <h2>${t.name}</h2>
+            <p>${t.description}</p>
+            <div class="card-actions">
+              <button class="open" data-id="${t.id}" ${studioReady ? "" : "disabled"}>
+                Открыть
+              </button>
+              <button class="render-btn" data-render="${t.id}" ${studioReady ? "" : "disabled"}>
+                Рендер PNG+MP4
+              </button>
+            </div>
+            <div class="render-result" data-result="${t.id}" hidden></div>
+          </article>
+        `
+          )
+          .join("");
+
+        grid.querySelectorAll(".open").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            window.open(studioUrl(btn.dataset.id), "_blank", "noopener");
+          });
+        });
+
+        grid.querySelectorAll(".render-btn").forEach((btn) => {
+          btn.addEventListener("click", () => runRender(btn.dataset.render, btn));
+        });
+      }
+
+      async function runRender(compositionId, button) {
+        const resultEl = grid.querySelector(`[data-result="${compositionId}"]`);
+        if (!resultEl) return;
+
+        button.disabled = true;
+        resultEl.hidden = false;
+        resultEl.textContent = "Рендерим PNG и MP4… (~30 сек)";
+
+        try {
+          const res = await fetch("/api/render", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ compositionId }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Рендер не удался");
+
+          const cacheBust = `?t=${Date.now()}`;
+          resultEl.innerHTML = `
+            <div>Готово:</div>
+            <img src="${data.stillUrl}${cacheBust}" alt="PNG preview" />
+            <video src="${data.videoUrl}${cacheBust}" controls playsinline></video>
+            <div>
+              <a href="${data.stillUrl}" download>PNG</a>
+              ·
+              <a href="${data.videoUrl}" download>MP4</a>
+            </div>
+          `;
+        } catch (error) {
+          resultEl.textContent = error.message;
+        } finally {
+          button.disabled = !studioReady;
+        }
+      }
+
+      async function waitForStudio() {
+        for (let i = 0; i < 60; i++) {
+          try {
+            const res = await fetch(STUDIO_ORIGIN, { mode: "no-cors" });
+            void res;
+            return true;
+          } catch {
+            await new Promise((r) => setTimeout(r, 500));
+          }
+        }
+        return false;
+      }
+
+      async function init() {
+        const catalog = await fetch("./templates.json").then((r) => r.json());
+
+        if (Array.isArray(catalog)) {
+          projects = [
+            { id: "am-news", name: "AM News", description: "", accent: "#4A7BFF" },
+            { id: "am-food", name: "AM Food", description: "", accent: "#D61E23" },
+          ];
+          allTemplates = catalog.map((t) => ({ ...t, project: t.project || "am-news" }));
+        } else {
+          projects = catalog.projects || [];
+          allTemplates = catalog.templates || [];
+        }
+
+        if (!projects.some((p) => p.id === activeProject)) {
+          activeProject = projects[0]?.id || "am-news";
+        }
+
+        renderProjectTabs();
+        renderCards();
+        cssFileInput.addEventListener("change", onCssFileSelected);
+        cssPasteInput.addEventListener("input", onCssPasteInput);
+        cssImportBtn.addEventListener("click", runCssImport);
+
+        studioReady = await waitForStudio();
+        if (studioReady) {
+          status.classList.add("ready");
+          statusText.textContent = "Studio готова — выберите шаблон";
+        } else {
+          status.classList.add("error");
+          statusText.textContent = "Studio не ответила на порту 3000";
+        }
+        renderCards();
+        updateImportButton();
+      }
+
+      init();
+    </script>
+  </body>
+</html>

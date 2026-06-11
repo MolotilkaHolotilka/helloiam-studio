@@ -1,0 +1,19 @@
+{
+  "id": "Post103Css",
+  "project": "am-food",
+  "name": "CSS Import — post 103",
+  "description": "Импортировано из Figma CSS (post 103), family: generic",
+  "tag": "Import",
+  "templateDir": "post-103",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "imported": true,
+  "defaultProps": {
+    "image": "generated/post-126.png",
+    "background": "#D9DDE0",
+    "body": "Group 1",
+    "body2": "helloiam am",
+    "body3": "Group 2",
+    "body4": "Say Hello to Armenian Wine"
+  }
+}
