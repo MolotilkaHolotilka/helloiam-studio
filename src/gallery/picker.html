@@ -408,9 +408,20 @@
     </div>
 
     <script>
-      const STUDIO_PORT =
-        new URLSearchParams(window.location.search).get("studioPort") || "3000";
-      const STUDIO_ORIGIN = `${window.location.protocol}//${window.location.hostname}:${STUDIO_PORT}`;
+      function resolveStudioOrigin() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("studioOrigin")) return params.get("studioOrigin");
+        const { protocol, hostname } = window.location;
+        if (hostname.startsWith("helloiam-studio-v001.")) {
+          return `${protocol}//${hostname.replace(
+            "helloiam-studio-v001.",
+            "helloiam-studio-v001-remotion."
+          )}`;
+        }
+        const port = params.get("studioPort") || "3000";
+        return `${protocol}//${hostname}:${port}`;
+      }
+      const STUDIO_ORIGIN = resolveStudioOrigin();
       const STORAGE_KEY = "helloiam-studio-project";
       const grid = document.getElementById("grid");
       const projectsEl = document.getElementById("projects");
