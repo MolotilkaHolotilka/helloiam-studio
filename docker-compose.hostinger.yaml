@@ -8,6 +8,8 @@ services:
     image: helloiam-studio:v0.0.1
     build: .
     restart: unless-stopped
+    env_file:
+      - .env
     expose:
       - "3456"
     environment:
@@ -15,6 +17,7 @@ services:
       GALLERY_PORT: 3456
       NODE_ENV: production
     volumes:
+      - ./.env:/app/.env:ro
       - ./public/generated:/app/public/generated
       - ./out/renders:/app/out/renders
       - ./data/posts:/app/data/posts
