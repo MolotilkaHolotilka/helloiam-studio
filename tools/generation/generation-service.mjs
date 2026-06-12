@@ -9,8 +9,9 @@ const TEXT_FIELD_TYPES = new Set(['string', 'textarea']);
 const LOCKED_PROP_KEYS = new Set([
   'background',
   'titleColor',
-  'accentColor',
   'labelColor',
+  'accentColor',
+  'brandColor',
   'quoteColor',
   'brandColor',
   'body2Color',
@@ -31,6 +32,8 @@ function inferCardRole(card) {
   if (keys.has('brandLeft')) return 'brand';
   if (keys.has('quote')) return 'quote';
   if (card.cardIndex === 0 && keys.has('titleAccent')) return 'hello';
+  if (keys.has('title') && keys.has('titleAccent') && keys.has('label')) return 'intro-hero';
+  if (keys.has('brandLeft') && keys.has('brandRight')) return 'brand';
   if (keys.has('image') && !keys.has('title') && !keys.has('quote')) return 'photo';
   return 'generic';
 }
@@ -63,7 +66,7 @@ function normalizeGeneratedProps(card, props, categoryLabel, subject) {
     if (typeof value === 'string' && value.trim()) cleaned[key] = value.trim();
   }
 
-  if (role === 'hello' || role === 'quote') {
+  if (role === 'hello' || role === 'quote' || role === 'intro-hero') {
     cleaned.title = 'HELLO,\nI AM';
     cleaned.titleAccent = subject.toUpperCase();
   }
@@ -73,7 +76,7 @@ function normalizeGeneratedProps(card, props, categoryLabel, subject) {
     if ('brandRight' in (card.props || {})) cleaned.brandRight = 'am';
   }
 
-  if ('label' in (card.props || {}) && (role === 'hello' || role === 'quote')) {
+  if ('label' in (card.props || {}) && (role === 'hello' || role === 'quote' || role === 'intro-hero')) {
     cleaned.label = categoryLabel;
   }
 

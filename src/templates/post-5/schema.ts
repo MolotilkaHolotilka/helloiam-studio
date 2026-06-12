@@ -4,7 +4,9 @@ import {STUDIO_IMAGE_OPTIONS} from '../../lib/asset-options';
 
 export const schema = z.object({
   title: z.string(),
+  titleAccent: z.string(),
   titleColor: zColor(),
+  accentColor: zColor(),
   label: z.string(),
   labelColor: zColor(),
   image: z.enum(STUDIO_IMAGE_OPTIONS),

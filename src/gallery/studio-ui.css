@@ -488,6 +488,172 @@
         padding: 0;
         margin-bottom: 16px;
       }
+      .pipeline-intro-lead {
+        margin: 0 0 20px;
+      }
+      .pipeline-steps {
+        list-style: none;
+        margin: 0 0 24px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .pipeline-steps--editor {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+      .pipeline-steps--editor .pipeline-step {
+        flex: 1 1 180px;
+        min-width: 0;
+      }
+      .pipeline-steps--editor .pipeline-step-btn {
+        min-height: 100%;
+      }
+      @media (max-width: 720px) {
+        .pipeline-steps--editor {
+          flex-direction: column;
+        }
+        .pipeline-steps--editor .pipeline-step {
+          flex-basis: auto;
+        }
+      }
+      .pipeline-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .pipeline-intro .pipeline-step {
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--bg-elevated);
+      }
+      .pipeline-intro .pipeline-step.is-active {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        box-shadow: 0 0 0 1px rgba(255, 92, 69, 0.12);
+      }
+      .pipeline-intro .pipeline-step.is-active .pipeline-step-index {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--inverse-ink);
+      }
+      .pipeline-step-btn {
+        appearance: none;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--bg-elevated);
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        width: 100%;
+        padding: 12px 14px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+        transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      }
+      .pipeline-step-index {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: var(--radius-pill);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 500;
+        background: var(--bg-input);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .pipeline-step-body {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+      }
+      .pipeline-step-body strong {
+        font-family: var(--font-display);
+        font-size: 0.98rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+      }
+      .pipeline-step-body span {
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+      .pipeline-step.is-active .pipeline-step-btn {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        box-shadow: 0 0 0 1px rgba(255, 92, 69, 0.12);
+      }
+      .pipeline-step.is-active .pipeline-step-index {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--inverse-ink);
+      }
+      .pipeline-step.is-done .pipeline-step-index {
+        background: rgba(73, 247, 165, 0.16);
+        border-color: rgba(73, 247, 165, 0.35);
+        color: var(--success);
+      }
+      .pipeline-step.is-done .pipeline-step-body strong {
+        color: var(--muted);
+      }
+      .pipeline-nav-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        position: sticky;
+        bottom: 0;
+        z-index: 3;
+        background: linear-gradient(180deg, transparent 0%, var(--bg-panel) 24%);
+        padding-bottom: 4px;
+      }
+      .pipeline-nav-bottom .primary-btn {
+        min-width: 132px;
+      }
+      .pipeline-nav-label {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--muted);
+        text-align: center;
+        flex: 1;
+      }
+      .pipeline-nav-bottom .secondary-btn:disabled,
+      .pipeline-nav-bottom .primary-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .export-step-lead {
+        display: none;
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+      #edit-tab-generate.pipeline-step-export .export-step-lead {
+        display: block;
+      }
+      #edit-tab-generate.pipeline-step-export .generation-toolbar,
+      #edit-tab-generate.pipeline-step-export #card-form,
+      #edit-tab-generate.pipeline-step-export #card-tabs {
+        display: none;
+      }
+      #edit-tab-generate.pipeline-step-export .edit-actions {
+        margin-top: 0;
+      }
       .edit-subnav {
         display: flex;
         gap: 8px;

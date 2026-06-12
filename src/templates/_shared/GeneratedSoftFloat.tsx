@@ -55,6 +55,54 @@ export const GeneratedSoftFloat: React.FC<{
 }> = ({layout, card, localFrame, segmentFrames, imageSrc}) => {
   const background = card.background ?? layout.card.background;
 
+  if (layout.family === 'brand-row') {
+    const brandLeft = card.brandLeft ?? 'helloiam';
+    const brandRight = card.brandRight ?? 'am';
+    const brandColor = card.brandColor ?? '#0F0F10';
+    const rowEnter = progress(localFrame, 6, 22);
+    const floatY = wave(localFrame, segmentFrames, 3, 0);
+    return (
+      <div
+        style={{
+          position: 'relative',
+          width: layout.card.width,
+          height: layout.card.height,
+          overflow: 'hidden',
+          background,
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: 588,
+            left: 0,
+            width: layout.card.width,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 24,
+            fontFamily: instrumentSans,
+            fontWeight: 700,
+            fontSize: 96,
+            lineHeight: 0.958,
+            color: brandColor,
+            opacity: rowEnter,
+            transform: `translateY(${floatY}px)`,
+          }}
+        >
+          <span>{brandLeft}</span>
+          {imageSrc ? (
+            <Img
+              src={imageSrc}
+              style={{width: 180, height: 180, objectFit: 'contain'}}
+            />
+          ) : null}
+          <span>{brandRight}</span>
+        </div>
+      </div>
+    );
+  }
+
   const imageEnter = progress(localFrame, 4, 22);
   const imageScale = interpolate(localFrame, [0, segmentFrames], [1.05, 1], {
     extrapolateLeft: 'clamp',
@@ -140,6 +188,10 @@ export const GeneratedSoftFloat: React.FC<{
 
         const style = layer.textStyle;
 
+        const isIntroTitle = layout.family === 'intro-hero' && layer.key === 'title';
+        const titleAccent = card.titleAccent ?? '';
+        const accentColor = card.accentColor ?? card.titleAccentColor ?? '#D61E23';
+
         return (
           <div
             key={layer.key}
@@ -159,14 +211,22 @@ export const GeneratedSoftFloat: React.FC<{
                 (layer.role === 'title' && layout.family === 'intro-hero' ? 'uppercase' : 'none'),
               textAlign: style?.textAlign ?? 'left',
               whiteSpace: 'pre-line',
-              color,
-              display: layer.alignItems || layer.role === 'label' ? 'flex' : undefined,
+              color: isIntroTitle ? undefined : color,
+              display: layer.alignItems || layer.role === 'label' || isIntroTitle ? 'flex' : undefined,
+              flexDirection: isIntroTitle ? 'column' : undefined,
               alignItems:
                 layer.alignItems ?? (layer.role === 'label' ? 'flex-end' : undefined),
               ...motion,
             }}
           >
-            {text}
+            {isIntroTitle ? (
+              <>
+                <div style={{color}}>{text}</div>
+                {titleAccent ? <div style={{color: accentColor}}>{titleAccent}</div> : null}
+              </>
+            ) : (
+              text
+            )}
           </div>
         );
       })}

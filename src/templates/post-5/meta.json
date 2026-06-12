@@ -14,9 +14,19 @@
       "label": "Заголовок"
     },
     {
+      "key": "titleAccent",
+      "type": "string",
+      "label": "Акцент (предмет)"
+    },
+    {
       "key": "titleColor",
       "type": "color",
       "label": "Цвет заголовка"
+    },
+    {
+      "key": "accentColor",
+      "type": "color",
+      "label": "Цвет акцента"
     },
     {
       "key": "label",
@@ -41,8 +51,10 @@
   ],
   "defaultProps": {
     "background": "#FFC53A",
-    "title": "HELLO,\nI AM\nDZIRANI",
+    "title": "HELLO,\nI AM",
+    "titleAccent": "DZIRANI",
     "titleColor": "#0F0F10",
+    "accentColor": "#D61E23",
     "label": "AM FOOD",
     "labelColor": "#000000",
     "image": ""

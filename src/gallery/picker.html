@@ -21,6 +21,40 @@
       </nav>
 
       <div id="view-generate">
+        <section class="panel pipeline-intro">
+          <h2>Создать пост</h2>
+          <p class="lead pipeline-intro-lead">Пошаговый конвейер: формат → настройка → контент → экспорт.</p>
+          <ol class="pipeline-steps" id="catalog-pipeline-steps">
+            <li class="pipeline-step is-active" data-step="0">
+              <span class="pipeline-step-index">1</span>
+              <span class="pipeline-step-body">
+                <strong>Выберите формат</strong>
+                <span>Шаблон карусели и число слайдов</span>
+              </span>
+            </li>
+            <li class="pipeline-step" data-step="1">
+              <span class="pipeline-step-index">2</span>
+              <span class="pipeline-step-body">
+                <strong>Настройка</strong>
+                <span>Рубрика, цвет, эмодзи, предмет</span>
+              </span>
+            </li>
+            <li class="pipeline-step" data-step="2">
+              <span class="pipeline-step-index">3</span>
+              <span class="pipeline-step-body">
+                <strong>Контент</strong>
+                <span>Тексты и промпты по слайдам</span>
+              </span>
+            </li>
+            <li class="pipeline-step" data-step="3">
+              <span class="pipeline-step-index">4</span>
+              <span class="pipeline-step-body">
+                <strong>Экспорт</strong>
+                <span>Видео и статика в папку поста</span>
+              </span>
+            </li>
+          </ol>
+        </section>
         <div class="status" id="status" hidden>
           <span class="dot"></span>
           <span id="status-text">Загрузка…</span>
@@ -75,10 +109,7 @@
         <section class="panel">
           <h2 id="edit-post-title">Редактирование поста</h2>
           <p id="edit-post-desc"></p>
-          <nav class="edit-subnav" id="edit-subnav">
-            <button type="button" class="edit-subnav-btn active" data-tab="settings">Настройка</button>
-            <button type="button" class="edit-subnav-btn" data-tab="generate">Генерация</button>
-          </nav>
+          <ol class="pipeline-steps pipeline-steps--editor" id="editor-pipeline-steps"></ol>
           <div id="edit-tab-settings">
             <p class="edit-tab-lead">Формат, рубрика, цвет, предмет и эмодзи. Изображения для слайдов генерируются автоматически.</p>
             <form id="settings-form" class="settings-form"></form>
@@ -110,17 +141,12 @@
             <div class="edit-layout">
               <div class="edit-main">
                 <div class="generation-toolbar" id="generation-toolbar">
-                  <p class="generation-hint" id="generation-hint">Заполните предмет на вкладке «Настройка», затем сгенерируйте тексты и промпты. Изображения создаются автоматически при нажатии «Создать видео» или «Создать статику».</p>
+                  <p class="generation-hint" id="generation-hint">Заполните предмет на шаге «Настройка», затем сгенерируйте тексты и промпты. Изображения создаются автоматически при нажатии «Создать видео» или «Создать статику».</p>
                   <button type="button" class="primary-btn" id="generate-content-btn">Сгенерировать тексты + промпты</button>
                   <div class="edit-status" id="generation-status" style="margin-top:10px"></div>
                 </div>
                 <div class="card-tabs" id="card-tabs" hidden></div>
                 <form id="card-form"></form>
-                <nav class="slide-nav-bottom" id="slide-nav-bottom" aria-label="Навигация по слайдам">
-                  <button type="button" class="secondary-btn" id="slide-prev-btn">← Назад</button>
-                  <span class="slide-nav-label" id="slide-nav-label">Слайд 1</span>
-                  <button type="button" class="secondary-btn" id="slide-next-btn">Далее →</button>
-                </nav>
                 <div class="render-progress-panel" id="render-progress" hidden>
                   <div class="render-progress-head">
                     <span class="render-progress-spinner" id="render-progress-spinner"></span>
@@ -129,7 +155,8 @@
                   </div>
                   <div class="progress-bar"><span id="render-progress-bar"></span></div>
                 </div>
-                <div class="edit-actions">
+                <p class="export-step-lead" id="export-step-lead">Проверьте превью справа и запустите рендер всех карточек.</p>
+                <div class="edit-actions" id="edit-actions">
                   <button type="button" class="primary-btn render-btn" id="render-post-btn">Создать видео (все карточки)</button>
                   <button type="button" class="secondary-btn" id="render-post-stills-btn">Создать статику (все карточки)</button>
                 </div>
@@ -161,6 +188,11 @@
               </aside>
             </div>
           </div>
+          <nav class="pipeline-nav-bottom" id="pipeline-nav-bottom" aria-label="Навигация по шагам">
+            <button type="button" class="secondary-btn" id="pipeline-prev-btn">← Назад</button>
+            <span class="pipeline-nav-label" id="pipeline-nav-label">Шаг 1 · Настройка</span>
+            <button type="button" class="primary-btn" id="pipeline-next-btn">Далее →</button>
+          </nav>
         </section>
       </div>
     </div>
@@ -192,6 +224,12 @@
       let postAssets = [];
       let selectedPostAssetPaths = new Set();
       let editTab = "settings";
+      let pipelineStep = 0;
+      const PIPELINE_EDITOR_STEPS = [
+        { id: "settings", title: "Настройка", desc: "Рубрика, цвет, эмодзи, предмет" },
+        { id: "content", title: "Контент", desc: "Тексты и промпты по слайдам" },
+        { id: "export", title: "Экспорт", desc: "Видео и статика" },
+      ];
       let appConfig = { admin: false, llmConfigured: false, falConfigured: false, categories: [], brandColors: [] };
       let settingsSaveTimer = null;
       let generationSaveTimer = null;
@@ -551,17 +589,156 @@
         }
       }
 
-      function setEditTab(tab) {
-        editTab = tab;
-        document.querySelectorAll(".edit-subnav-btn").forEach((btn) => {
-          btn.classList.toggle("active", btn.dataset.tab === tab);
+      function pipelineStepId() {
+        return PIPELINE_EDITOR_STEPS[pipelineStep]?.id || "settings";
+      }
+
+      function orderedCards() {
+        return [...(currentPost?.cards || [])].sort((a, b) => a.cardIndex - b.cardIndex);
+      }
+
+      function renderPipelineSteps() {
+        const el = document.getElementById("editor-pipeline-steps");
+        if (!el) return;
+        el.innerHTML = PIPELINE_EDITOR_STEPS.map((step, i) => `
+          <li class="pipeline-step${i < pipelineStep ? " is-done" : ""}${i === pipelineStep ? " is-active" : ""}" data-step="${i}">
+            <button type="button" class="pipeline-step-btn">
+              <span class="pipeline-step-index">${i + 1}</span>
+              <span class="pipeline-step-body">
+                <strong>${escapeHtml(step.title)}</strong>
+                <span>${escapeHtml(step.desc)}</span>
+              </span>
+            </button>
+          </li>
+        `).join("");
+        el.querySelectorAll(".pipeline-step-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const li = btn.closest(".pipeline-step");
+            if (!li) return;
+            goToPipelineStep(Number(li.dataset.step)).catch(() => {});
+          });
         });
-        document.getElementById("edit-tab-settings").hidden = tab !== "settings";
-        document.getElementById("edit-tab-generate").hidden = tab !== "generate";
-        if (tab === "settings") renderSettingsForm();
-        if (tab === "generate") {
-          updateGenerationToolbar();
-          renderSlideNav();
+      }
+
+      function renderPipelineNav() {
+        const prevBtn = document.getElementById("pipeline-prev-btn");
+        const nextBtn = document.getElementById("pipeline-next-btn");
+        const label = document.getElementById("pipeline-nav-label");
+        if (!prevBtn || !nextBtn || !label || !currentPost) return;
+
+        const stepId = pipelineStepId();
+        if (stepId === "settings") {
+          label.textContent = "Шаг 1 · Настройка";
+          prevBtn.disabled = true;
+          nextBtn.disabled = false;
+          nextBtn.textContent = "Далее →";
+        } else if (stepId === "content") {
+          const ordered = orderedCards();
+          const pos = ordered.findIndex((c) => c.cardIndex === activeCardIndex);
+          const idx = pos >= 0 ? pos : 0;
+          label.textContent = `${cardSlideLabel(ordered[idx])} · ${idx + 1} / ${ordered.length}`;
+          prevBtn.disabled = false;
+          nextBtn.disabled = false;
+          nextBtn.textContent = idx >= ordered.length - 1 ? "К экспорту →" : "Далее →";
+        } else {
+          label.textContent = "Шаг 3 · Экспорт";
+          prevBtn.disabled = false;
+          nextBtn.disabled = true;
+          nextBtn.textContent = "Далее →";
+        }
+      }
+
+      function syncPipelineView() {
+        const stepId = pipelineStepId();
+        editTab = stepId === "settings" ? "settings" : "generate";
+        document.getElementById("edit-tab-settings").hidden = stepId !== "settings";
+        const genTab = document.getElementById("edit-tab-generate");
+        genTab.hidden = stepId === "settings";
+        genTab.classList.toggle("pipeline-step-export", stepId === "export");
+        renderPipelineSteps();
+        if (stepId === "settings") renderSettingsForm();
+        if (stepId !== "settings") updateGenerationToolbar();
+        renderPipelineNav();
+        if (stepId === "export") {
+          document.getElementById("edit-actions")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
+
+      async function goToPipelineStep(target) {
+        if (!currentPost || target === pipelineStep) return;
+        if (target < 0 || target >= PIPELINE_EDITOR_STEPS.length) return;
+        if (pipelineStepId() === "settings") await savePostSettings({ silent: true }).catch(() => {});
+        if (pipelineStepId() !== "settings") {
+          await saveCurrentCardForm({ silent: true }).catch(() => {});
+          await saveGenerationDraft({ silent: true }).catch(() => {});
+        }
+        if (target > 0 && !currentPost.subject?.trim()) {
+          const statusEl = document.getElementById("settings-status");
+          if (statusEl) {
+            statusEl.textContent = "Укажите предмет перед переходом к контенту.";
+            statusEl.className = "edit-status err";
+          }
+          pipelineStep = 0;
+          syncPipelineView();
+          return;
+        }
+        pipelineStep = target;
+        syncPipelineView();
+        if (pipelineStepId() === "content") {
+          renderCardTabs();
+          renderCardForm();
+        }
+      }
+
+      async function pipelineNext() {
+        if (!currentPost) return;
+        if (pipelineStepId() === "settings") {
+          await savePostSettings({ silent: true }).catch(() => {});
+          if (!currentPost.subject?.trim()) {
+            const statusEl = document.getElementById("settings-status");
+            if (statusEl) {
+              statusEl.textContent = "Укажите предмет (матсун, суджук…), затем нажмите «Далее».";
+              statusEl.className = "edit-status err";
+            }
+            return;
+          }
+          pipelineStep = 1;
+          syncPipelineView();
+          renderCardTabs();
+          renderCardForm();
+          return;
+        }
+        if (pipelineStepId() === "content") {
+          const ordered = orderedCards();
+          const pos = ordered.findIndex((c) => c.cardIndex === activeCardIndex);
+          if (pos < ordered.length - 1) {
+            await goToSlideOffset(1);
+            return;
+          }
+          await saveCurrentCardForm({ silent: true }).catch(() => {});
+          await saveGenerationDraft({ silent: true }).catch(() => {});
+          pipelineStep = 2;
+          syncPipelineView();
+        }
+      }
+
+      async function pipelinePrev() {
+        if (!currentPost) return;
+        if (pipelineStepId() === "export") {
+          pipelineStep = 1;
+          syncPipelineView();
+          renderCardForm();
+          return;
+        }
+        if (pipelineStepId() === "content") {
+          const ordered = orderedCards();
+          const pos = ordered.findIndex((c) => c.cardIndex === activeCardIndex);
+          if (pos > 0) {
+            await goToSlideOffset(-1);
+            return;
+          }
+          pipelineStep = 0;
+          syncPipelineView();
         }
       }
 
@@ -579,7 +756,7 @@
         const subject = currentPost?.subject?.trim();
         const hasPrompts = Boolean(currentPost?.generation?.imagePrompts && Object.keys(currentPost.generation.imagePrompts).length);
         if (!subject) {
-          hint.textContent = "Сначала укажите предмет на вкладке «Настройка» (матсун, суджук…).";
+          hint.textContent = "Сначала укажите предмет на шаге «Настройка» (матсун, суджук…).";
           btn.disabled = true;
         } else {
           hint.textContent = hasPrompts
@@ -618,22 +795,9 @@
         return !isValidPostImagePath(val) && currentPost?.generation?.imagePrompts?.[card.cardIndex];
       }
 
-      function renderSlideNav() {
-        if (!currentPost?.cards?.length) return;
-        const ordered = [...currentPost.cards].sort((a, b) => a.cardIndex - b.cardIndex);
-        const pos = ordered.findIndex((c) => c.cardIndex === activeCardIndex);
-        const idx = pos >= 0 ? pos : 0;
-        const label = document.getElementById("slide-nav-label");
-        const prevBtn = document.getElementById("slide-prev-btn");
-        const nextBtn = document.getElementById("slide-next-btn");
-        if (label) label.textContent = `${cardSlideLabel(ordered[idx])} / ${ordered.length}`;
-        if (prevBtn) prevBtn.disabled = idx <= 0;
-        if (nextBtn) nextBtn.disabled = idx >= ordered.length - 1;
-      }
-
       async function goToSlideOffset(delta) {
         if (!currentPost) return;
-        const ordered = [...currentPost.cards].sort((a, b) => a.cardIndex - b.cardIndex);
+        const ordered = orderedCards();
         const pos = ordered.findIndex((c) => c.cardIndex === activeCardIndex);
         const next = ordered[pos + delta];
         if (!next) return;
@@ -642,7 +806,7 @@
         activeCardIndex = next.cardIndex;
         renderCardTabs();
         renderCardForm();
-        renderSlideNav();
+        renderPipelineNav();
       }
 
       function collectGenerationDraft() {
@@ -711,7 +875,7 @@
           currentPost = data.post;
           await loadPostAssets();
           renderCardForm();
-          renderSlideNav();
+          renderPipelineNav();
           if (generationStatusEl && !statusEl) {
             generationStatusEl.textContent = cardIndexes
               ? "Изображение обновлено."
@@ -746,7 +910,7 @@
           activeCardIndex = currentPost.cards[0]?.cardIndex ?? 0;
           renderCardTabs();
           renderCardForm();
-          renderSlideNav();
+          renderPipelineNav();
           statusEl.textContent = "Готово — проверьте тексты и промпты. Изображения создадутся при создании видео или статики.";
           statusEl.className = "edit-status ok";
         } catch (e) {
@@ -1181,8 +1345,8 @@
         statusEl.textContent = "";
         statusEl.className = "edit-status";
         selectedPostAssetPaths.clear();
+        pipelineStep = 0;
         editTab = "settings";
-        setEditTab("settings");
         try {
           const res = await fetch(`/api/posts/${postId}`);
           const data = await res.json();
@@ -1190,11 +1354,9 @@
           currentPost = data.post;
           activeCardIndex = currentPost.cards[0]?.cardIndex ?? 0;
           updatePostHeader();
-          renderSettingsForm();
+          syncPipelineView();
           renderCardTabs();
           renderCardForm();
-          updateGenerationToolbar();
-          renderSlideNav();
           showRenderResults(currentPost.lastRender);
           await Promise.all([loadPostAssets(), loadTemplateReferences(currentPost.templateId)]);
           updateFigmaReferencePanel();
@@ -1224,7 +1386,7 @@
             activeCardIndex = Number(btn.dataset.idx);
             renderCardTabs();
             renderCardForm();
-            renderSlideNav();
+            renderPipelineNav();
           });
         });
       }
@@ -1246,7 +1408,31 @@
         return lineHeight;
       }
 
+      function buildBrandRowPreviewHtml(layout, props, scale = PREVIEW_SCALE) {
+        const s = scale;
+        const w = layout.card.width * s;
+        const h = layout.card.height * s;
+        const bg = props.background || layout.card.background || "#fff";
+        const image = publicAssetUrl(props.image);
+        const brandColor = escapeHtml(props.brandColor || "#0F0F10");
+        const brandLeft = escapeHtml(props.brandLeft || "helloiam");
+        const brandRight = escapeHtml(props.brandRight || "am");
+        return [
+          `<div class="card-preview-canvas" style="width:${w}px;height:${h}px;background:${escapeHtml(bg)};position:relative;overflow:hidden;">`,
+          `<div style="position:absolute;top:${588 * s}px;left:0;width:${w}px;display:flex;align-items:center;justify-content:center;gap:${24 * s}px;font-family:'Instrument Sans',sans-serif;font-weight:700;font-size:${96 * s}px;line-height:0.958;color:${brandColor}">`,
+          `<span>${brandLeft}</span>`,
+          image ? `<img alt="" src="${image}" style="width:${180 * s}px;height:${180 * s}px;object-fit:contain;" />` : "",
+          `<span>${brandRight}</span>`,
+          `</div>`,
+          `</div>`,
+        ].join("");
+      }
+
       function buildCardPreviewHtml(layout, props, scale = PREVIEW_SCALE) {
+        if (layout.family === "brand-row") {
+          return buildBrandRowPreviewHtml(layout, props, scale);
+        }
+
         const s = scale;
         const w = layout.card.width * s;
         const h = layout.card.height * s;
@@ -1259,7 +1445,7 @@
           const imagePath = publicAssetUrl(props.image);
           if (!imagePath) continue;
           const opacity = box.opacity != null ? box.opacity : 1;
-          const objectFit = box.objectFit || "cover";
+          const objectFit = box.objectFit || (layout.family === "intro-hero" ? "contain" : "cover");
           parts.push(
             `<img alt="" src="${imagePath}" style="position:absolute;z-index:1;left:${box.left * s}px;top:${box.top * s}px;width:${box.width * s}px;height:${box.height * s}px;object-fit:${objectFit};opacity:${opacity};" />`,
           );
@@ -1282,9 +1468,21 @@
           const textTransform =
             ts.textTransform && ts.textTransform !== "none" ? `text-transform:${ts.textTransform};` : "";
           const fontStyle = ts.fontStyle === "italic" ? "font-style:italic;" : "";
-          parts.push(
-            `<div style="position:absolute;z-index:2;left:${box.left * s}px;top:${box.top * s}px;width:${box.width * s}px;height:${box.height * s}px;${display}${alignItems}font-family:${previewFontFamily(ts)};font-weight:${ts.fontWeight ?? 400};font-size:${fontSize}px;line-height:${scaledLineHeight(ts.lineHeight, ts.fontSize ?? 26, s)};${textAlign}${textTransform}${fontStyle}color:${escapeHtml(color)};white-space:pre-line;overflow:hidden;">${escapeHtml(text)}</div>`,
-          );
+          const isIntroTitle = layout.family === "intro-hero" && layer.key === "title";
+          const titleAccent = props.titleAccent || "";
+          const accentColor = escapeHtml(props.accentColor || "#D61E23");
+          if (isIntroTitle) {
+            parts.push(
+              `<div style="position:absolute;z-index:2;left:${box.left * s}px;top:${box.top * s}px;width:${box.width * s}px;height:${box.height * s}px;display:flex;flex-direction:column;font-family:${previewFontFamily(ts)};font-weight:${ts.fontWeight ?? 400};font-size:${fontSize}px;line-height:${scaledLineHeight(ts.lineHeight, ts.fontSize ?? 26, s)};${textTransform}${fontStyle}white-space:pre-line;overflow:hidden;">`,
+              `<div style="color:${escapeHtml(color)}">${escapeHtml(text)}</div>`,
+              titleAccent ? `<div style="color:${accentColor}">${escapeHtml(titleAccent)}</div>` : "",
+              `</div>`,
+            );
+          } else {
+            parts.push(
+              `<div style="position:absolute;z-index:2;left:${box.left * s}px;top:${box.top * s}px;width:${box.width * s}px;height:${box.height * s}px;${display}${alignItems}font-family:${previewFontFamily(ts)};font-weight:${ts.fontWeight ?? 400};font-size:${fontSize}px;line-height:${scaledLineHeight(ts.lineHeight, ts.fontSize ?? 26, s)};${textAlign}${textTransform}${fontStyle}color:${escapeHtml(color)};white-space:pre-line;overflow:hidden;">${escapeHtml(text)}</div>`,
+            );
+          }
         }
 
         parts.push("</div>");
@@ -1527,7 +1725,7 @@
           });
         });
         scheduleAutoSave();
-        renderSlideNav();
+        renderPipelineNav();
         updateFigmaReferencePanel();
         schedulePreviewRender({ immediate: true });
       }
@@ -1958,26 +2156,11 @@
         document.getElementById("generate-content-btn")?.addEventListener("click", () => {
           runGenerateContent().catch(() => {});
         });
-        document.getElementById("slide-prev-btn")?.addEventListener("click", () => {
-          goToSlideOffset(-1).catch(() => {});
+        document.getElementById("pipeline-prev-btn")?.addEventListener("click", () => {
+          pipelinePrev().catch(() => {});
         });
-        document.getElementById("slide-next-btn")?.addEventListener("click", () => {
-          goToSlideOffset(1).catch(() => {});
-        });
-
-        document.querySelectorAll(".edit-subnav-btn").forEach((btn) => {
-          btn.addEventListener("click", async () => {
-            const nextTab = btn.dataset.tab;
-            if (nextTab === editTab) return;
-            if (editTab === "generate" && currentPost) {
-              await saveCurrentCardForm({ silent: true }).catch(() => {});
-              await saveGenerationDraft({ silent: true }).catch(() => {});
-            }
-            if (editTab === "settings" && currentPost) {
-              await savePostSettings({ silent: true }).catch(() => {});
-            }
-            setEditTab(nextTab);
-          });
+        document.getElementById("pipeline-next-btn")?.addEventListener("click", () => {
+          pipelineNext().catch(() => {});
         });
 
         const emojiFolderOpen = document.getElementById("emoji-folder-open");

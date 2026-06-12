@@ -37,6 +37,6 @@ export const LAYOUT: LayoutSpec = {
     }
   ],
   imageLayers: [
-    {left: -269, top: 0, width: 1698, height: 1698, objectFit: "cover"}
+    {left: -269, top: 0, width: 1698, height: 1698, objectFit: "contain"},
   ],
 };

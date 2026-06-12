@@ -3,8 +3,9 @@ import {z} from 'zod';
 import {STUDIO_IMAGE_OPTIONS} from '../../lib/asset-options';
 
 export const schema = z.object({
-  body2: z.string(),
-  body2Color: zColor(),
+  brandLeft: z.string(),
+  brandRight: z.string(),
+  brandColor: zColor(),
   image: z.enum(STUDIO_IMAGE_OPTIONS),
   background: zColor(),
 });

@@ -33,7 +33,7 @@ export type LayoutImageLayer = LayoutBox & {
 };
 
 export type LayoutSpec = {
-  family: 'news-126' | 'intro-hero' | 'generic';
+  family: 'news-126' | 'intro-hero' | 'brand-row' | 'generic';
   card: {width: number; height: number; background: string};
   layers: LayoutLayer[];
   imageLayers: LayoutImageLayer[];

@@ -20,9 +20,19 @@
           "label": "Заголовок"
         },
         {
+          "key": "titleAccent",
+          "type": "string",
+          "label": "Акцент (предмет)"
+        },
+        {
           "key": "titleColor",
           "type": "color",
           "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
         },
         {
           "key": "label",
@@ -47,8 +57,10 @@
       ],
       "defaultProps": {
         "background": "#FFC53A",
-        "title": "HELLO,\nI AM\nDZIRANI",
+        "title": "HELLO,\nI AM",
+        "titleAccent": "DZIRANI",
         "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
         "label": "AM FOOD",
         "labelColor": "#000000",
         "image": ""
@@ -61,19 +73,24 @@
       "label": "Кадр 112 — helloiam + эмодзи",
       "fields": [
         {
-          "key": "body2",
+          "key": "brandLeft",
           "type": "string",
-          "label": "Заголовок (helloiam am)"
+          "label": "Слева (helloiam)"
         },
         {
-          "key": "body2Color",
+          "key": "brandRight",
+          "type": "string",
+          "label": "Справа (am)"
+        },
+        {
+          "key": "brandColor",
           "type": "color",
-          "label": "Цвет заголовка"
+          "label": "Цвет текста"
         },
         {
           "key": "image",
           "type": "image",
-          "label": "Стикер / фото"
+          "label": "Эмодзи / стикер"
         },
         {
           "key": "background",
@@ -83,8 +100,9 @@
       ],
       "defaultProps": {
         "background": "#FFC53A",
-        "body2": "helloiam am",
-        "body2Color": "#0F0F10",
+        "brandLeft": "helloiam",
+        "brandRight": "am",
+        "brandColor": "#0F0F10",
         "image": ""
       },
       "durationFrames": 90

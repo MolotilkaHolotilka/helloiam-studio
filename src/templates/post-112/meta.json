@@ -9,19 +9,24 @@
   "durationFrames": 90,
   "propsFields": [
     {
-      "key": "body2",
+      "key": "brandLeft",
       "type": "string",
-      "label": "Заголовок (helloiam am)"
+      "label": "Слева (helloiam)"
     },
     {
-      "key": "body2Color",
+      "key": "brandRight",
+      "type": "string",
+      "label": "Справа (am)"
+    },
+    {
+      "key": "brandColor",
       "type": "color",
-      "label": "Цвет заголовка"
+      "label": "Цвет текста"
     },
     {
       "key": "image",
       "type": "image",
-      "label": "Стикер / фото"
+      "label": "Эмодзи / стикер"
     },
     {
       "key": "background",
@@ -31,8 +36,9 @@
   ],
   "defaultProps": {
     "background": "#FFC53A",
-    "body2": "helloiam am",
-    "body2Color": "#0F0F10",
+    "brandLeft": "helloiam",
+    "brandRight": "am",
+    "brandColor": "#0F0F10",
     "image": ""
   }
 }
