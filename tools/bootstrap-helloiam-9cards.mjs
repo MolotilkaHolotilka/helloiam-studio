@@ -2,9 +2,11 @@
 import {mkdir, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {rebuildStoryCatalog} from './story-catalog.mjs';
 
 const studioRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const templatesRoot = path.join(studioRoot, 'src', 'templates');
+const storyDir = path.join(studioRoot, 'data', 'story-templates');
 
 const SOFT_FLOAT = `import React from 'react';
 import {GeneratedSoftFloat} from '../../_shared/GeneratedSoftFloat';
@@ -428,10 +430,7 @@ export const DURATION = 90;
 `;
 }
 
-for (const card of CARDS) {
-  const dir = path.join(templatesRoot, card.dir);
-  await mkdir(path.join(dir, 'presets'), {recursive: true});
-
+function cardFields(card) {
   const fields = [
     {key: 'title', type: 'string', label: 'Заголовок'},
     {key: 'titleColor', type: 'color', label: 'Цвет заголовка'},
@@ -440,12 +439,20 @@ for (const card of CARDS) {
   if (card.withImage) {
     fields.splice(2, 0, {key: 'image', type: 'image', label: 'Фото'});
   }
+  return fields;
+}
+
+for (const card of CARDS) {
+  const dir = path.join(templatesRoot, card.dir);
+  await mkdir(path.join(dir, 'presets'), {recursive: true});
+
+  const fields = cardFields(card);
 
   const meta = {
     id: card.id,
     project: 'helloiam',
     name: card.name,
-    description: 'HelloIAM Stories — 9 карточек',
+    description: 'Format 01 — HelloIAM 9-card carousel',
     tag: 'HelloIAM',
     templateDir: card.dir,
     preset: 'soft-float',
@@ -461,4 +468,29 @@ for (const card of CARDS) {
   console.log(`  ${card.dir} → ${card.id}`);
 }
 
+const format01 = {
+  id: 'Format01',
+  project: 'helloiam',
+  name: 'Format 01',
+  description: 'HelloIAM 9-card carousel (posts 82, 94, 95, 91, 88, 96, 89, 97, 98)',
+  tag: 'Карусель',
+  width: 1080,
+  height: 1350,
+  fps: 30,
+  durationPerCardSec: 3,
+  cards: CARDS.map((card, cardIndex) => ({
+    cardIndex,
+    compositionId: card.id,
+    label: card.name,
+    fields: cardFields(card),
+    defaultProps: {...card.defaults},
+    durationFrames: 90,
+  })),
+};
+
+await mkdir(storyDir, {recursive: true});
+await writeFile(path.join(storyDir, 'format-01.json'), `${JSON.stringify(format01, null, 2)}\n`);
+
+await rebuildStoryCatalog(studioRoot);
+console.log(`  format-01.json → ${format01.id} (${format01.cards.length} cards)`);
 console.log('Done.');

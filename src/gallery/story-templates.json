@@ -4,129 +4,54 @@
       "id": "helloiam",
       "name": "HelloIAM",
       "description": "Брендовые сторис и карусели",
-      "accent": "#4A7BFF"
+        "accent": "#FF5C45"
     }
   ],
   "templates": [
     {
-      "id": "ArmenianFoodCarousel",
+      "id": "Format01",
       "project": "helloiam",
-      "name": "Armenian Cards Carousel",
-      "description": "Rubric: armenian-food-carousel",
+      "name": "Format 01",
+      "description": "HelloIAM 9-card carousel (posts 94, 95, 88, 96, 82, 91, 89, 97, 98)",
       "tag": "Карусель",
-      "cardCount": 6
+      "cardCount": 9,
+      "coverImage": "generated/template-cover-format01.png"
     },
     {
-      "id": "DeepDiveThemeBlue",
+      "id": "HelloIamWineV1",
       "project": "helloiam",
-      "name": "Deep Dive Quote — Blue (Figma 124)",
-      "description": "Rubric: deep-dive-theme-blue",
-      "tag": "Карусель",
-      "cardCount": 1
+      "name": "Format 02",
+      "description": "Posts 103–104: brand + Armenian wine hero",
+      "tag": "Сторис",
+      "cardCount": 2,
+      "coverImage": "generated/template-cover-wine.png"
     },
     {
-      "id": "DeepDiveThemeDark",
+      "id": "Format03",
       "project": "helloiam",
-      "name": "Deep Dive Quote — Dark (Figma 125)",
-      "description": "Rubric: deep-dive-theme-dark",
-      "tag": "Карусель",
-      "cardCount": 1
-    },
-    {
-      "id": "DeepDiveThemeGray",
-      "project": "helloiam",
-      "name": "Deep Dive Quote — Gray (Figma 117)",
-      "description": "Rubric: deep-dive-theme-gray",
-      "tag": "Карусель",
-      "cardCount": 1
-    },
-    {
-      "id": "GreenPlateIntro",
-      "project": "helloiam",
-      "name": "Green Plate Intro",
-      "description": "Rubric: green-plate-intro",
-      "tag": "Карусель",
-      "cardCount": 3
-    },
-    {
-      "id": "IAm7Cards",
-      "project": "helloiam",
-      "name": "I Am — 7 Cards Carousel",
-      "description": "Rubric: i-am-7-cards",
-      "tag": "Карусель",
-      "cardCount": 7
-    },
-    {
-      "id": "IAmCultureIntro",
-      "project": "helloiam",
-      "name": "I Am Culture Intro",
-      "description": "Rubric: i-am-culture-intro",
-      "tag": "Карусель",
-      "cardCount": 7
-    },
-    {
-      "id": "IAmDolmaDeepDive",
-      "project": "helloiam",
-      "name": "I Am Dolma Deep Dive",
-      "description": "Rubric: i-am-dolma-deep-dive",
-      "tag": "Карусель",
-      "cardCount": 7
-    },
-    {
-      "id": "IAmFoodIntro",
-      "project": "helloiam",
-      "name": "I Am Food Intro",
-      "description": "Rubric: i-am-food-intro",
-      "tag": "Карусель",
-      "cardCount": 7
-    },
-    {
-      "id": "IAmKhachkarDeepDive",
-      "project": "helloiam",
-      "name": "I Am Khachkar Deep Dive",
-      "description": "Rubric: i-am-khachkar-deep-dive",
-      "tag": "Карусель",
-      "cardCount": 7
-    },
-    {
-      "id": "IAmLavashDeepDive",
-      "project": "helloiam",
-      "name": "I Am Lavash Deep Dive",
-      "description": "Rubric: i-am-lavash-deep-dive",
-      "tag": "Карусель",
-      "cardCount": 7
+      "name": "Format 03",
+      "description": "Posts 5 & 112: DZIRANI intro + helloiam",
+      "tag": "Сторис",
+      "cardCount": 2,
+      "coverImage": "generated/template-cover-format03.png"
     },
     {
       "id": "IAmMatsunDeepDive",
       "project": "helloiam",
-      "name": "I Am Matsun Deep Dive",
-      "description": "Rubric: i-am-matsun-deep-dive",
+      "name": "Format 04",
+      "description": "Posts 111, 125×5, 115 — matsun deep-dive",
       "tag": "Карусель",
-      "cardCount": 7
+      "cardCount": 7,
+      "coverImage": "generated/template-cover-matsun.png"
     },
     {
-      "id": "IAmStreetsIntro",
+      "id": "GreenPlateIntro",
       "project": "helloiam",
-      "name": "I Am Streets Intro",
-      "description": "Rubric: i-am-streets-intro",
+      "name": "Format 05",
+      "description": "Posts 111, 125, 115 — green-plate intro",
       "tag": "Карусель",
-      "cardCount": 7
-    },
-    {
-      "id": "IAmWineDeepDive",
-      "project": "helloiam",
-      "name": "I Am Wine Deep Dive",
-      "description": "Rubric: i-am-wine-deep-dive",
-      "tag": "Карусель",
-      "cardCount": 7
-    },
-    {
-      "id": "WizzLondonYerevan",
-      "project": "helloiam",
-      "name": "Wizz Air London Yerevan",
-      "description": "Rubric: wizz-london-yerevan",
-      "tag": "Карусель",
-      "cardCount": 3
+      "cardCount": 3,
+      "coverImage": "generated/template-cover-green-plate-intro.png"
     }
   ]
 }

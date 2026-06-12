@@ -1,4 +1,4 @@
-import {mkdir, readFile, readdir, writeFile} from 'node:fs/promises';
+import {mkdir, readFile, readdir, unlink, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 
 const ALLOWED_EXT = new Set(['.png', '.jpg', '.jpeg', '.webp', '.svg']);
@@ -90,4 +90,35 @@ export async function uploadStudioAsset(studioRoot, input) {
 
   await syncAssetOptions(studioRoot);
   return {path: relPath, name: filename, size: buffer.length};
+}
+
+/**
+ * @param {string} studioRoot
+ * @param {string} assetPath
+ */
+export async function deleteStudioAsset(studioRoot, assetPath) {
+  if (typeof assetPath !== 'string' || !assetPath.trim()) {
+    throw new Error('Не указан путь изображения');
+  }
+
+  const normalized = assetPath.trim().replace(/^\/+/, '');
+  if (normalized.includes('..') || normalized.includes('\\')) {
+    throw new Error('Недопустимый путь');
+  }
+
+  const manifest = await readManifest(studioRoot);
+  const index = manifest.images.indexOf(normalized);
+  if (index === -1) {
+    throw new Error('Изображение не найдено');
+  }
+
+  manifest.images.splice(index, 1);
+  await writeFile(manifestPath(studioRoot), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+
+  if (normalized.startsWith('generated/')) {
+    await unlink(path.join(studioRoot, 'public', normalized)).catch(() => {});
+  }
+
+  await syncAssetOptions(studioRoot);
+  return {path: normalized, deleted: true};
 }

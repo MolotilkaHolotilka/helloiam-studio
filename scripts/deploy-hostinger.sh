@@ -27,7 +27,7 @@ RSYNC_EXCLUDES=(
 )
 
 echo "==> Remote prep: ${REMOTE}:${REMOTE_DIR}"
-"${SSH[@]}" "$REMOTE" "mkdir -p ${REMOTE_DIR}/public/generated ${REMOTE_DIR}/out/renders ${REMOTE_DIR}/data/posts ${REMOTE_DIR}/data/story-templates ${REMOTE_DIR}/src/lib ${REMOTE_DIR}/src/templates ${REMOTE_DIR}/src/gallery"
+"${SSH[@]}" "$REMOTE" "mkdir -p ${REMOTE_DIR}/public/generated ${REMOTE_DIR}/out/renders ${REMOTE_DIR}/data/posts ${REMOTE_DIR}/data/story-templates ${REMOTE_DIR}/src/lib ${REMOTE_DIR}/src/templates ${REMOTE_DIR}/src/gallery ${REMOTE_DIR}/ALL\\ EMOJIS"
 
 echo "==> Rsync code"
 "${RSYNC[@]}" "${RSYNC_EXCLUDES[@]}" "${LOCAL_DIR}/" "${REMOTE}:${REMOTE_DIR}/"

@@ -1,4 +1,6 @@
 node_modules
 out
 data/posts/*.json
+public/generated/posts/
 .DS_Store
+.env

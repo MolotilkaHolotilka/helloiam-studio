@@ -1,8 +1,8 @@
 {
   "id": "GreenPlateIntro",
   "project": "helloiam",
-  "name": "Green Plate Intro",
-  "description": "Rubric: green-plate-intro",
+  "name": "Format 05",
+  "description": "Posts 111, 125, 115 — green-plate intro",
   "tag": "Карусель",
   "width": 1080,
   "height": 1350,
@@ -53,11 +53,6 @@
           "key": "labelColor",
           "type": "color",
           "label": "Цвет метки"
-        },
-        {
-          "key": "introLayout",
-          "type": "string",
-          "label": "Раскладка (lavash/dolma/matsun)"
         }
       ],
       "metaPropKeys": [
@@ -65,7 +60,8 @@
         "cardKind",
         "cardIndex",
         "cardCount",
-        "cardLayout"
+        "cardLayout",
+        "introLayout"
       ],
       "defaultProps": {
         "engine": "green-plate",
@@ -79,7 +75,7 @@
         "titleColor": "#0F0F10",
         "accentColor": "#D61E23",
         "labelColor": "#000000",
-        "image": "generated/helloiam-lavash.png",
+        "image": "",
         "introLayout": "lavash"
       },
       "durationFrames": 90
@@ -161,7 +157,7 @@
         "titleColor": "#0F0F10",
         "accentColor": "#D61E23",
         "labelColor": "#000000",
-        "image": "generated/helloiam-lavash.png"
+        "image": ""
       },
       "durationFrames": 90
     },
@@ -210,9 +206,9 @@
         "cardCount": 3,
         "brandLeft": "helloiam",
         "brandRight": "am",
-        "background": "#D9DDE0",
-        "brandColor": "#420000",
-        "image": "generated/helloiam-lavash.png"
+        "background": "#0F0F10",
+        "brandColor": "#FFFFFF",
+        "image": ""
       },
       "durationFrames": 90
     }

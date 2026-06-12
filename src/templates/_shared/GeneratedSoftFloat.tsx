@@ -51,7 +51,7 @@ export const GeneratedSoftFloat: React.FC<{
   card: Record<string, string | undefined>;
   localFrame: number;
   segmentFrames: number;
-  imageSrc: string;
+  imageSrc?: string;
 }> = ({layout, card, localFrame, segmentFrames, imageSrc}) => {
   const background = card.background ?? layout.card.background;
 
@@ -72,7 +72,7 @@ export const GeneratedSoftFloat: React.FC<{
         background,
       }}
     >
-      {layout.imageLayers.map((box, index) => {
+      {imageSrc && layout.imageLayers.map((box, index) => {
         const phase = index * 12;
         const floatY = wave(localFrame, segmentFrames, 8, phase);
         const tilt = wave(localFrame, segmentFrames, 1.2, phase + 6);

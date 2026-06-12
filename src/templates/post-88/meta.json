@@ -1,0 +1,32 @@
+{
+  "id": "Post88Css",
+  "project": "helloiam",
+  "name": "Кадр 88 — красный фон",
+  "description": "Format 01 — HelloIAM 9-card carousel",
+  "tag": "HelloIAM",
+  "templateDir": "post-88",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {
+      "key": "title",
+      "type": "string",
+      "label": "Заголовок"
+    },
+    {
+      "key": "titleColor",
+      "type": "color",
+      "label": "Цвет заголовка"
+    },
+    {
+      "key": "background",
+      "type": "color",
+      "label": "Фон"
+    }
+  ],
+  "defaultProps": {
+    "background": "#D61E23",
+    "title": "AM\nMEANS",
+    "titleColor": "#FFC53A"
+  }
+}

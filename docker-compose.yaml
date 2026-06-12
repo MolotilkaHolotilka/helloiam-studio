@@ -20,5 +20,8 @@ services:
       - ./src/templates:/app/src/templates
       - ./src/lib:/app/src/lib
       - ./src/gallery:/app/src/gallery
+      - ./scripts:/app/scripts
+      - ./tools:/app/tools
+      - "./ALL EMOJIS:/app/ALL EMOJIS"
     shm_size: "2gb"
     mem_limit: 3g

@@ -1,7 +1,12 @@
 import {mkdir, readdir, readFile, unlink, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
-import {listStudioAssets} from '../assets/studio-assets-service.mjs';
+import {getPostAssetPathSet, deleteAllPostAssets} from './post-assets-service.mjs';
+import {
+  applyPostSettingsToCards,
+  normalizePostSettings,
+  validatePostSettingsPatch,
+} from './post-settings.mjs';
 import {RUBRIC_META_PROP_KEY_SET} from '../rubric-meta-props.mjs';
 import {loadStoryTemplate} from '../story-templates-service.mjs';
 
@@ -13,6 +18,29 @@ function postsDir(studioRoot) {
 
 function postPath(studioRoot, postId) {
   return path.join(postsDir(studioRoot), `${postId}.json`);
+}
+
+/**
+ * @param {Record<string, unknown>} props
+ * @param {{ fields?: Array<{ key: string }>, metaPropKeys?: string[] }} card
+ */
+export function pickCardProps(props, card) {
+  const allowed = new Set((card.fields || []).map((f) => f.key));
+  const meta = new Set([...RUBRIC_META_PROP_KEY_SET, ...(card.metaPropKeys || [])]);
+  const out = /** @type {Record<string, unknown>} */ ({});
+  for (const [key, value] of Object.entries(props || {})) {
+    if (allowed.has(key) || meta.has(key)) out[key] = value;
+  }
+  return out;
+}
+
+/**
+ * @param {Record<string, unknown>} post
+ */
+function sanitizePostCardProps(post) {
+  for (const card of post.cards || []) {
+    card.props = pickCardProps(card.props, card);
+  }
 }
 
 /**
@@ -73,18 +101,34 @@ export async function createPost(studioRoot, templateId) {
     id,
     templateId: template.id,
     templateName: template.name,
+    name: template.name,
+    category: 'food',
+    themeColor: '#D9DDE0',
+    presetId: 'soft-float',
+    subject: '',
+    generation: {status: 'draft'},
     createdAt: now,
     updatedAt: now,
+    assets: [],
     cards: template.cards.map((card) => ({
       cardIndex: card.cardIndex,
       compositionId: card.compositionId,
       label: card.label,
       fields: card.fields,
       metaPropKeys: card.metaPropKeys ?? [],
-      props: {...card.defaultProps},
+      props: (() => {
+        const props = {...card.defaultProps};
+        for (const field of card.fields || []) {
+          if (field.type === 'image') props[field.key] = '';
+        }
+        return props;
+      })(),
       durationFrames: card.durationFrames,
     })),
   };
+
+  normalizePostSettings(post);
+  applyPostSettingsToCards(post);
 
   await mkdir(postsDir(studioRoot), {recursive: true});
   await writeFile(postPath(studioRoot, id), `${JSON.stringify(post, null, 2)}\n`, 'utf8');
@@ -103,15 +147,27 @@ export async function listPosts(studioRoot) {
       if (!file.endsWith('.json')) continue;
       try {
         const post = JSON.parse(await readFile(path.join(dir, file), 'utf8'));
+        const firstCard = post.cards?.[0];
+        normalizePostSettings(post);
         posts.push({
           id: post.id,
           templateId: post.templateId,
           templateName: post.templateName,
+          name: post.name,
+          subject: post.subject,
+          category: post.category,
           createdAt: post.createdAt,
           updatedAt: post.updatedAt,
           cardCount: post.cards?.length ?? 0,
           hasRender: Boolean(post.lastRender?.cards?.length),
           lastRender: post.lastRender ?? null,
+          firstCard: firstCard
+            ? {
+                compositionId: firstCard.compositionId,
+                props: firstCard.props ?? {},
+                label: firstCard.label,
+              }
+            : null,
         });
       } catch {
         // skip corrupt
@@ -130,10 +186,43 @@ export async function listPosts(studioRoot) {
  */
 export async function getPost(studioRoot, postId) {
   try {
-    return JSON.parse(await readFile(postPath(studioRoot, postId), 'utf8'));
+    const post = JSON.parse(await readFile(postPath(studioRoot, postId), 'utf8'));
+    normalizePostSettings(post);
+    sanitizePostCardProps(post);
+    return post;
   } catch {
     throw new Error(`Пост не найден: ${postId}`);
   }
+}
+
+/**
+ * @param {string} studioRoot
+ * @param {string} postId
+ * @param {Record<string, unknown>} patch
+ * @param {{ admin?: boolean }} [options]
+ */
+export async function updatePostSettings(studioRoot, postId, patch, options = {}) {
+  const post = await getPost(studioRoot, postId);
+  const {errors, patch: validated} = validatePostSettingsPatch(patch, options);
+  if (errors.length > 0) {
+    const err = new Error('Validation failed');
+    err.details = errors;
+    throw err;
+  }
+
+  if (validated.category !== undefined) post.category = validated.category;
+  if (validated.themeColor !== undefined) post.themeColor = validated.themeColor;
+  if (validated.presetId !== undefined) post.presetId = validated.presetId;
+  if (validated.subject !== undefined) {
+    post.subject = validated.subject;
+    if (!patch.name) post.name = validated.subject || post.name;
+  }
+  if (validated.name !== undefined) post.name = validated.name;
+
+  applyPostSettingsToCards(post);
+  post.updatedAt = new Date().toISOString();
+  await writeFile(postPath(studioRoot, postId), `${JSON.stringify(post, null, 2)}\n`, 'utf8');
+  return post;
 }
 
 /**
@@ -151,8 +240,7 @@ export async function updatePostCard(studioRoot, postId, cardIndex, props, optio
   }
 
   if (options.strict) {
-    const assets = await listStudioAssets(studioRoot);
-    const assetPaths = new Set(assets.map((a) => a.path));
+    const assetPaths = await getPostAssetPathSet(studioRoot, postId);
     const errors = validateCardProps(props, card.fields || [], assetPaths, card.metaPropKeys);
     if (errors.length > 0) {
       const err = new Error('Validation failed');
@@ -161,10 +249,101 @@ export async function updatePostCard(studioRoot, postId, cardIndex, props, optio
     }
   }
 
-  card.props = {...(card.props || {}), ...props};
+  card.props = pickCardProps({...(card.props || {}), ...props}, card);
   post.updatedAt = new Date().toISOString();
   await writeFile(postPath(studioRoot, postId), `${JSON.stringify(post, null, 2)}\n`, 'utf8');
   return post;
+}
+
+/**
+ * @param {string} studioRoot
+ */
+export async function listAllPostsFull(studioRoot) {
+  const dir = postsDir(studioRoot);
+  try {
+    const files = await readdir(dir);
+    const posts = [];
+    for (const file of files) {
+      if (!file.endsWith('.json')) continue;
+      try {
+        posts.push(JSON.parse(await readFile(path.join(dir, file), 'utf8')));
+      } catch {
+        // skip corrupt
+      }
+    }
+    posts.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+    return posts;
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * @param {string} studioRoot
+ */
+export async function listAssetBindings(studioRoot) {
+  const posts = await listAllPostsFull(studioRoot);
+  /** @type {Array<{ path: string, postId: string, postLabel: string, formatId: string, formatName: string, cardIndex: number, cardLabel: string, fieldKey: string, updatedAt: string }>} */
+  const bindings = [];
+
+  for (const post of posts) {
+    const formatId = post.templateId || '';
+    const formatName = post.templateName || formatId || 'Без формата';
+    const postLabel = post.name || post.templateName || formatId || post.id;
+
+    for (const card of post.cards || []) {
+      for (const field of card.fields || []) {
+        if (field.type !== 'image') continue;
+        const assetPath = card.props?.[field.key];
+        if (typeof assetPath !== 'string' || !assetPath.trim()) continue;
+        bindings.push({
+          path: assetPath.trim(),
+          postId: post.id,
+          postLabel,
+          formatId,
+          formatName,
+          cardIndex: card.cardIndex,
+          cardLabel: card.label || `Карточка ${card.cardIndex + 1}`,
+          fieldKey: field.key,
+          updatedAt: post.updatedAt || post.createdAt || '',
+        });
+      }
+    }
+  }
+
+  return bindings;
+}
+
+/**
+ * @param {string} studioRoot
+ * @param {string} assetPath
+ */
+export async function clearAssetFromAllPosts(studioRoot, assetPath) {
+  const normalized = assetPath.trim().replace(/^\/+/, '');
+  const posts = await listAllPostsFull(studioRoot);
+  let touchedPosts = 0;
+  let clearedRefs = 0;
+
+  for (const post of posts) {
+    let changed = false;
+    for (const card of post.cards || []) {
+      for (const field of card.fields || []) {
+        if (field.type !== 'image') continue;
+        if (card.props?.[field.key] === normalized) {
+          card.props[field.key] = '';
+          clearedRefs += 1;
+          changed = true;
+        }
+      }
+    }
+    if (changed) {
+      post.updatedAt = new Date().toISOString();
+      await writeFile(postPath(studioRoot, post.id), `${JSON.stringify(post, null, 2)}\n`, 'utf8');
+      touchedPosts += 1;
+    }
+  }
+
+  return {touchedPosts, clearedRefs};
 }
 
 /**
@@ -173,6 +352,7 @@ export async function updatePostCard(studioRoot, postId, cardIndex, props, optio
  */
 export async function deletePost(studioRoot, postId) {
   try {
+    await deleteAllPostAssets(studioRoot, postId);
     await unlink(postPath(studioRoot, postId));
     return {id: postId};
   } catch {

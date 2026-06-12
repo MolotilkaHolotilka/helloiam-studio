@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {loadEnvFile} from '../tools/load-env.mjs';
 import {createGalleryServer} from './gallery-http.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const STUDIO_ROOT = path.join(__dirname, '..');
+await loadEnvFile(STUDIO_ROOT);
 const GALLERY_DIR = path.join(STUDIO_ROOT, 'src', 'gallery');
 const GALLERY_PORT = Number(process.env.GALLERY_PORT) || 3456;
 const HOST = process.env.HOST || '0.0.0.0';

@@ -1,0 +1,50 @@
+{
+  "id": "Post103Css",
+  "project": "helloiam",
+  "name": "Кадр 103 — бренд + вино",
+  "description": "HelloIAM Wine — 2 cards (posts 103–104)",
+  "tag": "HelloIAM",
+  "templateDir": "post-103",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {
+      "key": "body2",
+      "type": "string",
+      "label": "Заголовок (helloiam am)"
+    },
+    {
+      "key": "body2Color",
+      "type": "color",
+      "label": "Цвет заголовка"
+    },
+    {
+      "key": "body4",
+      "type": "textarea",
+      "label": "Подзаголовок"
+    },
+    {
+      "key": "body4Color",
+      "type": "color",
+      "label": "Цвет подзаголовка"
+    },
+    {
+      "key": "image",
+      "type": "image",
+      "label": "Стикер / фото"
+    },
+    {
+      "key": "background",
+      "type": "color",
+      "label": "Фон"
+    }
+  ],
+  "defaultProps": {
+    "background": "#D9DDE0",
+    "body2": "helloiam am",
+    "body2Color": "#420000",
+    "body4": "Say Hello\nto Armenian Wine",
+    "body4Color": "#420000",
+    "image": "generated/helloiam-wine-armenia.png"
+  }
+}

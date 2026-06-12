@@ -1,0 +1,93 @@
+{
+  "id": "Format03",
+  "project": "helloiam",
+  "name": "Format 03",
+  "description": "Posts 5 & 112: DZIRANI intro + helloiam",
+  "tag": "Сторис",
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardSec": 3,
+  "cards": [
+    {
+      "cardIndex": 0,
+      "compositionId": "Post5Css",
+      "label": "Кадр 5 — интро DZIRANI",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#FFC53A",
+        "title": "HELLO,\nI AM\nDZIRANI",
+        "titleColor": "#0F0F10",
+        "label": "AM FOOD",
+        "labelColor": "#000000",
+        "image": ""
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 1,
+      "compositionId": "Post112Css",
+      "label": "Кадр 112 — helloiam + эмодзи",
+      "fields": [
+        {
+          "key": "body2",
+          "type": "string",
+          "label": "Заголовок (helloiam am)"
+        },
+        {
+          "key": "body2Color",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Стикер / фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#FFC53A",
+        "body2": "helloiam am",
+        "body2Color": "#0F0F10",
+        "image": ""
+      },
+      "durationFrames": 90
+    }
+  ]
+}

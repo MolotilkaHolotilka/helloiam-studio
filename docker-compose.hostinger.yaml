@@ -22,6 +22,9 @@ services:
       - ./src/lib:/app/src/lib
       - ./src/gallery:/app/src/gallery
       - ./data/story-templates:/app/data/story-templates
+      - ./scripts:/app/scripts
+      - ./tools:/app/tools
+      - "./ALL EMOJIS:/app/ALL EMOJIS"
     shm_size: "2gb"
     mem_limit: 3g
     labels:

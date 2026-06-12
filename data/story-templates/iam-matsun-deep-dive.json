@@ -1,8 +1,8 @@
 {
   "id": "IAmMatsunDeepDive",
   "project": "helloiam",
-  "name": "I Am Matsun Deep Dive",
-  "description": "Rubric: i-am-matsun-deep-dive",
+  "name": "Format 04",
+  "description": "Posts 111, 125×5, 115 — matsun deep-dive",
   "tag": "Карусель",
   "width": 1080,
   "height": 1350,
@@ -53,11 +53,6 @@
           "key": "labelColor",
           "type": "color",
           "label": "Цвет метки"
-        },
-        {
-          "key": "introLayout",
-          "type": "string",
-          "label": "Раскладка (lavash/dolma/matsun)"
         }
       ],
       "metaPropKeys": [
@@ -65,21 +60,22 @@
         "cardKind",
         "cardIndex",
         "cardCount",
-        "cardLayout"
+        "cardLayout",
+        "introLayout"
       ],
       "defaultProps": {
         "engine": "green-plate",
         "cardKind": "hello",
         "cardIndex": 0,
         "cardCount": 7,
-        "title": "HELLO, I AM",
+        "title": "HELLO,\nI AM",
         "titleAccent": "MATSUN",
-        "label": "AM MATSUN",
+        "label": "AM FOOD",
         "background": "#D9DDE0",
         "titleColor": "#0F0F10",
         "accentColor": "#D61E23",
         "labelColor": "#000000",
-        "image": "generated/helloiam-lavash.png",
+        "image": "",
         "introLayout": "matsun"
       },
       "durationFrames": 90
@@ -152,16 +148,16 @@
         "cardKind": "quote",
         "cardIndex": 1,
         "cardCount": 7,
-        "title": "HELLO, I AM",
+        "title": "HELLO,\nI AM",
         "titleAccent": "MATSUN",
         "quote": "Armenian matsun — slide 2.\nDiscover the story.",
-        "label": "AM MATSUN",
+        "label": "AM FOOD",
         "background": "#D9DDE0",
         "quoteColor": "#D61E23",
         "titleColor": "#0F0F10",
         "accentColor": "#D61E23",
         "labelColor": "#000000",
-        "image": "generated/helloiam-chair-field.png"
+        "image": ""
       },
       "durationFrames": 90
     },
@@ -233,16 +229,16 @@
         "cardKind": "quote",
         "cardIndex": 2,
         "cardCount": 7,
-        "title": "HELLO, I AM",
+        "title": "HELLO,\nI AM",
         "titleAccent": "MATSUN",
         "quote": "Armenian matsun — slide 3.\nDiscover the story.",
-        "label": "AM MATSUN",
+        "label": "AM FOOD",
         "background": "#D9DDE0",
         "quoteColor": "#D61E23",
         "titleColor": "#0F0F10",
         "accentColor": "#D61E23",
         "labelColor": "#000000",
-        "image": "generated/helloiam-chair-field.png"
+        "image": ""
       },
       "durationFrames": 90
     },
@@ -314,16 +310,16 @@
         "cardKind": "quote",
         "cardIndex": 3,
         "cardCount": 7,
-        "title": "HELLO, I AM",
+        "title": "HELLO,\nI AM",
         "titleAccent": "MATSUN",
         "quote": "Armenian matsun — slide 4.\nDiscover the story.",
-        "label": "AM MATSUN",
+        "label": "AM FOOD",
         "background": "#D9DDE0",
         "quoteColor": "#D61E23",
         "titleColor": "#0F0F10",
         "accentColor": "#D61E23",
         "labelColor": "#000000",
-        "image": "generated/helloiam-chair-field.png"
+        "image": ""
       },
       "durationFrames": 90
     },
@@ -395,16 +391,16 @@
         "cardKind": "quote",
         "cardIndex": 4,
         "cardCount": 7,
-        "title": "HELLO, I AM",
+        "title": "HELLO,\nI AM",
         "titleAccent": "MATSUN",
         "quote": "Armenian matsun — slide 5.\nDiscover the story.",
-        "label": "AM MATSUN",
+        "label": "AM FOOD",
         "background": "#D9DDE0",
         "quoteColor": "#D61E23",
         "titleColor": "#0F0F10",
         "accentColor": "#D61E23",
         "labelColor": "#000000",
-        "image": "generated/helloiam-chair-field.png"
+        "image": ""
       },
       "durationFrames": 90
     },
@@ -476,16 +472,16 @@
         "cardKind": "quote",
         "cardIndex": 5,
         "cardCount": 7,
-        "title": "HELLO, I AM",
+        "title": "HELLO,\nI AM",
         "titleAccent": "MATSUN",
         "quote": "Armenian matsun — slide 6.\nDiscover the story.",
-        "label": "AM MATSUN",
+        "label": "AM FOOD",
         "background": "#D9DDE0",
         "quoteColor": "#D61E23",
         "titleColor": "#0F0F10",
         "accentColor": "#D61E23",
         "labelColor": "#000000",
-        "image": "generated/helloiam-chair-field.png"
+        "image": ""
       },
       "durationFrames": 90
     },
@@ -534,9 +530,9 @@
         "cardCount": 7,
         "brandLeft": "helloiam",
         "brandRight": "am",
-        "background": "#D9DDE0",
-        "brandColor": "#420000",
-        "image": "generated/helloiam-lavash.png"
+        "background": "#0F0F10",
+        "brandColor": "#FFFFFF",
+        "image": ""
       },
       "durationFrames": 90
     }

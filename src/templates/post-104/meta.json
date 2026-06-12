@@ -1,0 +1,26 @@
+{
+  "id": "Post104Css",
+  "project": "helloiam",
+  "name": "Кадр 104 — фото на весь кадр",
+  "description": "HelloIAM Wine — 2 cards (posts 103–104)",
+  "tag": "HelloIAM",
+  "templateDir": "post-104",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {
+      "key": "image",
+      "type": "image",
+      "label": "Фото"
+    },
+    {
+      "key": "background",
+      "type": "color",
+      "label": "Фон"
+    }
+  ],
+  "defaultProps": {
+    "background": "#D9DDE0",
+    "image": "generated/helloiam-wine-armenia.png"
+  }
+}

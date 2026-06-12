@@ -1,4 +1,624 @@
 {
+  "Post103Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#D9DDE0"
+    },
+    "layers": [
+      {
+        "key": "body2",
+        "role": "text",
+        "box": {
+          "left": 197,
+          "top": 586,
+          "width": 687,
+          "height": 92
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 96,
+          "lineHeight": "92px",
+          "fontWeight": 700,
+          "fontStyle": "normal",
+          "textAlign": "center",
+          "color": "#420000"
+        },
+        "defaultText": "helloiam am",
+        "defaultColor": "#420000"
+      },
+      {
+        "key": "body4",
+        "role": "text",
+        "box": {
+          "left": 525,
+          "top": 719,
+          "width": 288,
+          "height": 88
+        },
+        "textStyle": {
+          "fontFamily": "serif",
+          "fontSize": 44,
+          "lineHeight": "44px",
+          "fontWeight": 400,
+          "fontStyle": "italic",
+          "textAlign": "center",
+          "color": "#420000"
+        },
+        "defaultText": "Say Hello\nto Armenian Wine",
+        "defaultColor": "#420000"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": 579,
+        "top": 542,
+        "width": 180,
+        "height": 180,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post104Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#D9DDE0"
+    },
+    "layers": [],
+    "imageLayers": [
+      {
+        "left": -135,
+        "top": 0,
+        "width": 1350,
+        "height": 1350,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post112Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#FFC53A"
+    },
+    "layers": [
+      {
+        "key": "body2",
+        "role": "text",
+        "box": {
+          "left": 196,
+          "top": 632,
+          "width": 687,
+          "height": 92
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 96,
+          "lineHeight": "92px",
+          "fontWeight": 700,
+          "fontStyle": "normal",
+          "textAlign": "center",
+          "color": "#0F0F10"
+        },
+        "defaultText": "helloiam am",
+        "defaultColor": "#0F0F10"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": 578,
+        "top": 588,
+        "width": 180,
+        "height": 180,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post5Css": {
+    "family": "intro-hero",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#FFC53A"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 40,
+          "top": 40,
+          "width": 605,
+          "height": 624
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "color": "#0F0F10"
+        },
+        "defaultText": "HELLO,\nI AM\nDZIRANI",
+        "defaultColor": "#0F0F10"
+      },
+      {
+        "key": "label",
+        "role": "label",
+        "box": {
+          "left": 40,
+          "top": 1285,
+          "width": 124,
+          "height": 32
+        },
+        "alignItems": "flex-end",
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 26,
+          "lineHeight": "32px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "color": "#000000"
+        },
+        "defaultText": "AM FOOD",
+        "defaultColor": "#000000"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": -269,
+        "top": 0,
+        "width": 1698,
+        "height": 1698,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post70Css": {
+    "family": "intro-hero",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#D61E23"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 40,
+          "top": 40,
+          "width": 605,
+          "height": 624
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "color": "#FFFFFF"
+        },
+        "defaultText": "HELLO,\nI AM\nGREEN\nPLATE",
+        "defaultColor": "#FFFFFF"
+      },
+      {
+        "key": "label",
+        "role": "label",
+        "box": {
+          "left": 40,
+          "top": 1285,
+          "width": 124,
+          "height": 32
+        },
+        "alignItems": "flex-end",
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 26,
+          "lineHeight": "32px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "color": "#000000"
+        },
+        "defaultText": "AM FOOD",
+        "defaultColor": "#000000"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": -269,
+        "top": 0,
+        "width": 1698,
+        "height": 1698,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post82Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#D9DDE0"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 161,
+          "top": 285,
+          "width": 758,
+          "height": 780
+        },
+        "alignItems": "center",
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "textAlign": "center",
+          "color": "#4A7BFF"
+        },
+        "defaultText": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+        "defaultColor": "#4A7BFF"
+      }
+    ],
+    "imageLayers": []
+  },
+  "Post88Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#D61E23"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 243,
+          "top": 597,
+          "width": 595,
+          "height": 468
+        },
+        "alignItems": "flex-end",
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "textAlign": "center",
+          "color": "#FFC53A"
+        },
+        "defaultText": "AM\nMEANS",
+        "defaultColor": "#FFC53A"
+      }
+    ],
+    "imageLayers": []
+  },
+  "Post89Css": {
+    "family": "intro-hero",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#000000"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 161,
+          "top": 285,
+          "width": 758,
+          "height": 780
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "textAlign": "center",
+          "color": "#FFC53A"
+        },
+        "defaultText": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+        "defaultColor": "#FFC53A"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": -448,
+        "top": -313,
+        "width": 1977,
+        "height": 1977,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post91Css": {
+    "family": "intro-hero",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#0F0F10"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 161,
+          "top": 285,
+          "width": 758,
+          "height": 780
+        },
+        "alignItems": "center",
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "textAlign": "center",
+          "color": "#FFFFFF"
+        },
+        "defaultText": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+        "defaultColor": "#FFFFFF"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": -448,
+        "top": -470,
+        "width": 1977,
+        "height": 1977,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post94Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#FFC53A"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 272,
+          "top": 285,
+          "width": 536,
+          "height": 312
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "textAlign": "center",
+          "color": "#0F0F10"
+        },
+        "defaultText": "HELLO\nI AM",
+        "defaultColor": "#0F0F10"
+      }
+    ],
+    "imageLayers": []
+  },
+  "Post95Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#000000"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 272,
+          "top": 285,
+          "width": 536,
+          "height": 468
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "textAlign": "center",
+          "color": "#FFFFFF"
+        },
+        "defaultText": "HELLO\nI AM\nAM",
+        "defaultColor": "#FFFFFF"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": -804,
+        "top": -150,
+        "width": 2688,
+        "height": 1500,
+        "opacity": 0.6,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post96Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#000000"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 161,
+          "top": 597,
+          "width": 758,
+          "height": 468
+        },
+        "alignItems": "flex-end",
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "textAlign": "center",
+          "color": "#FFC53A"
+        },
+        "defaultText": "AM MEANS\nARMENIA",
+        "defaultColor": "#FFC53A"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": -670,
+        "top": 0,
+        "width": 2419,
+        "height": 1350,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post97Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#000000"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 161,
+          "top": 285,
+          "width": 758,
+          "height": 780
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "textAlign": "center",
+          "color": "#D61E23"
+        },
+        "defaultText": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+        "defaultColor": "#D61E23"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": 0,
+        "top": 0,
+        "width": 1350,
+        "height": 1350,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post98Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#000000"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 161,
+          "top": 285,
+          "width": 758,
+          "height": 780
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 164,
+          "lineHeight": "156px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "textAlign": "center",
+          "color": "#D61E23"
+        },
+        "defaultText": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+        "defaultColor": "#D61E23"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": -151,
+        "top": -16,
+        "width": 1381,
+        "height": 1381,
+        "objectFit": "cover"
+      }
+    ]
+  },
+  "Post99Css": {
+    "family": "generic",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#D79689"
+    },
+    "layers": [
+      {
+        "key": "body2",
+        "role": "text",
+        "box": {
+          "left": 196,
+          "top": 632,
+          "width": 687,
+          "height": 92
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 96,
+          "lineHeight": "92px",
+          "fontWeight": 700,
+          "fontStyle": "normal",
+          "textAlign": "center",
+          "color": "#0F0F10"
+        },
+        "defaultText": "helloiam am",
+        "defaultColor": "#0F0F10"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": 578,
+        "top": 588,
+        "width": 180,
+        "height": 180,
+        "objectFit": "cover"
+      }
+    ]
+  },
   "RubricCardCss": {
     "family": "generic",
     "card": {

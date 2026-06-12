@@ -1,0 +1,38 @@
+{
+  "id": "Post112Css",
+  "project": "helloiam",
+  "name": "Кадр 112 — helloiam + эмодзи",
+  "description": "Format 03 — posts 5 & 112",
+  "tag": "HelloIAM",
+  "templateDir": "post-112",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {
+      "key": "body2",
+      "type": "string",
+      "label": "Заголовок (helloiam am)"
+    },
+    {
+      "key": "body2Color",
+      "type": "color",
+      "label": "Цвет заголовка"
+    },
+    {
+      "key": "image",
+      "type": "image",
+      "label": "Стикер / фото"
+    },
+    {
+      "key": "background",
+      "type": "color",
+      "label": "Фон"
+    }
+  ],
+  "defaultProps": {
+    "background": "#FFC53A",
+    "body2": "helloiam am",
+    "body2Color": "#0F0F10",
+    "image": ""
+  }
+}

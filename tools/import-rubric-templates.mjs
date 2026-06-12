@@ -3,6 +3,7 @@ import {readdir, readFile, writeFile, unlink} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {RUBRIC_META_PROP_KEYS} from './rubric-meta-props.mjs';
+import {KEEP_STORY_FILES, rebuildStoryCatalog} from './story-catalog.mjs';
 
 const studioRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rubricRoot = path.join(studioRoot, 'rubric-templates-tsx');
@@ -43,7 +44,6 @@ const FIELD = {
     {key: 'titleColor', type: 'color', label: 'Цвет заголовка'},
     {key: 'accentColor', type: 'color', label: 'Цвет акцента'},
     {key: 'labelColor', type: 'color', label: 'Цвет метки'},
-    {key: 'introLayout', type: 'string', label: 'Раскладка (lavash/dolma/matsun)'},
   ],
   quote: [
     {key: 'title', type: 'string', label: 'Заголовок'},
@@ -152,6 +152,21 @@ function baseMeta(engine, cardKind, cardIndex, cardCount, props, durationFrames 
   };
 }
 
+function greenPlateBrandSlide(cardIndex, cardCount, durationFrames = 90) {
+  return {
+    label: 'Бренд',
+    kind: 'brand',
+    fields: FIELD.brand,
+    props: baseMeta('green-plate', 'brand', cardIndex, cardCount, {
+      brandLeft: 'helloiam',
+      brandRight: 'am',
+      background: '#D9DDE0',
+      brandColor: '#420000',
+      image: IMG.lavash,
+    }, durationFrames),
+  };
+}
+
 function greenPlate7Cards(introLayout, theme) {
   const cards = [];
   const count = 7;
@@ -191,18 +206,7 @@ function greenPlate7Cards(introLayout, theme) {
       }, dur),
     });
   }
-  cards.push({
-    label: 'Бренд',
-    kind: 'brand',
-    fields: FIELD.brand,
-    props: baseMeta('green-plate', 'brand', count - 1, count, {
-      brandLeft: 'helloiam',
-      brandRight: 'am',
-      background: '#D9DDE0',
-      brandColor: '#420000',
-      image: IMG.lavash,
-    }, dur),
-  });
+  cards.push(greenPlateBrandSlide(count - 1, count, dur));
   return cards;
 }
 
@@ -451,6 +455,11 @@ function wizzCards() {
   ];
 }
 
+/** Only these rubric workflows are published in the gallery catalog */
+const ACTIVE_RUBRIC_SLUGS = new Set(['green-plate-intro', 'i-am-matsun-deep-dive']);
+
+const KEEP_STORY_FILE_SET = new Set(KEEP_STORY_FILES);
+
 const TEMPLATE_BUILDERS = {
   'i-am-7-cards': () => greenPlate7Cards('lavash', 'food'),
   'i-am-food-intro': () => greenPlate7Cards('lavash', 'food'),
@@ -521,6 +530,7 @@ const catalogTemplates = [];
 
 for (const entry of entries) {
   if (!entry.isDirectory()) continue;
+  if (!ACTIVE_RUBRIC_SLUGS.has(entry.name)) continue;
   const wfPath = path.join(rubricRoot, entry.name, 'workflow.json');
   let workflow;
   try {
@@ -542,19 +552,12 @@ for (const entry of entries) {
   console.log(`  ${story.id} (${story.cards.length} cards)`);
 }
 
-catalogTemplates.sort((a, b) => a.id.localeCompare(b.id));
+for (const file of await readdir(storyDir)) {
+  if (!file.endsWith('.json')) continue;
+  if (KEEP_STORY_FILE_SET.has(file)) continue;
+  await unlink(path.join(storyDir, file));
+  console.log('removed story template', file);
+}
 
-const catalog = {
-  projects: [
-    {
-      id: 'helloiam',
-      name: 'HelloIAM',
-      description: 'Брендовые сторис и карусели',
-      accent: '#4A7BFF',
-    },
-  ],
-  templates: catalogTemplates,
-};
-
-await writeFile(path.join(galleryDir, 'story-templates.json'), `${JSON.stringify(catalog, null, 2)}\n`);
-console.log(`\nImported ${catalogTemplates.length} rubric templates.`);
+const mergedCatalog = await rebuildStoryCatalog(studioRoot);
+console.log(`\nImported ${catalogTemplates.length} rubric templates (${mergedCatalog.length} in catalog).`);

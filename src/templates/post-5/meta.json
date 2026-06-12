@@ -1,0 +1,50 @@
+{
+  "id": "Post5Css",
+  "project": "helloiam",
+  "name": "Кадр 5 — интро DZIRANI",
+  "description": "Format 03 — posts 5 & 112",
+  "tag": "HelloIAM",
+  "templateDir": "post-5",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {
+      "key": "title",
+      "type": "string",
+      "label": "Заголовок"
+    },
+    {
+      "key": "titleColor",
+      "type": "color",
+      "label": "Цвет заголовка"
+    },
+    {
+      "key": "label",
+      "type": "string",
+      "label": "Метка"
+    },
+    {
+      "key": "labelColor",
+      "type": "color",
+      "label": "Цвет метки"
+    },
+    {
+      "key": "image",
+      "type": "image",
+      "label": "Фото"
+    },
+    {
+      "key": "background",
+      "type": "color",
+      "label": "Фон"
+    }
+  ],
+  "defaultProps": {
+    "background": "#FFC53A",
+    "title": "HELLO,\nI AM\nDZIRANI",
+    "titleColor": "#0F0F10",
+    "label": "AM FOOD",
+    "labelColor": "#000000",
+    "image": ""
+  }
+}

@@ -5,10 +5,12 @@ import {Card1Hello, Card2Quote, Card3Brand, pickGreenPlateCard} from './green-pl
 import {pickWizzCard} from './wizz';
 import type {RubricCardProps, RubricCardSlot} from './types';
 
-function asSlot(props: RubricCardProps, imageSrc: string): RubricCardSlot {
+function asSlot(props: RubricCardProps, imageSrc?: string): RubricCardSlot {
+  const image =
+    typeof props.image === 'string' && props.image.trim() ? props.image : imageSrc;
   return {
     ...props,
-    image: props.image || imageSrc,
+    image,
   };
 }
 
@@ -16,7 +18,7 @@ export const RubricSingleCard: React.FC<{
   card: RubricCardProps;
   localFrame: number;
   segmentFrames: number;
-  imageSrc: string;
+  imageSrc?: string;
 }> = ({card, localFrame, segmentFrames, imageSrc}) => {
   const slot = asSlot(card, imageSrc);
   const engine = card.engine;

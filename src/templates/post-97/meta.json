@@ -1,0 +1,38 @@
+{
+  "id": "Post97Css",
+  "project": "helloiam",
+  "name": "Кадр 97 — полноэкранное фото",
+  "description": "Format 01 — HelloIAM 9-card carousel",
+  "tag": "HelloIAM",
+  "templateDir": "post-97",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {
+      "key": "title",
+      "type": "string",
+      "label": "Заголовок"
+    },
+    {
+      "key": "titleColor",
+      "type": "color",
+      "label": "Цвет заголовка"
+    },
+    {
+      "key": "image",
+      "type": "image",
+      "label": "Фото"
+    },
+    {
+      "key": "background",
+      "type": "color",
+      "label": "Фон"
+    }
+  ],
+  "defaultProps": {
+    "background": "#000000",
+    "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+    "titleColor": "#D61E23",
+    "image": "generated/image-79-1.png"
+  }
+}

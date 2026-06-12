@@ -8,6 +8,7 @@ export const RUBRIC_META_PROP_KEYS = [
   'cardIndex',
   'cardCount',
   'cardLayout',
+  'introLayout',
 ];
 
 export const RUBRIC_META_PROP_KEY_SET = new Set(RUBRIC_META_PROP_KEYS);

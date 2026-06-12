@@ -9,7 +9,11 @@
     "gallery": "node scripts/gallery-only.mjs",
     "stop": "node scripts/free-ports.mjs 3456",
     "sync:gallery": "node tools/sync-gallery-manifest.mjs",
+    "sync:template-references": "node tools/template-references-sync.mjs",
     "import:rubric": "node tools/import-rubric-templates.mjs && npm run sync:gallery",
+    "bootstrap:format01": "node tools/bootstrap-helloiam-9cards.mjs && npm run sync:gallery",
+    "bootstrap:wine": "node tools/bootstrap-helloiam-wine-2cards.mjs && npm run sync:gallery",
+    "bootstrap:format03": "node tools/bootstrap-helloiam-format-3.mjs && npm run sync:gallery",
     "render": "node tools/render/render-cli.mjs",
     "lint": "tsc --noEmit"
   },

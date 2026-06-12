@@ -1,0 +1,50 @@
+{
+  "id": "Post70Css",
+  "project": "helloiam",
+  "name": "Кадр 70 — Green Plate интро",
+  "description": "Format 03 — posts 99 & 70",
+  "tag": "HelloIAM",
+  "templateDir": "post-70",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {
+      "key": "title",
+      "type": "string",
+      "label": "Заголовок"
+    },
+    {
+      "key": "titleColor",
+      "type": "color",
+      "label": "Цвет заголовка"
+    },
+    {
+      "key": "label",
+      "type": "string",
+      "label": "Метка"
+    },
+    {
+      "key": "labelColor",
+      "type": "color",
+      "label": "Цвет метки"
+    },
+    {
+      "key": "image",
+      "type": "image",
+      "label": "Фото"
+    },
+    {
+      "key": "background",
+      "type": "color",
+      "label": "Фон"
+    }
+  ],
+  "defaultProps": {
+    "background": "#D61E23",
+    "title": "HELLO,\nI AM\nGREEN\nPLATE",
+    "titleColor": "#FFFFFF",
+    "label": "AM FOOD",
+    "labelColor": "#000000",
+    "image": "generated/helloiam-lavash.png"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "Post99Css",
+  "project": "helloiam",
+  "name": "Кадр 99 — salmon + helloiam",
+  "description": "Format 03 — posts 99 & 70",
+  "tag": "HelloIAM",
+  "templateDir": "post-99",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {
+      "key": "body2",
+      "type": "string",
+      "label": "Заголовок (helloiam am)"
+    },
+    {
+      "key": "body2Color",
+      "type": "color",
+      "label": "Цвет заголовка"
+    },
+    {
+      "key": "image",
+      "type": "image",
+      "label": "Стикер / фото"
+    },
+    {
+      "key": "background",
+      "type": "color",
+      "label": "Фон"
+    }
+  ],
+  "defaultProps": {
+    "background": "#D79689",
+    "body2": "helloiam am",
+    "body2Color": "#0F0F10",
+    "image": "generated/helloiam-lavash.png"
+  }
+}

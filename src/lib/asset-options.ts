@@ -1,11 +1,5 @@
 /* AUTO-UPDATED — gallery upload or edit studio-assets.json */
 export const STUDIO_IMAGE_OPTIONS = [
-  'frames/001-shot-01.svg',
-  'frames/001-shot-02.svg',
-  'frames/001-shot-03.svg',
-  'frames/001-shot-04.svg',
-  'frames/001-shot-05.svg',
-  'frames/001-shot-06.svg',
   'generated/dolma-102-1.png',
   'generated/dolma-102-2.png',
   'generated/dolma-102-3.png',
@@ -16,9 +10,14 @@ export const STUDIO_IMAGE_OPTIONS = [
   'generated/helloiam-chair-field.png',
   'generated/helloiam-lavash.png',
   'generated/helloiam-wine-armenia.png',
+  'generated/image-43.png',
   'generated/image-79-1.png',
   'generated/post-126.png',
   'generated/post-91-hero.png',
-  'generated/test-pixel.png',
+  'generated/template-cover-format01.png',
+  'generated/template-cover-format03.png',
+  'generated/template-cover-green-plate-intro.png',
+  'generated/template-cover-matsun.png',
+  'generated/template-cover-wine.png',
   'generated/zadolbalo-hero.png',
 ] as const;
