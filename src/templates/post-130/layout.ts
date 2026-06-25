@@ -70,6 +70,28 @@ export const LAYOUT: LayoutSpec = {
       },
       "defaultText": "Hello, WORLD",
       "defaultColor": "#0F0F10"
+    },
+    {
+      "key": "source",
+      "role": "text",
+      "box": {
+        "left": 959,
+        "top": 1270,
+        "width": 93,
+        "height": 40
+      },
+      "textStyle": {
+        "fontFamily": "sans",
+        "fontSize": 16,
+        "lineHeight": "20px",
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "textTransform": "none",
+        "textAlign": "right",
+        "color": "#000000"
+      },
+      "defaultText": "source: armradio.am",
+      "defaultColor": "#000000"
     }
   ],
   "imageLayers": [

@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "productVersion": "0.2.0-alpha",
+  "policy": "Log every technical change to site logic or UI in a new entry before deploy.",
+  "entries": [
+    {
+      "version": "0.2.0-alpha",
+      "date": "2026-06-19",
+      "title": "Studio alpha — content pipeline & systems",
+      "changes": [
+        {
+          "type": "content",
+          "area": "templates",
+          "summary": "News rubric: 4th brand card (NEWS)",
+          "details": "ALL CARDS/51 News.png + hardcoded slide 4 on Rubric05 (Post103Css, generated/cards/51-news.png). Item name NEWS."
+        },
+        {
+          "type": "fix",
+          "area": "assets",
+          "summary": "Deduplicate emoji and card catalogs",
+          "details": "listEmojis/listBrandCards return one entry per item. Legacy numbered emojis and card-v2-* duplicates can be removed via tools/dedupe-asset-folders.mjs --apply."
+        },
+        {
+          "type": "fix",
+          "area": "templates",
+          "summary": "News slides: photo without tilt",
+          "details": "AM NEWS cover (Post126) and news-126 layouts render inserted photos level — no rotate animation on image layers."
+        },
+        {
+          "type": "ui",
+          "area": "content",
+          "summary": "Show generated image in Pictures prompt block",
+          "details": "After image generation, thumbnail appears inside the prompt field on Pictures step. Right-column slide preview stays off (CARD_PREVIEW_IN_PICTURES = false)."
+        },
+        {
+          "type": "ui",
+          "area": "content",
+          "summary": "Re-enable rubric covers on Create",
+          "details": "CARD_PREVIEW_IN_CREATE = true in picker.html. Rubric cover PNG/HTML previews return on #/content/create. Pictures step preview stays archived (CARD_PREVIEW_IN_PICTURES = false)."
+        },
+        {
+          "type": "ui",
+          "area": "content",
+          "summary": "Archive live card preview (Create, Pictures)",
+          "details": "Rubric covers on Create and slide preview column on Pictures are hidden. Flags CARD_PREVIEW_IN_CREATE / CARD_PREVIEW_IN_PICTURES in picker.html."
+        },
+        {
+          "type": "fix",
+          "area": "generation",
+          "summary": "AI texts show without reload",
+          "details": "After text generation, preview skips stale DOM collect so server-written slide texts appear immediately."
+        },
+        {
+          "type": "feature",
+          "area": "generation",
+          "summary": "Nano Banana 2 @ 1K for image gen",
+          "details": "Pictures and emoji generation use fal-ai/nano-banana-2 at 1K (4:5 for slides, 1:1 for emoji). FAL_MODEL default updated."
+        },
+        {
+          "type": "fix",
+          "area": "content",
+          "summary": "Rubric 03/04 hello emoji preview",
+          "details": "Hello-slide preview uses emoji-specific layouts (bottom-weighted), resolves emoji from Settings, and matches export positioning."
+        },
+        {
+          "type": "feature",
+          "area": "systems",
+          "summary": "Changelog section",
+          "details": "Systems → Changelog reads data/changelog.json. Technical site changes are versioned here (like GitHub releases)."
+        },
+        {
+          "type": "feature",
+          "area": "content",
+          "summary": "Rubric 06 — Emoji 01",
+          "details": "New rubric with a single Settings step: enter subject, generate flat emoji, save PNG to ALL EMOJIS."
+        },
+        {
+          "type": "fix",
+          "area": "export",
+          "summary": "Rubric 03/04 color roles",
+          "details": "Preview and export share one resolver. Hello slide: item = 2nd swatch; fact slides: body = 2nd, headers = 3rd."
+        },
+        {
+          "type": "fix",
+          "area": "settings",
+          "summary": "Color style selection",
+          "details": "Explicit colorStyleId wins over stale card background so swatches no longer jump back after save."
+        },
+        {
+          "type": "fix",
+          "area": "generation",
+          "summary": "Text generation on server",
+          "details": "Export auto-generates missing texts; per-slide progress persisted; Traefik timeout labels removed (broke routing)."
+        },
+        {
+          "type": "feature",
+          "area": "routing",
+          "summary": "Admin IA v0",
+          "details": "Brand / Home / Content / Systems / Site top nav; content subnav and tree; hash routes for all sections."
+        },
+        {
+          "type": "ui",
+          "area": "content",
+          "summary": "Insert image on Pictures step",
+          "details": "Upload or pick from post assets; workflow survives slide switches."
+        },
+        {
+          "type": "fix",
+          "area": "content",
+          "summary": "Text edits persist across slides",
+          "details": "saveAllTexts no longer overwrites cards; flush before re-render."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "Rubric06",
+  "project": "helloiam",
+  "name": "Emoji 01",
+  "description": "Generate a flat cartoon emoji and save it to ALL EMOJIS",
+  "tag": "Emoji",
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardSec": 3,
+  "cards": []
+}

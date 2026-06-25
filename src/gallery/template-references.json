@@ -19,6 +19,11 @@
     "1": "generated/template-references/GreenPlateIntro/slide-1.png",
     "2": "generated/template-references/GreenPlateIntro/slide-2.png"
   },
+  "HelloIamNewsV1": {
+    "0": "generated/template-references/HelloIamNewsV1/slide-0.png",
+    "1": "generated/template-references/HelloIamNewsV1/slide-1.png",
+    "2": "generated/template-references/HelloIamNewsV1/slide-2.png"
+  },
   "HelloIamWineV1": {
     "0": "generated/template-references/HelloIamWineV1/slide-0.png",
     "1": "generated/template-references/HelloIamWineV1/slide-1.png"

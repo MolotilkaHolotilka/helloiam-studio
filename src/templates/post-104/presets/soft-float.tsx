@@ -8,12 +8,14 @@ export const SoftFloatCard: React.FC<{
   localFrame: number;
   segmentFrames: number;
   imageSrc: string;
-}> = ({card, localFrame, segmentFrames, imageSrc}) => (
+  videoSrc?: string;
+}> = ({card, localFrame, segmentFrames, imageSrc, videoSrc}) => (
   <GeneratedSoftFloat
     layout={LAYOUT}
     card={card}
     localFrame={localFrame}
     segmentFrames={segmentFrames}
     imageSrc={imageSrc}
+    videoSrc={videoSrc}
   />
 );

@@ -2,8 +2,8 @@ import {mkdir, readFile, unlink, writeFile, rm} from 'node:fs/promises';
 import path from 'node:path';
 import {getPost} from './posts-service.mjs';
 
-const ALLOWED_EXT = new Set(['.png', '.jpg', '.jpeg', '.webp', '.svg']);
-const MAX_BYTES = 12 * 1024 * 1024;
+const ALLOWED_EXT = new Set(['.png', '.jpg', '.jpeg', '.webp', '.svg', '.mp4']);
+const MAX_BYTES = 80 * 1024 * 1024;
 const POST_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function slugify(name) {
@@ -117,7 +117,7 @@ export async function uploadPostAsset(studioRoot, postId, input) {
 
   const ext = path.extname(input.originalName || '').toLowerCase();
   if (!ALLOWED_EXT.has(ext)) {
-    throw new Error('Допустимы PNG, JPG, WEBP, SVG');
+    throw new Error('Допустимы PNG, JPG, WEBP, SVG, MP4');
   }
 
   const post = await getPost(studioRoot, postId);

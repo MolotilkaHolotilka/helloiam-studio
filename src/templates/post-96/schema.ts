@@ -6,6 +6,7 @@ export const schema = z.object({
   title: z.string(),
   titleColor: zColor(),
   image: z.enum(STUDIO_IMAGE_OPTIONS),
+  video: z.string().optional(),
   background: zColor(),
 });
 

@@ -25,9 +25,11 @@ services:
       - ./src/lib:/app/src/lib
       - ./src/gallery:/app/src/gallery
       - ./data/story-templates:/app/data/story-templates
+      - ./data/changelog.json:/app/data/changelog.json
       - ./scripts:/app/scripts
       - ./tools:/app/tools
       - "./ALL EMOJIS:/app/ALL EMOJIS"
+      - "./ALL CARDS:/app/ALL CARDS"
     shm_size: "2gb"
     mem_limit: 3g
     labels:
@@ -36,6 +38,4 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.service=${COMPOSE_PROJECT_NAME}
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=${COMPOSE_PROJECT_NAME}-auth
       - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=3456
-      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-auth.basicauth.users=${BASIC_AUTH_USER}:${BASIC_AUTH_HASH}

@@ -1,0 +1,34 @@
+{
+  "id": "Post130Css",
+  "project": "helloiam",
+  "name": "Кадр 130 — новость, текст",
+  "description": "Format 05 — AM NEWS body slide",
+  "tag": "HelloIAM",
+  "templateDir": "post-130",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {"key": "title", "type": "string", "label": "Заголовок"},
+    {"key": "titleColor", "type": "color", "label": "Цвет заголовка"},
+    {"key": "quote", "type": "textarea", "label": "Текст"},
+    {"key": "quoteColor", "type": "color", "label": "Цвет текста"},
+    {"key": "label", "type": "string", "label": "Метка"},
+    {"key": "labelColor", "type": "color", "label": "Цвет метки"},
+    {"key": "source", "type": "string", "label": "Источник"},
+    {"key": "sourceColor", "type": "color", "label": "Цвет источника"},
+    {"key": "image", "type": "image", "label": "Фото"},
+    {"key": "background", "type": "color", "label": "Фон"}
+  ],
+  "defaultProps": {
+    "background": "#D9DDE0",
+    "title": "Hello, WORLD",
+    "titleColor": "#0F0F10",
+    "quote": "Travel platforms and international media increasingly describe Armenia as Europe's next rising tourism star. Visitors are drawn by the country's mix of ancient history, dramatic landscapes, Soviet-modernist aesthetics and famously overwhelming hospitality. Unfortunately for tourists, \"light local dinner\" in Armenia still translates to approximately 14 dishes, emotional toasts and a grandmother personally monitoring whether you finished your food.",
+    "quoteColor": "#0F0F10",
+    "label": "AM NEWS",
+    "labelColor": "#4A7BFF",
+    "source": "source: armradio.am",
+    "sourceColor": "#000000",
+    "image": "generated/post-130.png"
+  }
+}

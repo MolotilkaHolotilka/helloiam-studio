@@ -30,7 +30,7 @@ function runRemotion(studioRoot, args) {
  * @param {string} studioRoot
  * @param {string} compositionId
  * @param {Record<string, unknown>} [propsOverride]
- * @param {{ outRelative?: string, urlBase?: string, propsOnly?: boolean, video?: boolean, durationFrames?: number }} [options]
+ * @param {{ outRelative?: string, urlBase?: string, propsOnly?: boolean, video?: boolean, still?: boolean, durationFrames?: number, stillFrame?: number }} [options]
  */
 export async function renderComposition(studioRoot, compositionId, propsOverride = {}, options = {}) {
   return withRenderLock(async () => {
@@ -40,30 +40,39 @@ export async function renderComposition(studioRoot, compositionId, propsOverride
       : {...loaded.defaultProps, ...propsOverride};
 
     const durationFrames = options.durationFrames ?? loaded.durationFrames ?? 90;
-    const stillFrame =
-      options.stillFrame ??
-      Math.min(durationFrames - 1, Math.max(30, Math.round(durationFrames * 0.85)));
+    const settledFrame = options.stillFrame ?? 0;
 
     const outRelative = options.outRelative ?? compositionId;
     const outDir = path.join(studioRoot, 'out', 'renders', outRelative);
     await mkdir(outDir, {recursive: true});
 
-    const propsPath = path.join(outDir, 'props.json');
-    await writeFile(propsPath, `${JSON.stringify(props, null, 2)}\n`);
+    const videoPropsPath = path.join(outDir, 'props.json');
+    const stillPropsPath = path.join(outDir, 'props.still.json');
+    await writeFile(videoPropsPath, `${JSON.stringify(props, null, 2)}\n`);
+    await writeFile(
+      stillPropsPath,
+      `${JSON.stringify({...props, __staticStill: true}, null, 2)}\n`,
+    );
 
     const stillPath = path.join(outDir, 'still.png');
     const videoPath = path.join(outDir, 'video.mp4');
     const urlBase = options.urlBase ?? `/renders/${String(outRelative).replace(/\\/g, '/')}`;
     const includeVideo = options.video !== false;
+    const includeStill = options.still !== false;
 
-    await runRemotion(studioRoot, [
-      'still',
-      ENTRY,
-      compositionId,
-      stillPath,
-      `--frame=${stillFrame}`,
-      `--props=${propsPath}`,
-    ]);
+    // PNG is rendered as a true static card. The __staticStill flag lets
+    // templates bypass enter/float/scale animation instead of freezing a
+    // random animated frame from the MP4 timeline.
+    if (includeStill) {
+      await runRemotion(studioRoot, [
+        'still',
+        ENTRY,
+        compositionId,
+        stillPath,
+        `--frame=${settledFrame}`,
+        `--props=${stillPropsPath}`,
+      ]);
+    }
 
     if (includeVideo) {
       await runRemotion(studioRoot, [
@@ -71,16 +80,16 @@ export async function renderComposition(studioRoot, compositionId, propsOverride
         ENTRY,
         compositionId,
         videoPath,
-        `--props=${propsPath}`,
+        `--props=${videoPropsPath}`,
       ]);
     }
 
     return {
       compositionId,
-      stillPath,
+      stillPath: includeStill ? stillPath : null,
       videoPath: includeVideo ? videoPath : null,
-      stillFrame,
-      stillUrl: `${urlBase}/still.png`,
+      stillFrame: settledFrame,
+      stillUrl: includeStill ? `${urlBase}/still.png` : null,
       videoUrl: includeVideo ? `${urlBase}/video.mp4` : null,
     };
   });

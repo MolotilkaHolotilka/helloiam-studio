@@ -199,11 +199,13 @@ export function WizzHeadlineCard({
     extrapolateRight: 'clamp',
   });
   const title = asText(card.title, 'HELLO,');
-  const titleAccent = asText(card.titleAccent, 'I AM');
-  const quote = asText(card.quote, '');
+  const titleAccent = asText(card.item ?? card.titleAccent, 'I AM');
+  const quote = asText(card.fact ?? card.quote, '');
   const label = asText(card.label, 'AM NEWS');
   const background = asText(card.background, '#d9dde0');
-  const quoteColor = asText(card.quoteColor, '#d61e23');
+  const schemeSecond = asText(card.schemeSecondColor, '');
+  const storedQuote = asText(card.quoteColor, '');
+  const quoteColor = asText(schemeSecond || storedQuote, '#FFC53A');
   const titleColor = asText(card.titleColor, '#0f0f10');
   const accentColor = asText(card.accentColor, '#d61e23');
   const labelColor = asText(card.labelColor, '#000000');

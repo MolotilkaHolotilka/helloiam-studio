@@ -1,0 +1,301 @@
+{
+  "id": "Rubric01",
+  "project": "helloiam",
+  "name": "Promo 01",
+  "description": "9-card HELLO I AM carousel",
+  "tag": "Carousel",
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardSec": 7,
+  "cards": [
+    {
+      "cardIndex": 0,
+      "compositionId": "Post94Css",
+      "label": "Кадр 94 — жёлтый фон",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#FFC53A",
+        "title": "HELLO\nI AM",
+        "titleColor": "#0F0F10"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 1,
+      "compositionId": "Post95Css",
+      "label": "Кадр 95 — фото с затемнением",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#000000",
+        "title": "HELLO\nI AM\nAM",
+        "titleColor": "#FFFFFF",
+        "image": "generated/image-79-1.png"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 2,
+      "compositionId": "Post88Css",
+      "label": "Кадр 88 — красный фон",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#D61E23",
+        "title": "AM\nMEANS",
+        "titleColor": "#FFC53A"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 3,
+      "compositionId": "Post96Css",
+      "label": "Кадр 96 — фото + низ",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#000000",
+        "title": "AM MEANS\nARMENIA",
+        "titleColor": "#FFC53A",
+        "image": "generated/image-79-1.png"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 4,
+      "compositionId": "Post82Css",
+      "label": "Кадр 82 — серый фон",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#D9DDE0",
+        "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+        "titleColor": "#4A7BFF"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 5,
+      "compositionId": "Post91Css",
+      "label": "Кадр 91 — тёмный герой",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#0F0F10",
+        "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+        "titleColor": "#FFFFFF",
+        "image": "generated/image-79-1.png"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 6,
+      "compositionId": "Post89Css",
+      "label": "Кадр 89 — фото + жёлтый текст",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#000000",
+        "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+        "titleColor": "#FFC53A",
+        "image": "generated/image-79-1.png"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 7,
+      "compositionId": "Post97Css",
+      "label": "Кадр 97 — полноэкранное фото",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#000000",
+        "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+        "titleColor": "#D61E23",
+        "image": "generated/image-79-1.png"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 8,
+      "compositionId": "Post98Css",
+      "label": "Кадр 98 — фото + красный текст",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        }
+      ],
+      "defaultProps": {
+        "background": "#000000",
+        "title": "HELLO\nI AM\nAM\nMEANS\nARMENIA",
+        "titleColor": "#D61E23",
+        "image": "generated/image-79-1.png"
+      },
+      "durationFrames": 90
+    }
+  ]
+}

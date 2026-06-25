@@ -90,14 +90,18 @@ ${imports}
 function makeComposition(Card: React.ComponentType<any>, segmentFrames: number) {
   const Wrapped: React.FC<Record<string, unknown>> = (props) => {
     const frame = useCurrentFrame();
-    const imageSrc = resolveImageSrc(props.image);
+    const staticStill = props.__staticStill === true || props.__staticStill === 'true';
+    const textOverlayOnly = props.__textOverlayOnly === true || props.__textOverlayOnly === 'true';
+    const stillFrame = Math.min(30, Math.max(0, segmentFrames - 1));
+    const imageSrc = textOverlayOnly ? undefined : resolveImageSrc(props.image);
     return (
-      <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', background: '#c8ccd0'}}>
+      <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', background: textOverlayOnly ? 'transparent' : '#c8ccd0'}}>
         <Card
           card={props}
-          localFrame={frame}
+          localFrame={staticStill ? stillFrame : frame}
           segmentFrames={segmentFrames}
           imageSrc={imageSrc}
+          videoSrc={staticStill || textOverlayOnly ? undefined : resolveImageSrc(props.video)}
         />
       </AbsoluteFill>
     );

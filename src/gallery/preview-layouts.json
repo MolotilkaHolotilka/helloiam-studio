@@ -6,56 +6,13 @@
       "height": 1350,
       "background": "#D9DDE0"
     },
-    "layers": [
-      {
-        "key": "body2",
-        "role": "text",
-        "box": {
-          "left": 197,
-          "top": 586,
-          "width": 687,
-          "height": 92
-        },
-        "textStyle": {
-          "fontFamily": "sans",
-          "fontSize": 96,
-          "lineHeight": "92px",
-          "fontWeight": 700,
-          "fontStyle": "normal",
-          "textAlign": "center",
-          "color": "#420000"
-        },
-        "defaultText": "helloiam am",
-        "defaultColor": "#420000"
-      },
-      {
-        "key": "body4",
-        "role": "text",
-        "box": {
-          "left": 525,
-          "top": 719,
-          "width": 288,
-          "height": 88
-        },
-        "textStyle": {
-          "fontFamily": "serif",
-          "fontSize": 44,
-          "lineHeight": "44px",
-          "fontWeight": 400,
-          "fontStyle": "italic",
-          "textAlign": "center",
-          "color": "#420000"
-        },
-        "defaultText": "Say Hello\nto Armenian Wine",
-        "defaultColor": "#420000"
-      }
-    ],
+    "layers": [],
     "imageLayers": [
       {
-        "left": 579,
-        "top": 542,
-        "width": 180,
-        "height": 180,
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1350,
         "objectFit": "cover"
       }
     ]
@@ -88,6 +45,277 @@
     "layers": [],
     "imageLayers": []
   },
+  "Post126Css": {
+    "family": "news-126",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#D9DDE0"
+    },
+    "layers": [
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 40,
+          "top": 40,
+          "width": 332,
+          "height": 54
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 44,
+          "lineHeight": "54px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "color": "#0F0F10"
+        }
+      },
+      {
+        "key": "quote",
+        "role": "quote",
+        "box": {
+          "left": 40,
+          "top": 194,
+          "width": 830,
+          "height": 212
+        },
+        "textStyle": {
+          "fontFamily": "serif",
+          "fontSize": 64,
+          "lineHeight": "56px",
+          "fontWeight": 400,
+          "color": "#D61E23"
+        }
+      },
+      {
+        "key": "label",
+        "role": "label",
+        "box": {
+          "left": 40,
+          "top": 1285,
+          "width": 126,
+          "height": 32
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 26,
+          "lineHeight": "32px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "color": "#4A7BFF"
+        }
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": 28,
+        "top": 406,
+        "width": 1024,
+        "height": 829
+      }
+    ]
+  },
+  "Post130Css": {
+    "family": "news-126",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#D9DDE0"
+    },
+    "layers": [
+      {
+        "key": "quote",
+        "role": "quote",
+        "box": {
+          "left": 40,
+          "top": 809,
+          "width": 830,
+          "height": 440
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 26,
+          "lineHeight": "32px",
+          "fontWeight": 400,
+          "fontStyle": "normal",
+          "textTransform": "none",
+          "color": "#0F0F10"
+        },
+        "defaultText": "Travel platforms and international media increasingly describe Armenia as Europe’s next rising tourism star. Visitors are drawn by the country’s mix of ancient history, dramatic landscapes, Soviet-modernist aesthetics and famously overwhelming hospitality. Unfortunately for tourists, “light local dinner” in Armenia still translates to approximately 14 dishes, emotional toasts and a grandmother personally monitoring whether you finished your food.",
+        "defaultColor": "#0F0F10"
+      },
+      {
+        "key": "label",
+        "role": "label",
+        "box": {
+          "left": 40,
+          "top": 1285,
+          "width": 126,
+          "height": 32
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 26,
+          "lineHeight": "32px",
+          "fontWeight": 700,
+          "fontStyle": "normal",
+          "textTransform": "uppercase",
+          "color": "#4A7BFF"
+        },
+        "defaultText": "AM NEWS",
+        "defaultColor": "#4A7BFF"
+      },
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 40,
+          "top": 40,
+          "width": 332,
+          "height": 54
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 44,
+          "lineHeight": "54px",
+          "fontWeight": 700,
+          "fontStyle": "normal",
+          "textTransform": "uppercase",
+          "color": "#0F0F10"
+        },
+        "defaultText": "Hello, WORLD",
+        "defaultColor": "#0F0F10"
+      },
+      {
+        "key": "source",
+        "role": "text",
+        "box": {
+          "left": 959,
+          "top": 1270,
+          "width": 93,
+          "height": 40
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 16,
+          "lineHeight": "20px",
+          "fontWeight": 400,
+          "fontStyle": "normal",
+          "textTransform": "none",
+          "textAlign": "right",
+          "color": "#000000"
+        },
+        "defaultText": "source: armradio.am",
+        "defaultColor": "#000000"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": 40,
+        "top": 201,
+        "width": 1000,
+        "height": 556
+      }
+    ]
+  },
+  "Post131Css": {
+    "family": "news-126",
+    "card": {
+      "width": 1080,
+      "height": 1350,
+      "background": "#D9DDE0"
+    },
+    "layers": [
+      {
+        "key": "quote",
+        "role": "quote",
+        "box": {
+          "left": 40,
+          "top": 809,
+          "width": 830,
+          "height": 427
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 26,
+          "lineHeight": "32px",
+          "fontWeight": 400,
+          "color": "#0F0F10"
+        },
+        "defaultText": "Tourism growth in 2026 signals a major shift in how Armenia is perceived internationally. What was once considered a niche destination for adventurous travelers is quickly becoming part of mainstream European travel culture. Locals, however, remain deeply suspicious of anyone calling the country a \"secret spot\" while simultaneously posting 47 Instagram stories about it.",
+        "defaultColor": "#0F0F10"
+      },
+      {
+        "key": "label",
+        "role": "label",
+        "box": {
+          "left": 40,
+          "top": 1285,
+          "width": 126,
+          "height": 32
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 26,
+          "lineHeight": "32px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "color": "#4A7BFF"
+        },
+        "defaultText": "AM NEWS",
+        "defaultColor": "#4A7BFF"
+      },
+      {
+        "key": "title",
+        "role": "title",
+        "box": {
+          "left": 40,
+          "top": 40,
+          "width": 332,
+          "height": 54
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 44,
+          "lineHeight": "54px",
+          "fontWeight": 700,
+          "textTransform": "uppercase",
+          "color": "#0F0F10"
+        },
+        "defaultText": "Hello, WORLD",
+        "defaultColor": "#0F0F10"
+      },
+      {
+        "key": "source",
+        "role": "text",
+        "box": {
+          "left": 959,
+          "top": 1270,
+          "width": 93,
+          "height": 40
+        },
+        "textStyle": {
+          "fontFamily": "sans",
+          "fontSize": 16,
+          "lineHeight": "20px",
+          "fontWeight": 400,
+          "textAlign": "right",
+          "color": "#000000"
+        },
+        "defaultText": "source: armradio.am",
+        "defaultColor": "#000000"
+      }
+    ],
+    "imageLayers": [
+      {
+        "left": 40,
+        "top": 201,
+        "width": 1000,
+        "height": 543
+      }
+    ]
+  },
   "Post5Css": {
     "family": "intro-hero",
     "card": {
@@ -113,7 +341,7 @@
           "textTransform": "uppercase",
           "color": "#0F0F10"
         },
-        "defaultText": "HELLO,\nI AM",
+        "defaultText": "HELLO,\nI AM\nDZIRANI",
         "defaultColor": "#0F0F10"
       },
       {
@@ -256,9 +484,9 @@
           "left": 243,
           "top": 597,
           "width": 595,
-          "height": 468
+          "height": 312
         },
-        "alignItems": "flex-end",
+        "alignItems": "flex-start",
         "textStyle": {
           "fontFamily": "sans",
           "fontSize": 164,
@@ -291,6 +519,7 @@
           "width": 758,
           "height": 780
         },
+        "alignItems": "center",
         "textStyle": {
           "fontFamily": "sans",
           "fontSize": 164,
@@ -455,7 +684,7 @@
           "textAlign": "center",
           "color": "#FFC53A"
         },
-        "defaultText": "AM MEANS\nARMENIA",
+        "defaultText": "AM\nMEANS\nARMENIA",
         "defaultColor": "#FFC53A"
       }
     ],
@@ -486,6 +715,7 @@
           "width": 758,
           "height": 780
         },
+        "alignItems": "center",
         "textStyle": {
           "fontFamily": "sans",
           "fontSize": 164,
@@ -526,6 +756,7 @@
           "width": 758,
           "height": 780
         },
+        "alignItems": "center",
         "textStyle": {
           "fontFamily": "sans",
           "fontSize": 164,

@@ -1,0 +1,30 @@
+{
+  "id": "Post126Css",
+  "project": "helloiam",
+  "name": "Кадр 126 — новость, обложка",
+  "description": "Format 05 — AM NEWS cover (dual image + headline)",
+  "tag": "HelloIAM",
+  "templateDir": "post-126",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {"key": "title", "type": "string", "label": "Заголовок"},
+    {"key": "titleColor", "type": "color", "label": "Цвет заголовка"},
+    {"key": "quote", "type": "textarea", "label": "Заголовок новости"},
+    {"key": "quoteColor", "type": "color", "label": "Цвет заголовка новости"},
+    {"key": "label", "type": "string", "label": "Метка"},
+    {"key": "labelColor", "type": "color", "label": "Цвет метки"},
+    {"key": "image", "type": "image", "label": "Фото"},
+    {"key": "background", "type": "color", "label": "Фон"}
+  ],
+  "defaultProps": {
+    "background": "#D9DDE0",
+    "title": "Hello, WORLD",
+    "titleColor": "#0F0F10",
+    "quote": "Armenia welcomed 172,705 international visitors in April 2026",
+    "quoteColor": "#D61E23",
+    "label": "AM NEWS",
+    "labelColor": "#4A7BFF",
+    "image": "generated/post-126.png"
+  }
+}

@@ -3913,6 +3913,7 @@
       }
 
       function cardHasImageContent(card) {
+        if (isRubric02Post(currentPost)) return isRubric02VideoCard(card);
         if (shouldHideFromSlidePictures(currentPost, card)) return false;
         const imageField = (card.fields || []).find((f) => f.type === "image");
         if (!imageField) return false;

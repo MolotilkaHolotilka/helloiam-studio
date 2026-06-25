@@ -2616,7 +2616,7 @@
       .changelog-entry {
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
-        background: var(--surface, #fff);
+        background: color-mix(in srgb, var(--bg-panel, #171816) 88%, #ffffff 12%);
         overflow: hidden;
       }
       .changelog-entry-head {
@@ -2625,7 +2625,7 @@
         justify-content: space-between;
         gap: 12px;
         padding: 16px 18px;
-        background: var(--ghost, #f8f9fb);
+        background: color-mix(in srgb, var(--bg-panel, #171816) 82%, #ffffff 18%);
         border-bottom: 1px solid var(--border);
       }
       .changelog-entry-title {
@@ -2643,7 +2643,7 @@
         padding: 4px 8px;
         border: 1px solid var(--border);
         border-radius: 6px;
-        background: #fff;
+        background: color-mix(in srgb, var(--bg-panel, #171816) 78%, #ffffff 22%);
       }
       .changelog-list {
         list-style: none;
