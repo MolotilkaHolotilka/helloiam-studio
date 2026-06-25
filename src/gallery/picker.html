@@ -524,18 +524,47 @@
               <div class="edit-status" id="edit-status"></div>
               <div class="render-results" id="render-results" hidden></div>
             </section>
+            <section class="step-section step-section-fullwidth workflow-gallery-panel" id="gallery-panel" hidden>
+              <p class="settings-module-hint">Gallery</p>
+              <div class="render-results" id="gallery-results" hidden></div>
+              <div class="slide-list-empty" id="gallery-empty">No generated files yet. Run export first.</div>
+            </section>
           </div>
           <nav class="pipeline-nav-bottom" id="pipeline-nav-bottom" aria-label="Step navigation">
             <button type="button" class="secondary-btn" id="pipeline-prev-btn">← Back</button>
-            <span class="pipeline-nav-label" id="pipeline-nav-label">Step 1 · Settings</span>
+            <span class="pipeline-nav-status">
+              <span class="pipeline-nav-label" id="pipeline-nav-label">Step 1 · Settings</span>
+              <span class="pipeline-nav-progress"><span id="pipeline-nav-progress-bar"></span></span>
+            </span>
             <button type="button" class="primary-btn" id="pipeline-next-btn">Next →</button>
           </nav>
             </main>
             <aside class="generate-preview" id="generate-preview-panel" hidden>
-              <h3>Slide preview</h3>
-              <div class="card-preview-frame">
-                <div id="editor-slide-preview" class="editor-preview-skeleton"></div>
-              </div>
+              <section class="workflow-side-block">
+                <div class="workflow-side-head">
+                  <span>Source</span>
+                  <strong id="workflow-source-count">1</strong>
+                </div>
+                <div class="workflow-side-preview" id="workflow-source-preview"></div>
+                <p class="workflow-side-note" id="workflow-source-note"></p>
+              </section>
+              <section class="workflow-side-block">
+                <div class="workflow-side-head">
+                  <span>Result</span>
+                  <strong id="workflow-result-state">Waiting</strong>
+                </div>
+                <div class="workflow-side-preview workflow-side-preview--result" id="workflow-result-preview">
+                  <span>No output yet</span>
+                </div>
+              </section>
+              <section class="workflow-side-block">
+                <div class="workflow-side-head">
+                  <span>Examples</span>
+                  <strong id="workflow-examples-count">0</strong>
+                </div>
+                <div class="workflow-examples" id="workflow-examples"></div>
+              </section>
+              <div id="editor-slide-preview" class="editor-preview-skeleton workflow-hidden-preview"></div>
             </aside>
           </div>
         </section>
@@ -570,10 +599,11 @@
       let editTab = "settings";
       let pipelineStep = 0;
       const PIPELINE_EDITOR_STEPS = [
-        { id: "settings", title: "Post Settings",  hint: "Choose the required source asset or emoji for this post." },
-        { id: "texts",    title: "Slide Text",     hint: "AI writes all the slide titles and subtitles. You can edit them after." },
-        { id: "images",   title: "Slide Pictures",  hint: "AI creates a photo description for each slide, then generates the images. You can re-generate any one." },
-        { id: "export",   title: "Export",    hint: "Build the final MP4 videos for all slides, then download a ZIP with PNGs and videos." },
+        { id: "settings", title: "POST SETTINGS",  hint: "Choose the required source asset or emoji for this post." },
+        { id: "texts",    title: "SLIDE TEXTS",     hint: "AI writes all the slide titles and subtitles. You can edit them after." },
+        { id: "images",   title: "SLIDE IMAGES",  hint: "AI creates a photo description for each slide, then generates the images. You can re-generate any one." },
+        { id: "export",   title: "EXPORT",    hint: "Build the final MP4 videos for all slides, then download a ZIP with PNGs and videos." },
+        { id: "gallery",  title: "GALLERY",   hint: "Review the generated files and download the final result." },
       ];
       const PIPELINE_EDITOR_STEPS_EMOJI = [
         { id: "emoji-subject", title: "Subject", hint: "Name the exact emoji object before generation starts." },
@@ -592,31 +622,22 @@
         },
         {
           title: "Carousel text generation",
-          note: "Prompts used on the Slide Text step.",
+          note: "Prompts used on the SLIDE TEXTS step.",
           items: [
-            { key: "user-template-text-promo02", step: "Slide Text", rubric: "Promo 02" },
-            { key: "user-template-single-text", step: "Slide Text", rubric: "Promo 02, Item 01, Item 02" },
-            { key: "user-template-single-text-news", step: "Slide Text", rubric: "News 01" },
-            { key: "few-shot-quote", step: "Slide Text", rubric: "All generated text rubrics" },
+            { key: "user-template-text-promo02", step: "SLIDE TEXTS", rubric: "Promo 02" },
+            { key: "user-template-single-text", step: "SLIDE TEXTS", rubric: "Promo 02, Item 01, Item 02" },
+            { key: "user-template-single-text-news", step: "SLIDE TEXTS", rubric: "News 01" },
+            { key: "few-shot-quote", step: "SLIDE TEXTS", rubric: "All generated text rubrics" },
           ],
         },
         {
           title: "Carousel image prompts",
           note: "Prompts used to create picture descriptions before image generation.",
           items: [
-            { key: "user-template-video-promo", step: "Slide Videos", rubric: "Promo 01, Promo 02" },
-            { key: "user-template-single-image", step: "Slide Pictures", rubric: "Promo 02, Item 01, Item 02" },
-            { key: "user-template-single-image-news", step: "Slide Pictures", rubric: "News 01" },
-            { key: "image-style", step: "Slide Pictures", rubric: "All image rubrics" },
-          ],
-        },
-        {
-          title: "Emoji 01",
-          note: "Adapted workflow prompts for the emoji rubric.",
-          items: [
-            { key: "emoji-openai-edits", step: "Post Settings", rubric: "Emoji 01" },
-            { key: "emoji-openai-generations", step: "Post Settings", rubric: "Emoji 01" },
-            { key: "emoji-recraft", step: "Post Settings", rubric: "Emoji 01" },
+            { key: "user-template-video-promo", step: "SLIDE VIDEOS", rubric: "Promo 01, Promo 02" },
+            { key: "user-template-single-image", step: "SLIDE IMAGES", rubric: "Promo 02, Item 01, Item 02" },
+            { key: "user-template-single-image-news", step: "SLIDE IMAGES", rubric: "News 01" },
+            { key: "image-style", step: "SLIDE IMAGES", rubric: "All image rubrics" },
           ],
         },
         {
@@ -629,9 +650,10 @@
         if (isRubric06Post(currentPost)) return PIPELINE_EDITOR_STEPS_EMOJI;
         if (isVideoGenerationPost(currentPost)) {
           return [
-            { id: "settings", title: isRubric02Post(currentPost) ? "Cards" : "Emoji", hint: isRubric02Post(currentPost) ? "Choose the 5 cards used to build the video prompts." : "Choose the emoji/object used for the post." },
-            { id: "images", title: "Slide Videos", hint: isRubric02Post(currentPost) ? "Generate video prompts from selected card names, then generate videos." : "Write the video scene setup, generate video prompts, then generate videos." },
-            { id: "export", title: "MP4 Export", hint: isRubric02Post(currentPost) ? "Build the final mixed sequence: PNG cards plus generated MP4 videos." : "Export the generated video result as MP4." },
+            { id: "settings", title: "POST SETTINGS", hint: isRubric02Post(currentPost) ? "Choose the 5 cards used to build the video prompts." : "Choose the emoji/object used for the post." },
+            { id: "images", title: "SLIDE VIDEOS", hint: isRubric02Post(currentPost) ? "Generate video prompts from selected card names, then generate videos." : "Write the video scene setup, generate video prompts, then generate videos." },
+            { id: "export", title: "EXPORT", hint: isRubric02Post(currentPost) ? "Build the final mixed sequence: PNG cards plus generated MP4 videos." : "Export the generated video result as MP4." },
+            { id: "gallery", title: "GALLERY", hint: "Review the generated files and download the final result." },
           ];
         }
         return PIPELINE_EDITOR_STEPS;
@@ -994,7 +1016,10 @@
         if (view === "pipeline-map") renderPipelineMap();
         if (view === "assets") loadAssets();
         if (view === "post-edit") openPostEditor(route.postId);
-        if (view === "generate" && appReady) renderTemplates();
+        if (view === "generate" && appReady) {
+          renderProjects();
+          renderTemplates();
+        }
         if (view === "systems" && route.subview === "settings") renderSystemsSettings();
         if (view === "systems" && route.subview !== "settings") loadChangelogView();
       }
@@ -1132,17 +1157,6 @@
           media: ["Picture prompts are generated from news slide texts", "Prompt: user-template-single-image-news", "Family Guy / American Dad editorial style", "No category-driven item subject"],
           export: ["Remotion static PNG", "Optional Remotion MP4", "Brand NEWS slide validation"],
           unique: ["News-specific copy tone", "Infopovod as subject", "Dedicated news image prompt"],
-        },
-        {
-          id: "Rubric06",
-          title: "Emoji 01",
-          meta: "Single generated emoji asset",
-          result: "Flat emoji PNG saved to ALL EMOJIS",
-          settings: ["No Settings step", "No carousel cards", "No category"],
-          text: ["Subject input: user types the object", "No slide text prompts"],
-          media: ["Image prompt/result is generated from subject", "Prompts: emoji-openai-edits / emoji-openai-generations / emoji-recraft", "Square isolated sticker style"],
-          export: ["Save generated PNG to library", "No Remotion carousel export"],
-          unique: ["Separate 4-step emoji workflow", "Creates reusable source assets for other rubrics"],
         },
       ];
 
@@ -1823,6 +1837,15 @@
         return steps[pipelineStep]?.id || "settings";
       }
 
+      function pipelineStepIndex(stepId) {
+        return editorPipelineSteps().findIndex((step) => step.id === stepId);
+      }
+
+      function pipelineStepIsRevealed(stepId) {
+        const index = pipelineStepIndex(stepId);
+        return index >= 0 && index <= pipelineStep;
+      }
+
       function isEmojiPipelineStep(stepId = pipelineStepId()) {
         return isRubric06Post(currentPost) && stepId.startsWith("emoji-");
       }
@@ -1918,14 +1941,19 @@
         if (!prevBtn || !nextBtn || !label || !currentPost) return;
 
         const stepId = pipelineStepId();
-        const activeStep = editorPipelineSteps()[pipelineStep];
-        label.textContent = `Step ${pipelineStep + 1} · ${activeStep?.title || ""}`;
-        prevBtn.disabled = pipelineStep <= 0;
         const steps = editorPipelineSteps();
+        const activeStep = steps[pipelineStep];
+        label.textContent = `Step ${pipelineStep + 1} · ${activeStep?.title || ""}`;
+        const progressBar = document.getElementById("pipeline-nav-progress-bar");
+        if (progressBar) {
+          const pct = steps.length ? ((pipelineStep + 1) / steps.length) * 100 : 0;
+          progressBar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+        }
+        prevBtn.disabled = pipelineStep <= 0;
         const isLastStep = pipelineStep >= steps.length - 1;
-        nextBtn.hidden = isLastStep;
+        nextBtn.hidden = false;
         nextBtn.disabled = isLastStep;
-        nextBtn.textContent = stepId === "images" ? "To export →" : "Next →";
+        nextBtn.textContent = isLastStep ? "Done" : stepId === "images" ? "To export →" : "Continue →";
       }
 
       function slidePreviewEnabledForStep(stepId = pipelineStepId()) {
@@ -1936,9 +1964,10 @@
       function syncGeneratePreviewPanel() {
         const panel = document.getElementById("generate-preview-panel");
         const layout = document.querySelector(".generate-layout");
-        const show = slidePreviewEnabledForStep();
+        const show = Boolean(currentPost);
         if (panel) panel.hidden = !show;
         if (layout) layout.classList.toggle("generate-layout--no-preview", !show);
+        if (show) updateWorkflowContextPanel();
       }
 
       function renderActiveGenerateStep() {
@@ -1958,32 +1987,44 @@
 
       function syncPipelineView() {
         const stepId = pipelineStepId();
-        const isSettingsStep = isSettingsPipelineStep(stepId);
-        editTab = isSettingsStep ? "settings" : "generate";
-        document.getElementById("edit-tab-settings").hidden = !isSettingsStep;
+        const settingsRevealed = pipelineStepIsRevealed("settings");
+        const textsRevealed = pipelineStepIsRevealed("texts");
+        const imagesRevealed = pipelineStepIsRevealed("images");
+        const exportRevealed = pipelineStepIsRevealed("export");
+        const galleryRevealed = pipelineStepIsRevealed("gallery");
+
+        editTab = "workflow";
+        document.getElementById("edit-tab-settings").hidden = !settingsRevealed;
         const genTab = document.getElementById("edit-tab-generate");
-        genTab.hidden = isSettingsStep;
-        genTab.classList.toggle("pipeline-step-export", stepId === "export");
+        genTab.hidden = !(textsRevealed || imagesRevealed || exportRevealed || galleryRevealed);
+        genTab.classList.toggle("pipeline-step-export", exportRevealed || galleryRevealed);
 
         const show = (id, on) => { const el = document.getElementById(id); if (el) el.hidden = !on; };
-        show("texts-toolbar", stepId === "texts");
-        show("texts-list-block", stepId === "texts");
-        show("images-toolbar", stepId === "images");
-        show("images-list-block", stepId === "images");
-        show("export-panel", stepId === "export");
-        if (stepId === "export") syncExportLabels();
+        show("texts-toolbar", textsRevealed);
+        show("texts-list-block", textsRevealed);
+        show("images-toolbar", imagesRevealed);
+        show("images-list-block", imagesRevealed);
+        show("export-panel", exportRevealed);
+        show("gallery-panel", galleryRevealed);
+        if (exportRevealed) syncExportLabels();
 
         renderPipelineSteps();
-        if (isSettingsStep) renderSettingsForm();
+        if (settingsRevealed) renderSettingsForm();
         if (isRubric06Post(currentPost)) syncRubric06StepPanels();
-        if (stepId === "texts") { renderTextsList(); updateGenerationToolbar(); }
-        if (stepId === "images") { renderImagesList(); updateGenerationToolbar(); }
+        if (textsRevealed) renderTextsList();
+        if (imagesRevealed) renderImagesList();
+        if (textsRevealed || imagesRevealed) updateGenerationToolbar();
         renderPipelineNav();
         syncGeneratePreviewPanel();
         if (slidePreviewEnabledForStep(stepId)) updateEditorPreview();
-        if (stepId === "export") {
+        if (exportRevealed || galleryRevealed) {
           showRenderResults(currentPost?.lastRender);
+        }
+        if (stepId === "export") {
           document.getElementById("export-panel")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        if (stepId === "gallery") {
+          document.getElementById("gallery-panel")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
       }
 
@@ -2532,6 +2573,88 @@
         const displayName = currentPost.name || currentPost.subject || currentPost.templateName || "Post";
         document.getElementById("edit-post-title").textContent = displayName;
         updateBrandPickerVisibility();
+        updateWorkflowContextPanel();
+      }
+
+      function cardImageAssetPath(card) {
+        if (!card) return "";
+        const imageField = (card.fields || []).find((field) => field.type === "image");
+        const key = imageField?.key || "image";
+        return card.props?.[key] || "";
+      }
+
+      function workflowSourceAssetPath() {
+        if (!currentPost) return "";
+        if (isRubric02Post(currentPost)) {
+          const selected = Array.isArray(currentPost.selectedEmojis)
+            ? currentPost.selectedEmojis.find((item) => item?.assetPath)
+            : null;
+          return selected?.assetPath || "";
+        }
+        return resolveClientEmojiAssetPath() || cardImageAssetPath(currentPost.cards?.[0]);
+      }
+
+      function workflowSourceLabel() {
+        if (!currentPost) return "";
+        if (isRubric02Post(currentPost)) {
+          const selected = Array.isArray(currentPost.selectedEmojis)
+            ? currentPost.selectedEmojis.filter((item) => item?.name || item?.assetPath)
+            : [];
+          return selected.length ? `${selected.length} / 5 cards selected` : "Choose 5 cards";
+        }
+        return currentPost.selectedEmojiId || currentPost.subject || currentPost.category || currentPost.templateName || "Source";
+      }
+
+      function updateWorkflowContextPanel() {
+        if (!currentPost) return;
+        const sourceCount = document.getElementById("workflow-source-count");
+        const sourcePreview = document.getElementById("workflow-source-preview");
+        const sourceNote = document.getElementById("workflow-source-note");
+        const resultState = document.getElementById("workflow-result-state");
+        const resultPreview = document.getElementById("workflow-result-preview");
+        const examplesCount = document.getElementById("workflow-examples-count");
+        const examples = document.getElementById("workflow-examples");
+        if (!sourcePreview || !resultPreview || !examples) return;
+
+        const sourceAsset = workflowSourceAssetPath();
+        const sourceUrl = publicAssetUrl(sourceAsset);
+        const selectedCards = Array.isArray(currentPost.selectedEmojis)
+          ? currentPost.selectedEmojis.filter((item) => item?.name || item?.assetPath).length
+          : 1;
+        if (sourceCount) sourceCount.textContent = String(Math.max(1, selectedCards));
+        sourcePreview.innerHTML = sourceUrl
+          ? `<img src="${escapeHtml(sourceUrl)}" alt="" />`
+          : `<span>${escapeHtml(currentPost.templateName || "Source")}</span>`;
+        if (sourceNote) sourceNote.textContent = workflowSourceLabel();
+
+        const renderedCards = [...(currentPost.lastRender?.cards || [])].sort((a, b) => a.cardIndex - b.cardIndex);
+        const firstRendered = renderedCards.find((card) => card.stillUrl || card.videoUrl);
+        const bust = currentPost.lastRender?.at ? `?t=${encodeURIComponent(currentPost.lastRender.at)}` : "";
+        const showGeneratedMedia = pipelineStepIsRevealed("export") || pipelineStepIsRevealed("gallery");
+        if (resultState) resultState.textContent = firstRendered ? "Ready" : "Waiting";
+        if (firstRendered?.stillUrl && showGeneratedMedia) {
+          resultPreview.innerHTML = `<img src="${escapeHtml(firstRendered.stillUrl)}${bust}" alt="" />`;
+        } else if (firstRendered?.videoUrl) {
+          resultPreview.innerHTML = `<div class="workflow-video-placeholder">VIDEO</div>`;
+        } else if (firstRendered) {
+          resultPreview.innerHTML = `<div class="workflow-video-placeholder">READY</div>`;
+        } else {
+          resultPreview.innerHTML = `<span>No output yet</span>`;
+        }
+
+        const exampleItems = renderedCards
+          .filter((card) => card.stillUrl || card.videoUrl)
+          .slice(0, 6);
+        if (examplesCount) examplesCount.textContent = String(exampleItems.length);
+        examples.innerHTML = exampleItems.length
+          ? exampleItems.map((card) => {
+              const slideNumber = Number(card.cardIndex) + 1;
+              const media = card.stillUrl && showGeneratedMedia
+                ? `<img src="${escapeHtml(card.stillUrl)}${bust}" alt="" />`
+                : `<span>${card.videoUrl ? "VIDEO" : "READY"}</span>`;
+              return `<div class="workflow-example-thumb">${media}<small>${slideNumber}</small></div>`;
+            }).join("")
+          : `<div class="workflow-example-empty">Run export to fill gallery.</div>`;
       }
 
       function updateBrandPickerVisibility() {
@@ -2852,8 +2975,11 @@
           statusEl.textContent = "Settings saved";
           statusEl.className = "edit-status ok";
         }
-        if (editTab === "settings") renderSettingsForm();
-        if (editTab === "generate") renderActiveGenerateStep();
+        if (editTab === "workflow") syncPipelineView();
+        else {
+          if (editTab === "settings") renderSettingsForm();
+          if (editTab === "generate") renderActiveGenerateStep();
+        }
         updateEditorPreview();
       }
 
@@ -3569,7 +3695,7 @@
           if (!validPaths.has(path)) selectedPostAssetPaths.delete(path);
         }
         renderPostAssetsGrid();
-        if (!viewPostEdit.hidden && editTab === "generate") renderActiveGenerateStep();
+        if (!viewPostEdit.hidden) syncPipelineView();
       }
 
       function resetPostAssetFilePicker() {
@@ -3650,7 +3776,7 @@
         touchedTextFields = new Set();
         touchedImagePromptCards = new Set();
         pipelineStep = 0;
-        editTab = "settings";
+        editTab = "workflow";
         try {
           const res = await fetch(`/api/posts/${postId}`);
           const data = await res.json();
@@ -3660,7 +3786,6 @@
           if (pipelineStep >= editorPipelineSteps().length) pipelineStep = 0;
           updatePostHeader();
           syncPipelineView();
-          showRenderResults(currentPost.lastRender);
           await loadPostAssets();
           closeEmojiPicker();
           closeCardPicker();
@@ -4276,12 +4401,17 @@
       }
 
       function showRenderResults(lastRender) {
-        const el = document.getElementById("render-results");
-        if (!el || !lastRender?.cards?.length) {
-          if (el) {
+        const resultEls = [
+          document.getElementById("render-results"),
+          document.getElementById("gallery-results"),
+        ].filter(Boolean);
+        const galleryEmpty = document.getElementById("gallery-empty");
+        if (!resultEls.length || !lastRender?.cards?.length) {
+          resultEls.forEach((el) => {
             el.hidden = true;
             el.innerHTML = "";
-          }
+          });
+          if (galleryEmpty) galleryEmpty.hidden = false;
           return;
         }
         const cards = [...lastRender.cards].sort((a, b) => a.cardIndex - b.cardIndex);
@@ -4289,8 +4419,11 @@
         const videoCards = cards.filter((c) => c.videoUrl);
         const promoVideoMode = isVideoGenerationPost(currentPost);
         if (!stillCards.length && !(promoVideoMode && videoCards.length)) {
-          el.hidden = true;
-          el.innerHTML = "";
+          resultEls.forEach((el) => {
+            el.hidden = true;
+            el.innerHTML = "";
+          });
+          if (galleryEmpty) galleryEmpty.hidden = false;
           return;
         }
         const expectedCount = currentPost?.cards?.length ?? stillCards.length;
@@ -4320,8 +4453,7 @@
             </div>`;
           })
           .join("");
-        el.hidden = false;
-        el.innerHTML = `
+        const html = `
           ${stripItems ? `<div class="stills-strip">${stripItems}</div>` : ""}
           <p style="margin:0;color:var(--muted);font-size:0.9rem">${promoVideoMode ? "Video export" : hasAllVideos ? "Last export" : "PNG preview"}: ${formatDate(lastRender.at)}</p>
           <div class="render-downloads">
@@ -4329,6 +4461,12 @@
             ${(promoVideoMode ? hasPromoVideoSequence : hasAllVideos) ? `<a href="${fullZipUrl}" class="${promoVideoMode ? "primary-btn" : "secondary-btn"} render-download-btn" download>${promoVideoMode ? "Download sequence ZIP" : "Download PNG + MP4 ZIP"}</a>` : ""}
           </div>
         `;
+        resultEls.forEach((el) => {
+          el.hidden = false;
+          el.innerHTML = html;
+        });
+        if (galleryEmpty) galleryEmpty.hidden = true;
+        updateWorkflowContextPanel();
       }
 
       function setRenderProgress(done, total, label) {
@@ -4698,11 +4836,11 @@
         document.getElementById("assets-status").textContent = `Удалено: ${assetPath}${clearedNote}`;
         await loadAssets();
         if (!viewPosts.hidden) loadPostsList();
-        if (currentPost && !viewPostEdit.hidden && editTab === "generate") {
+        if (currentPost && !viewPostEdit.hidden) {
           const fresh = await fetch(`/api/posts/${currentPost.id}`);
           const freshData = await fresh.json();
           if (fresh.ok) currentPost = freshData.post;
-          renderActiveGenerateStep();
+          syncPipelineView();
         }
       }
 
@@ -4930,10 +5068,6 @@
           document.getElementById("status-text").textContent = "Ошибка загрузки";
         }
 
-        await loadTemplateDetails();
-        renderProjects();
-        renderTemplates();
-        loadAssets().catch(() => {});
         applyRoute();
       }
 

@@ -7,7 +7,7 @@ export const RUBRIC04_ID = 'Rubric04';
 export const RUBRIC05_ID = 'Rubric05';
 export const RUBRIC06_ID = 'Rubric06';
 
-export const RUBRIC_IDS = [RUBRIC01_ID, RUBRIC02_ID, RUBRIC03_ID, RUBRIC04_ID, RUBRIC05_ID, RUBRIC06_ID];
+export const RUBRIC_IDS = [RUBRIC01_ID, RUBRIC02_ID, RUBRIC03_ID, RUBRIC04_ID, RUBRIC05_ID];
 
 /** @type {Record<string, string>} Legacy templateId → canonical Rubric id */
 export const LEGACY_TEMPLATE_ALIASES = {

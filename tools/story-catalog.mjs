@@ -11,7 +11,6 @@ const KEEP_STORY_FILES = new Set([
   'rubric-03.json',
   'rubric-04.json',
   'rubric-05.json',
-  'rubric-06.json',
 ]);
 
 /** Legacy cover paths keyed by Rubric id */
@@ -21,7 +20,6 @@ const COVER_BY_RUBRIC = {
   Rubric03: 'generated/template-cover-matsun.png',
   Rubric04: 'generated/template-cover-green-plate-intro.png',
   Rubric05: 'generated/template-cover-news.png',
-  Rubric06: 'emoji-style-reference.png',
 };
 
 /**

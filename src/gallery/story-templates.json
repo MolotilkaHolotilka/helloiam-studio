@@ -72,19 +72,6 @@
       "height": 1350,
       "durationPerCardSec": 3,
       "coverImage": "generated/template-cover-news.png"
-    },
-    {
-      "id": "Rubric06",
-      "slug": "rubric-06",
-      "project": "helloiam",
-      "name": "Emoji 01",
-      "description": "Generate a flat cartoon emoji and save it to ALL EMOJIS",
-      "tag": "Emoji",
-      "cardCount": 0,
-      "width": 1080,
-      "height": 1350,
-      "durationPerCardSec": 3,
-      "coverImage": "emoji-style-reference.png"
     }
   ]
 }
