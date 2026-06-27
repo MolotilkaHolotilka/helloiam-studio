@@ -21,6 +21,8 @@ fi
 
 RSYNC_EXCLUDES=(
   --exclude node_modules
+  --exclude apps/dashboard-site/node_modules
+  --exclude apps/dashboard-site/.next
   --exclude .git
   --exclude out/renders
   --exclude '*.mp4'

@@ -1,4 +1,5 @@
 import {createServer} from 'node:http';
+import {isDashboardPath, proxyDashboardRequest} from './dashboard-proxy.mjs';
 import {readdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {syncGalleryManifest} from '../tools/gallery-sync.mjs';
@@ -990,6 +991,11 @@ export function createGalleryServer({studioRoot, galleryDir}) {
 
     if (urlPath.startsWith('/api/')) {
       sendJson(res, 404, {error: `API route not found: ${method} ${urlPath}`});
+      return;
+    }
+
+    if (isDashboardPath(urlPath)) {
+      proxyDashboardRequest(req, res);
       return;
     }
 

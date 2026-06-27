@@ -12,7 +12,12 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
+COPY apps/dashboard-site/package.json apps/dashboard-site/package-lock.json ./apps/dashboard-site/
+RUN npm --prefix apps/dashboard-site ci
+
 COPY . .
+
+RUN npm --prefix apps/dashboard-site run build
 
 RUN npx remotion browser ensure
 

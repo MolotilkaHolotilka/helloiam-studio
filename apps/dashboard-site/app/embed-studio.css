@@ -1,0 +1,331 @@
+html.embed-mode .top-nav,
+html.embed-mode .site-footer {
+  display: none !important;
+}
+
+/* Embedded in HelloIAM Studio — match parent dark UI */
+
+html.embed-mode,
+html.embed-mode body,
+body.embed-mode {
+  color-scheme: dark;
+  background: #0f0f10;
+  color: #f4f2ec;
+  font-family: "IBM Plex Sans", "Inter", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: -0.1px;
+
+  --canvas: #0f0f10;
+  --canvas-warm: #141413;
+  --ink: #f4f2ec;
+  --ink-muted: #9d9a9f;
+  --ink-soft: #bcb8b3;
+  --inverse-ink: #f4f2ec;
+  --surface-1: #1e1e1c;
+  --surface-elevated: #222220;
+  --surface-2: #2a2a28;
+  --surface-dark: #191917;
+  --hairline: rgba(244, 242, 236, 0.14);
+  --hairline-strong: rgba(244, 242, 236, 0.24);
+  --ghost: rgba(244, 242, 236, 0.05);
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --accent-coral: #ff5c45;
+  --accent-coral-soft: rgba(255, 92, 69, 0.14);
+  --accent-coral-active: #e04a35;
+  --accent-green: #49f7a5;
+  --accent-green-soft: rgba(73, 247, 165, 0.12);
+  --accent-yellow: #f4d941;
+  --grid-max-content: 1276px;
+  --grid-wide-content: 1456px;
+  --grid-margin-fluid: clamp(16px, 3vw, 40px);
+}
+
+html.embed-mode .site-main,
+body.embed-mode .site-main {
+  padding-top: 32px;
+  padding-bottom: 48px;
+  background: transparent;
+}
+
+html.embed-mode .page,
+body.embed-mode .page {
+  max-width: var(--grid-wide-content);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 3vw, 40px);
+}
+
+html.embed-mode .page-hero,
+body.embed-mode .page-hero {
+  margin-bottom: 16px;
+}
+
+html.embed-mode .display-lg,
+body.embed-mode .display-lg {
+  font-family: "Space Grotesk", Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.8px;
+  color: var(--ink);
+}
+
+html.embed-mode .subhead,
+html.embed-mode .body-sm,
+html.embed-mode .caption,
+body.embed-mode .subhead,
+body.embed-mode .body-sm,
+body.embed-mode .caption {
+  color: var(--ink-soft);
+}
+
+html.embed-mode .date-nav__link,
+html.embed-mode .chip,
+html.embed-mode .filter-chip,
+html.embed-mode .sort-chip,
+html.embed-mode .hashtag-chip,
+body.embed-mode .date-nav__link,
+body.embed-mode .chip,
+body.embed-mode .filter-chip,
+body.embed-mode .sort-chip,
+body.embed-mode .hashtag-chip {
+  background: var(--ghost);
+  border: 1px solid var(--hairline);
+  color: var(--ink-soft);
+}
+
+html.embed-mode .date-nav__link--active,
+html.embed-mode .chip--active,
+html.embed-mode .filter-chip--active,
+html.embed-mode .sort-chip--active,
+html.embed-mode .hashtag-chip--active,
+body.embed-mode .date-nav__link--active,
+body.embed-mode .chip--active,
+body.embed-mode .filter-chip--active,
+body.embed-mode .sort-chip--active,
+body.embed-mode .hashtag-chip--active {
+  color: var(--ink);
+  border-color: var(--accent-coral);
+  background: var(--accent-coral-soft);
+}
+
+html.embed-mode .news-card,
+html.embed-mode .youtube-card,
+html.embed-mode .product-card,
+html.embed-mode .search-result,
+html.embed-mode .yt-trends__row,
+html.embed-mode .stats-grid > *,
+html.embed-mode .dashboard-stat,
+body.embed-mode .news-card,
+body.embed-mode .youtube-card,
+body.embed-mode .product-card,
+body.embed-mode .search-result,
+body.embed-mode .yt-trends__row,
+body.embed-mode .stats-grid > *,
+body.embed-mode .dashboard-stat {
+  background: #1e1e1c;
+  border: 1px solid var(--hairline);
+  box-shadow: none;
+}
+
+html.embed-mode .news-card:hover,
+html.embed-mode .youtube-card:hover,
+body.embed-mode .news-card:hover,
+body.embed-mode .youtube-card:hover {
+  border-color: var(--hairline-strong);
+}
+
+html.embed-mode .news-card__title,
+html.embed-mode .youtube-card__title,
+html.embed-mode a,
+body.embed-mode .news-card__title,
+body.embed-mode .youtube-card__title,
+body.embed-mode a {
+  color: var(--ink);
+}
+
+html.embed-mode .news-card__meta,
+html.embed-mode .youtube-card__meta,
+html.embed-mode .technical-label,
+body.embed-mode .news-card__meta,
+body.embed-mode .youtube-card__meta,
+body.embed-mode .technical-label {
+  color: var(--ink-muted);
+}
+
+html.embed-mode .stale-banner,
+html.embed-mode .empty-state,
+body.embed-mode .stale-banner,
+body.embed-mode .empty-state {
+  background: #1e1e1c;
+  border: 1px solid var(--hairline);
+  color: var(--ink-soft);
+}
+
+html.embed-mode .btn,
+html.embed-mode button,
+html.embed-mode .refresh-btn,
+body.embed-mode .btn,
+body.embed-mode button,
+body.embed-mode .refresh-btn {
+  background: var(--ghost);
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+  border-radius: 8px;
+}
+
+html.embed-mode .btn--primary,
+html.embed-mode .refresh-btn--primary,
+body.embed-mode .btn--primary,
+body.embed-mode .refresh-btn--primary {
+  background: var(--accent-coral);
+  border-color: var(--accent-coral);
+  color: #191917;
+}
+
+html.embed-mode input,
+html.embed-mode select,
+html.embed-mode textarea,
+body.embed-mode input,
+body.embed-mode select,
+body.embed-mode textarea {
+  background: #2a2a28;
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+}
+
+html.embed-mode h2,
+html.embed-mode h3,
+html.embed-mode .section-title,
+body.embed-mode h2,
+body.embed-mode h3,
+body.embed-mode .section-title {
+  font-family: "Space Grotesk", Arial, sans-serif;
+  color: var(--ink);
+}
+
+html.embed-mode .source-bar,
+body.embed-mode .source-bar {
+  margin-bottom: 16px;
+}
+
+html.embed-mode .segmented-control,
+body.embed-mode .segmented-control {
+  background: var(--ghost);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 3px;
+}
+
+html.embed-mode .segmented-control__item,
+body.embed-mode .segmented-control__item {
+  color: var(--ink-soft);
+  border-radius: 999px;
+}
+
+html.embed-mode .segmented-control__item:hover:not(.segmented-control__item--active),
+body.embed-mode .segmented-control__item:hover:not(.segmented-control__item--active) {
+  background: rgba(244, 242, 236, 0.06);
+  color: var(--ink);
+}
+
+html.embed-mode .segmented-control__item--active,
+body.embed-mode .segmented-control__item--active {
+  background: rgba(244, 242, 236, 0.1);
+  color: var(--ink);
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+html.embed-mode .youtube-subnav,
+body.embed-mode .youtube-subnav {
+  margin-bottom: 16px;
+}
+
+html.embed-mode .youtube-subnav__item,
+body.embed-mode .youtube-subnav__item {
+  color: var(--ink-soft);
+}
+
+html.embed-mode .youtube-subnav__item--active,
+body.embed-mode .youtube-subnav__item--active {
+  color: var(--ink);
+  border-color: var(--accent-coral);
+}
+
+html.embed-mode .date-chip,
+body.embed-mode .date-chip {
+  border-radius: 999px;
+  background: var(--ghost);
+  border: 1px solid var(--hairline);
+  color: var(--ink-soft);
+}
+
+html.embed-mode .date-chip--active,
+body.embed-mode .date-chip--active {
+  background: rgba(244, 242, 236, 0.1);
+  border-color: var(--accent-coral);
+  color: #f4f2ec;
+}
+
+html.embed-mode .date-chip__today,
+body.embed-mode .date-chip__today {
+  color: #ffffff;
+}
+
+html.embed-mode .date-chip--active .date-chip__today,
+body.embed-mode .date-chip--active .date-chip__today {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+html.embed-mode .product-card,
+body.embed-mode .product-card {
+  border-radius: 12px;
+}
+
+html.embed-mode .filter-sort-toolbar,
+body.embed-mode .filter-sort-toolbar {
+  align-items: center;
+}
+
+html.embed-mode .top-stories__title--inline,
+body.embed-mode .top-stories__title--inline {
+  color: #f4f2ec;
+  margin: 0;
+}
+
+html.embed-mode .hashtag-manager,
+body.embed-mode .hashtag-manager {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+html.embed-mode .hashtag-item,
+body.embed-mode .hashtag-item {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html.embed-mode .hashtag-manager__add,
+body.embed-mode .hashtag-manager__add {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+html.embed-mode .hashtag-manager__input,
+body.embed-mode .hashtag-manager__input {
+  border-radius: 999px;
+  color: #f4f2ec;
+}
+
+html.embed-mode .hashtag-manager__input::placeholder,
+body.embed-mode .hashtag-manager__input::placeholder {
+  color: rgba(244, 242, 236, 0.45);
+}
+
+html.embed-mode .filter-sort-toolbar__start .date-nav,
+body.embed-mode .filter-sort-toolbar__start .date-nav {
+  margin-bottom: 0;
+}

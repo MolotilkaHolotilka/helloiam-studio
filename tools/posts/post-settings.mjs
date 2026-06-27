@@ -31,86 +31,34 @@ export const CATEGORY_LABELS = {
 /** Color style presets — chosen in Settings only (not per-card). */
 export const COLOR_STYLES = [
   {
-    id: 'red-blue-white',
-    label: 'Red · Blue · White',
-    themeColor: '#D61E23',
-    colors: {
-      background: '#D61E23',
-      accentColor: '#4A7BFF',
-      titleColor: '#FFFFFF',
-      labelColor: '#FFFFFF',
-      factColor: '#FFFFFF',
-      quoteColor: '#FFFFFF',
-    },
-  },
-  {
-    id: 'red-blue-black',
-    label: 'Red · Blue · Black',
-    themeColor: '#D61E23',
-    colors: {
-      background: '#D61E23',
-      accentColor: '#4A7BFF',
-      titleColor: '#1E1E1E',
-      labelColor: '#1E1E1E',
-      factColor: '#1E1E1E',
-      quoteColor: '#1E1E1E',
-    },
-  },
-  {
-    id: 'blue-red-white',
-    label: 'Blue · Red · White',
-    themeColor: '#4A7BFF',
-    colors: {
-      background: '#4A7BFF',
-      accentColor: '#D61E23',
-      titleColor: '#FFFFFF',
-      labelColor: '#FFFFFF',
-      factColor: '#FFFFFF',
-      quoteColor: '#FFFFFF',
-    },
-  },
-  {
-    id: 'blue-red-black',
-    label: 'Blue · Red · Black',
-    themeColor: '#4A7BFF',
-    colors: {
-      background: '#4A7BFF',
-      accentColor: '#D61E23',
-      titleColor: '#1E1E1E',
-      labelColor: '#1E1E1E',
-      factColor: '#1E1E1E',
-      quoteColor: '#1E1E1E',
-    },
-  },
-  {
-    id: 'red-yellow-white',
-    label: 'Red · Yellow · White',
+    id: 'red-white-yellow',
+    label: 'Red · White · Yellow',
     themeColor: '#D61E23',
     colors: {
       background: '#D61E23',
       accentColor: '#FFC53A',
       titleColor: '#FFFFFF',
       labelColor: '#FFFFFF',
-      factColor: '#FFFFFF',
-      quoteColor: '#FFFFFF',
+      factColor: '#FFC53A',
+      quoteColor: '#FFC53A',
     },
   },
   {
-    id: 'red-yellow-black',
-    label: 'Red · Yellow · Black',
-    themeColor: '#D61E23',
+    id: 'yellow-dark-red',
+    label: 'Yellow · Dark · Red',
+    themeColor: '#FFC53A',
     colors: {
-      background: '#D61E23',
-      accentColor: '#FFC53A',
+      background: '#FFC53A',
+      accentColor: '#D61E23',
       titleColor: '#1E1E1E',
       labelColor: '#1E1E1E',
-      factColor: '#1E1E1E',
-      quoteColor: '#1E1E1E',
+      factColor: '#D61E23',
+      quoteColor: '#D61E23',
     },
   },
   {
-    id: 'yellow-red-white',
-    label: 'Yellow · Red · White',
+    id: 'yellow-white-red',
+    label: 'Yellow · White · Red',
     themeColor: '#FFC53A',
     colors: {
       background: '#FFC53A',
@@ -122,16 +70,55 @@ export const COLOR_STYLES = [
     },
   },
   {
-    id: 'yellow-red-black',
-    label: 'Yellow · Red · Black',
-    themeColor: '#FFC53A',
+    id: 'blue-white-yellow',
+    label: 'Blue · White · Yellow',
+    themeColor: '#4A7BFF',
     colors: {
-      background: '#FFC53A',
+      background: '#4A7BFF',
+      accentColor: '#FFC53A',
+      titleColor: '#FFFFFF',
+      labelColor: '#FFFFFF',
+      factColor: '#FFC53A',
+      quoteColor: '#FFC53A',
+    },
+  },
+  {
+    id: 'dark-white-yellow',
+    label: 'Dark · White · Yellow',
+    themeColor: '#0F0F10',
+    colors: {
+      background: '#0F0F10',
+      accentColor: '#FFC53A',
+      titleColor: '#FFFFFF',
+      labelColor: '#FFFFFF',
+      factColor: '#FFC53A',
+      quoteColor: '#FFC53A',
+    },
+  },
+  {
+    id: 'dark-white-red',
+    label: 'Dark · White · Red',
+    themeColor: '#0F0F10',
+    colors: {
+      background: '#0F0F10',
       accentColor: '#D61E23',
-      titleColor: '#1E1E1E',
-      labelColor: '#1E1E1E',
+      titleColor: '#FFFFFF',
+      labelColor: '#FFFFFF',
       factColor: '#D61E23',
       quoteColor: '#D61E23',
+    },
+  },
+  {
+    id: 'dark-white-blue',
+    label: 'Dark · White · Blue',
+    themeColor: '#0F0F10',
+    colors: {
+      background: '#0F0F10',
+      accentColor: '#4A7BFF',
+      titleColor: '#FFFFFF',
+      labelColor: '#FFFFFF',
+      factColor: '#4A7BFF',
+      quoteColor: '#4A7BFF',
     },
   },
 ];
@@ -144,7 +131,7 @@ export const BRAND_COLORS = COLOR_STYLES.map((style) => ({
 }));
 
 const HEX_COLOR = /^#[0-9A-Fa-f]{6}$/;
-const DEFAULT_COLOR_STYLE_ID = 'yellow-red-white';
+const DEFAULT_COLOR_STYLE_ID = 'yellow-dark-red';
 const DEFAULT_CATEGORY = 'food';
 const DEFAULT_PRESET = 'soft-float';
 
@@ -157,7 +144,7 @@ export function getColorStyle(styleId) {
 
 /**
  * Resolve the active color style for a post.
- * Card background wins over a stale colorStyleId (e.g. default yellow-red-white on a red slide).
+ * Card background wins over a stale colorStyleId (e.g. old multi-color presets on a red slide).
  * @param {Record<string, unknown>} post
  */
 export function resolvePostColorStyle(post) {
@@ -179,8 +166,6 @@ export function resolvePostColorStyle(post) {
         const byIdAndBg = byBackground.find((s) => s.id === styleId);
         if (byIdAndBg) return byIdAndBg;
       }
-      const redYellow = byBackground.find((s) => s.id === 'red-yellow-white');
-      if (redYellow) return redYellow;
       return byBackground[0];
     }
   }
@@ -194,8 +179,6 @@ export function resolvePostColorStyle(post) {
         const byIdAndTheme = byTheme.find((s) => s.id === styleId);
         if (byIdAndTheme) return byIdAndTheme;
       }
-      const redYellow = byTheme.find((s) => s.id === 'red-yellow-white');
-      if (redYellow) return redYellow;
       return byTheme[0];
     }
   }

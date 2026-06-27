@@ -1272,10 +1272,10 @@
         opacity: 0.45;
         cursor: not-allowed;
       }
-      /* Diagonal three-band color scheme swatch */
+      /* Cover color preset swatches */
       #edit-tab-settings #settings-form .color-picker-row {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
         gap: 8px;
         width: 100%;
         justify-items: stretch;
@@ -1290,6 +1290,21 @@
         cursor: pointer;
         transition: box-shadow 0.15s, transform 0.12s;
         display: block;
+      }
+      .cover-color-swatch {
+        min-height: 54px;
+        border-color: var(--border-strong);
+        color: var(--text);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0;
+        font-size: 0.78rem;
+        text-shadow: 0 1px 8px rgba(0,0,0,0.32);
+      }
+      .cover-color-swatch span {
+        display: block;
+        padding: 0 8px;
+        line-height: 1.1;
       }
       .color-swatch-pair:hover:not(:disabled) {
         transform: scale(1.04);
@@ -3152,7 +3167,7 @@
         font-size: 0.95rem;
       }
       .generate-sidebar .pipeline-steps {
-        display: grid;
+        display: none;
         grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
         gap: 8px;
         margin: 16px 0 0;
@@ -3590,4 +3605,38 @@
         .app-nav a:hover {
           transform: none !important;
         }
+      }
+
+      .app-main:has(#view-news-trends:not([hidden])) {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      #view-news-trends {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      .news-trends-viewport {
+        flex: 1;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        min-height: 100vh;
+        height: 100%;
+      }
+
+      .news-trends-frame {
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
+        border: 0;
+        display: block;
+        background: var(--bg);
+        color-scheme: dark;
       }

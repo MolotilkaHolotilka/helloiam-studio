@@ -19,6 +19,7 @@
           <nav class="app-nav" id="app-nav">
             <a href="#/dashboard" id="nav-dashboard" data-section="dashboard">Dashboard</a>
             <a href="#/brand" id="nav-brand" data-section="brand">Brand</a>
+            <a href="#/news-trends" id="nav-news-trends" data-section="news-trends">News / Trends</a>
             <a href="#/content/posts" id="nav-content" class="active" data-section="content">Content</a>
             <a href="#/analytics" id="nav-analytics" data-section="analytics">Analytics</a>
             <a href="#/systems/changelog" id="nav-systems" data-section="systems">Systems</a>
@@ -169,6 +170,12 @@
         </section>
       </div>
       <!-- ADMIN:GATE:view-dashboard-end -->
+
+      <div id="view-news-trends" hidden>
+        <div class="news-trends-viewport">
+          <iframe id="news-trends-frame" class="news-trends-frame" title="News and Trends"></iframe>
+        </div>
+      </div>
 
       <div id="view-content">
         <div class="content-layout-with-tree">
@@ -354,7 +361,7 @@
           <div class="generate-layout">
             <aside class="generate-sidebar">
               <h2 id="edit-post-title">Edit post</h2>
-              <ol class="pipeline-steps pipeline-steps--editor" id="editor-pipeline-steps"></ol>
+              <ol class="pipeline-steps pipeline-steps--editor" id="editor-pipeline-steps" hidden></ol>
             </aside>
             <main class="generate-main">
           <div id="edit-tab-settings">
@@ -713,9 +720,13 @@
       function schemeColorsForPost(post) {
         if (!post || (!isRubric03Post(post) && !isRubric04Post(post))) return null;
         const styles = appConfig.colorStyles?.length ? appConfig.colorStyles : [
-          { id: "yellow-red-white", themeColor: "#FFC53A", background: "#FFC53A", accentColor: "#D61E23", textColor: "#FFFFFF" },
-          { id: "red-yellow-white", themeColor: "#D61E23", background: "#D61E23", accentColor: "#FFC53A", textColor: "#FFFFFF" },
-          { id: "red-blue-white", themeColor: "#D61E23", background: "#D61E23", accentColor: "#4A7BFF", textColor: "#FFFFFF" },
+          { id: "red-white-yellow", label: "Red · White · Yellow", themeColor: "#D61E23", background: "#D61E23", accentColor: "#FFC53A", textColor: "#FFFFFF" },
+          { id: "yellow-dark-red", label: "Yellow · Dark · Red", themeColor: "#FFC53A", background: "#FFC53A", accentColor: "#D61E23", textColor: "#1E1E1E" },
+          { id: "yellow-white-red", label: "Yellow · White · Red", themeColor: "#FFC53A", background: "#FFC53A", accentColor: "#D61E23", textColor: "#FFFFFF" },
+          { id: "blue-white-yellow", label: "Blue · White · Yellow", themeColor: "#4A7BFF", background: "#4A7BFF", accentColor: "#FFC53A", textColor: "#FFFFFF" },
+          { id: "dark-white-yellow", label: "Dark · White · Yellow", themeColor: "#0F0F10", background: "#0F0F10", accentColor: "#FFC53A", textColor: "#FFFFFF" },
+          { id: "dark-white-red", label: "Dark · White · Red", themeColor: "#0F0F10", background: "#0F0F10", accentColor: "#D61E23", textColor: "#FFFFFF" },
+          { id: "dark-white-blue", label: "Dark · White · Blue", themeColor: "#0F0F10", background: "#0F0F10", accentColor: "#4A7BFF", textColor: "#FFFFFF" },
         ];
         const styleId = typeof post.colorStyleId === "string" ? post.colorStyleId.trim() : "";
         const cards = [...(post.cards || [])].sort((a, b) => a.cardIndex - b.cardIndex);
@@ -728,7 +739,6 @@
           if (byBg.length === 1) style = byBg[0];
           else if (byBg.length > 1) {
             style = byBg.find((s) => s.id === styleId)
-              || byBg.find((s) => s.id === "red-yellow-white")
               || byBg[0];
           }
         }
@@ -739,7 +749,6 @@
           if (byTheme.length === 1) style = byTheme[0];
           else if (byTheme.length > 1) {
             style = byTheme.find((s) => s.id === styleId)
-              || byTheme.find((s) => s.id === "red-yellow-white")
               || byTheme[0];
           }
         }
@@ -776,7 +785,6 @@
       }
 
       function cardNeedsGeneratedImage(post, card) {
-        if ((isRubric03Post(post) || isRubric04Post(post)) && (card.cardIndex === 0 || card.cardIndex === 2)) return false;
         if (card.props?.cardKind === "brand") return false;
         if (!(card.fields || []).some((field) => field.type === "image")) return false;
         return !cardUsesEmoji(post, card);
@@ -785,7 +793,7 @@
       function shouldHideFromSlidePictures(post, card) {
         if (!isRubric03Post(post) && !isRubric04Post(post)) return false;
         const last = lastCardIndex(post);
-        return card.cardIndex === 0 || card.cardIndex === 2 || card.cardIndex === last;
+        return card.cardIndex === 0 || card.cardIndex === last;
       }
 
       function rubric02AllSlotsReady() {
@@ -844,12 +852,16 @@
       const viewBrandInfo = document.getElementById("view-brand-info");
       const viewBrandCollabs = document.getElementById("view-brand-collabs");
       const viewDashboard = document.getElementById("view-dashboard");
+      const viewNewsTrends = document.getElementById("view-news-trends");
+      const newsTrendsFrame = document.getElementById("news-trends-frame");
+      const NEWS_TRENDS_FRAME_URL = "/ideas?embed=1";
       const viewAnalytics = document.getElementById("view-analytics");
       const viewSystems = document.getElementById("view-systems");
       const viewSite = document.getElementById("view-site");
       const appNav = document.getElementById("app-nav");
       const navBrand = document.getElementById("nav-brand");
       const navDashboard = document.getElementById("nav-dashboard");
+      const navNewsTrends = document.getElementById("nav-news-trends");
       const navContent = document.getElementById("nav-content");
       const navAnalytics = document.getElementById("nav-analytics");
       const navSystems = document.getElementById("nav-systems");
@@ -866,6 +878,7 @@
         const navItems = {
           dashboard: navDashboard,
           brand: navBrand,
+          "news-trends": navNewsTrends,
           content: navContent,
           analytics: navAnalytics,
           systems: navSystems,
@@ -933,6 +946,7 @@
         if (hash.startsWith("#/brand/collabs")) return { view: "brand", subview: "collabs" };
         if (hash.startsWith("#/home")) return { redirect: "#/dashboard" };
         if (hash.startsWith("#/dashboard")) return { view: "dashboard" };
+        if (hash === "#/news-trends" || hash.startsWith("#/news-trends")) return { view: "news-trends" };
         if (hash.startsWith("#/content/dashboard")) return { redirect: "#/dashboard" };
         if (hash.startsWith("#/content/create")) return { view: "generate" };
         if (hash.startsWith("#/content/prompts")) return { view: "prompts" };
@@ -959,6 +973,7 @@
 
         viewBrand.hidden = view !== "brand";
         viewDashboard.hidden = view !== "dashboard";
+        viewNewsTrends.hidden = view !== "news-trends";
         viewContent.hidden = !contentInnerViews.includes(view);
         viewAnalytics.hidden = view !== "analytics";
         viewSystems.hidden = view !== "systems";
@@ -979,10 +994,15 @@
 
         if (view === "dashboard") setTopNavActive("dashboard");
         else if (view === "brand") setTopNavActive("brand");
+        else if (view === "news-trends") setTopNavActive("news-trends");
         else if (view === "analytics") setTopNavActive("analytics");
         else if (view === "systems") setTopNavActive("systems");
         else if (view === "site") setTopNavActive("site");
         else setTopNavActive("content");
+
+        if (view === "news-trends" && newsTrendsFrame && !newsTrendsFrame.src) {
+          newsTrendsFrame.src = NEWS_TRENDS_FRAME_URL;
+        }
 
         if (view === "brand") {
           const isCollabs = route.subview === "collabs";
@@ -1910,28 +1930,8 @@
       function renderPipelineSteps() {
         const el = document.getElementById("editor-pipeline-steps");
         if (!el) return;
-        const steps = editorPipelineSteps();
-        el.innerHTML = steps.map((step, i) => `
-          <li class="pipeline-step${i < pipelineStep ? " is-done" : ""}${i === pipelineStep ? " is-active" : ""}" data-step="${i}">
-            <button type="button" class="pipeline-step-btn">
-              <span class="pipeline-step-index">${i + 1}</span>
-              <span class="pipeline-step-body">
-                <strong>${escapeHtml(step.title)}</strong>
-              </span>
-            </button>${step.hint ? `
-            <span class="pipeline-step-hint-wrap" aria-label="${escapeHtml(step.hint)}">
-              <span class="pipeline-step-hint-icon" aria-hidden="true">?</span>
-              <span class="pipeline-step-hint-tooltip" role="tooltip">${escapeHtml(step.hint)}</span>
-            </span>` : ""}
-          </li>
-        `).join("");
-        el.querySelectorAll(".pipeline-step-btn").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const li = btn.closest(".pipeline-step");
-            if (!li) return;
-            goToPipelineStep(Number(li.dataset.step)).catch(() => {});
-          });
-        });
+        el.hidden = true;
+        el.innerHTML = "";
       }
 
       function renderPipelineNav() {
@@ -2846,20 +2846,20 @@
           : ["food", "sounds", "culture", "places", "news"];
         const currentCategory = itemCategories.includes(currentPost.category) ? currentPost.category : "food";
         const styles = appConfig.colorStyles?.length ? appConfig.colorStyles : [
-          { id: "blue-red-white", label: "Blue · Red", colors: { background: "#4A7BFF", accentColor: "#D61E23", titleColor: "#FFFFFF" } },
-          { id: "blue-yellow-white", label: "Blue · Yellow", colors: { background: "#4A7BFF", accentColor: "#FFC53A", titleColor: "#FFFFFF" } },
-          { id: "red-blue-white", label: "Red · Blue · White", colors: { background: "#D61E23", accentColor: "#4A7BFF", titleColor: "#FFFFFF" } },
-          { id: "red-blue-yellow", label: "Red · Blue · Yellow", colors: { background: "#D61E23", accentColor: "#4A7BFF", titleColor: "#FFC53A" } },
-          { id: "red-yellow-white", label: "Red · Yellow · White", colors: { background: "#D61E23", accentColor: "#FFC53A", titleColor: "#FFFFFF" } },
-          { id: "red-yellow-yellow", label: "Red · Yellow", colors: { background: "#D61E23", accentColor: "#FFC53A", titleColor: "#FFC53A" } },
-          { id: "yellow-blue-white", label: "Yellow · Blue", colors: { background: "#FFC53A", accentColor: "#4A7BFF", titleColor: "#FFFFFF" } },
-          { id: "yellow-red-white", label: "Yellow · Red · White", colors: { background: "#FFC53A", accentColor: "#D61E23", titleColor: "#FFFFFF" } },
-          { id: "red-blue-black", label: "Red · Blue · Black", colors: { background: "#D61E23", accentColor: "#4A7BFF", titleColor: "#1E1E1E" } },
-          { id: "red-yellow-black", label: "Red · Yellow · Black", colors: { background: "#D61E23", accentColor: "#FFC53A", titleColor: "#1E1E1E" } },
-          { id: "yellow-blue-black", label: "Yellow · Blue · Black", colors: { background: "#FFC53A", accentColor: "#4A7BFF", titleColor: "#1E1E1E" } },
-          { id: "yellow-red-black", label: "Yellow · Red · Black", colors: { background: "#FFC53A", accentColor: "#D61E23", titleColor: "#1E1E1E" } },
+          { id: "red-white-yellow", label: "Red · White · Yellow", background: "#D61E23", accentColor: "#FFC53A", textColor: "#FFFFFF" },
+          { id: "yellow-dark-red", label: "Yellow · Dark · Red", background: "#FFC53A", accentColor: "#D61E23", textColor: "#1E1E1E" },
+          { id: "yellow-white-red", label: "Yellow · White · Red", background: "#FFC53A", accentColor: "#D61E23", textColor: "#FFFFFF" },
+          { id: "blue-white-yellow", label: "Blue · White · Yellow", background: "#4A7BFF", accentColor: "#FFC53A", textColor: "#FFFFFF" },
+          { id: "dark-white-yellow", label: "Dark · White · Yellow", background: "#0F0F10", accentColor: "#FFC53A", textColor: "#FFFFFF" },
+          { id: "dark-white-red", label: "Dark · White · Red", background: "#0F0F10", accentColor: "#D61E23", textColor: "#FFFFFF" },
+          { id: "dark-white-blue", label: "Dark · White · Blue", background: "#0F0F10", accentColor: "#4A7BFF", textColor: "#FFFFFF" },
         ];
-        const currentStyleId = styles.some((style) => style.id === currentPost.colorStyleId) ? currentPost.colorStyleId : "yellow-red-white";
+        const styleById = styles.find((style) => style.id === currentPost.colorStyleId);
+        const postTheme = String(currentPost.themeColor || "").toUpperCase();
+        const styleByTheme = postTheme
+          ? styles.find((style) => String(style.background || style.themeColor || style.colors?.background || "").toUpperCase() === postTheme)
+          : null;
+        const currentStyleId = (styleById || styleByTheme || styles.find((style) => style.id === "yellow-dark-red") || styles[0])?.id || "yellow-dark-red";
         const itemSettingsModule = isItemFormat ? `
           <div class="settings-module">
             <p class="settings-module-hint">Topic / category</p>
@@ -2877,24 +2877,25 @@
             </div>
           </div>
           <div class="settings-module">
-            <p class="settings-module-hint">Color scheme</p>
+            <p class="settings-module-hint">Cover color</p>
             <input type="hidden" name="colorStyleId" value="${escapeHtml(currentStyleId)}">
-            <div class="color-picker-row" role="group" aria-label="Color scheme">
+            <div class="color-picker-row cover-color-row" role="group" aria-label="Cover color">
               ${styles.map((style) => {
                 const colors = style.colors || {};
                 const bg = colors.background || style.background || style.themeColor || "#FFC53A";
-                const accent = colors.accentColor || style.accentColor || "#D61E23";
                 const text = colors.titleColor || style.textColor || "#FFFFFF";
-                const gradient = `linear-gradient(135deg, ${bg} 0 33%, ${accent} 33% 66%, ${text} 66% 100%)`;
+                const label = style.label || style.id;
                 return `
                   <button
                     type="button"
-                    class="color-swatch-pair ${style.id === currentStyleId ? "active" : ""}"
+                    class="color-swatch-pair cover-color-swatch ${style.id === currentStyleId ? "active" : ""}"
                     data-setting-color-style="${escapeHtml(style.id)}"
-                    title="${escapeHtml(style.label || style.id)}"
-                    aria-label="${escapeHtml(style.label || style.id)}"
-                    style="background: ${escapeHtml(gradient)}"
-                  ></button>
+                    title="${escapeHtml(label)}"
+                    aria-label="${escapeHtml(label)}"
+                    style="background: ${escapeHtml(bg)}; color: ${escapeHtml(text)}"
+                  >
+                    <span>${escapeHtml(label.replace(/\s*cover$/i, ""))}</span>
+                  </button>
                 `;
               }).join("")}
             </div>
@@ -2940,7 +2941,7 @@
         const patch = {};
         if (isRubric03Post(currentPost) || isRubric04Post(currentPost)) {
           patch.category = form.querySelector('[name="category"]')?.value?.trim() || currentPost.category || "food";
-          patch.colorStyleId = form.querySelector('[name="colorStyleId"]')?.value?.trim() || currentPost.colorStyleId || "yellow-red-white";
+          patch.colorStyleId = form.querySelector('[name="colorStyleId"]')?.value?.trim() || currentPost.colorStyleId || "yellow-dark-red";
         }
         if (isRubric05Post(currentPost)) patch.subject = subject;
         if (isRubric06Post(currentPost)) {

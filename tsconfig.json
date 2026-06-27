@@ -11,5 +11,10 @@
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true
   },
-  "exclude": ["remotion.config.ts", "rubric-templates-tsx"]
+  "exclude": [
+    "remotion.config.ts",
+    "rubric-templates-tsx",
+    "apps/dashboard-site",
+    "helloiam-studio v_to_merge"
+  ]
 }

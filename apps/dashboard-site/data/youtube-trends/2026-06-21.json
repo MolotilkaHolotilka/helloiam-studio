@@ -1,0 +1,30 @@
+{
+  "date": "2026-06-21",
+  "collectedAt": "2026-06-22T14:12:15.516Z",
+  "tags": {
+    "armenia": {
+      "tag": "armenia",
+      "newVideos": 4,
+      "newVideosPublished24h": 0,
+      "newViews": 1703987,
+      "newLikes": 15436,
+      "newComments": 2600
+    },
+    "армения": {
+      "tag": "армения",
+      "newVideos": 5,
+      "newVideosPublished24h": 0,
+      "newViews": 3559208,
+      "newLikes": 40652,
+      "newComments": 5666
+    },
+    "ереван": {
+      "tag": "ереван",
+      "newVideos": 6,
+      "newVideosPublished24h": 0,
+      "newViews": 6231530,
+      "newLikes": 76588,
+      "newComments": 17091
+    }
+  }
+}

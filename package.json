@@ -15,7 +15,9 @@
     "render": "node tools/render/render-cli.mjs",
     "lint": "tsc --noEmit",
     "dedupe:assets": "node tools/dedupe-asset-folders.mjs",
-    "dedupe:assets:apply": "node tools/dedupe-asset-folders.mjs --apply"
+    "dedupe:assets:apply": "node tools/dedupe-asset-folders.mjs --apply",
+    "dashboard": "npm --prefix apps/dashboard-site run dev -- -p 3010",
+    "dashboard:install": "npm --prefix apps/dashboard-site install"
   },
   "dependencies": {
     "@remotion/cli": "4.0.460",
