@@ -702,6 +702,50 @@
         Format01: "Rubric01", HelloIamWineV1: "Rubric02", IAmMatsunDeepDive: "Rubric03",
         GreenPlateIntro: "Rubric04", HelloIamNewsV1: "Rubric05",
       };
+      const WORKFLOW_EXAMPLE_RESULTS = {
+        Rubric01: [
+          "generated/template-references/Format01/slide-0.png",
+          "generated/template-references/Format01/slide-1.png",
+          "generated/template-references/Format01/slide-2.png",
+          "generated/template-references/Format01/slide-3.png",
+          "generated/template-references/Format01/slide-4.png",
+          "generated/template-references/Format01/slide-5.png",
+          "generated/template-references/Format01/slide-6.png",
+          "generated/template-references/Format01/slide-7.png",
+          "generated/template-references/Format01/slide-8.png",
+        ],
+        Rubric02: [
+          "generated/template-references/HelloIamWineV1/slide-0.png",
+          "generated/template-references/HelloIamWineV1/slide-1.png",
+          "generated/template-references/HelloIamWineV1/slide-2.png",
+          "generated/template-references/HelloIamWineV1/slide-3.png",
+          "generated/template-references/HelloIamWineV1/slide-4.png",
+          "generated/template-references/HelloIamWineV1/slide-5.png",
+          "generated/template-references/HelloIamWineV1/slide-6.png",
+          "generated/template-references/HelloIamWineV1/slide-7.png",
+          "generated/template-references/HelloIamWineV1/slide-8.png",
+          "generated/template-references/HelloIamWineV1/slide-9.png",
+        ],
+        Rubric03: [
+          "generated/template-references/IAmMatsunDeepDive/slide-0.png",
+          "generated/template-references/IAmMatsunDeepDive/slide-1.png",
+          "generated/template-references/IAmMatsunDeepDive/slide-2.png",
+          "generated/template-references/IAmMatsunDeepDive/slide-3.png",
+          "generated/template-references/IAmMatsunDeepDive/slide-4.png",
+          "generated/template-references/IAmMatsunDeepDive/slide-5.png",
+          "generated/template-references/IAmMatsunDeepDive/slide-6.png",
+        ],
+        Rubric04: [
+          "generated/template-references/GreenPlateIntro/slide-0.png",
+          "generated/template-references/GreenPlateIntro/slide-1.png",
+          "generated/template-references/GreenPlateIntro/slide-2.png",
+        ],
+        Rubric05: [
+          "generated/template-references/HelloIamNewsV1/slide-0.png",
+          "generated/template-references/HelloIamNewsV1/slide-1.png",
+          "generated/template-references/HelloIamNewsV1/slide-2.png",
+        ],
+      };
       function normalizeTemplateId(id) { return LEGACY_RUBRIC[id] || id; }
       function isRubric01Post(post) { return normalizeTemplateId(post?.templateId) === "Rubric01"; }
       function isRubric02Post(post) { return normalizeTemplateId(post?.templateId) === "Rubric02"; }
@@ -2642,19 +2686,18 @@
           resultPreview.innerHTML = `<span>No output yet</span>`;
         }
 
-        const exampleItems = renderedCards
-          .filter((card) => card.stillUrl || card.videoUrl)
-          .slice(0, 6);
+        const exampleItems = WORKFLOW_EXAMPLE_RESULTS[normalizeTemplateId(currentPost.templateId)] || [];
         if (examplesCount) examplesCount.textContent = String(exampleItems.length);
         examples.innerHTML = exampleItems.length
-          ? exampleItems.map((card) => {
-              const slideNumber = Number(card.cardIndex) + 1;
-              const media = card.stillUrl && showGeneratedMedia
-                ? `<img src="${escapeHtml(card.stillUrl)}${bust}" alt="" />`
-                : `<span>${card.videoUrl ? "VIDEO" : "READY"}</span>`;
+          ? exampleItems.map((assetPath, index) => {
+              const slideNumber = index + 1;
+              const url = publicAssetUrl(assetPath);
+              const media = url
+                ? `<img src="${escapeHtml(url)}" alt="" />`
+                : `<span>Example</span>`;
               return `<div class="workflow-example-thumb">${media}<small>${slideNumber}</small></div>`;
             }).join("")
-          : `<div class="workflow-example-empty">Run export to fill gallery.</div>`;
+          : `<div class="workflow-example-empty">No examples configured.</div>`;
       }
 
       function updateBrandPickerVisibility() {

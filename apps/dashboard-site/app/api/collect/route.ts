@@ -16,14 +16,17 @@ export async function POST(request: Request) {
   const url = new URL(request.url);
   const origin = url.origin;
   const force = url.searchParams.get('force') === '1';
+  const wantsJson = request.headers.get('accept')?.includes('application/json') ?? false;
 
   try {
-    await runDailyCollection(force);
+    const collection = await runDailyCollection(force);
+    if (wantsJson) return NextResponse.json(collection);
     return NextResponse.redirect(new URL('/', origin), 303);
   } catch (error) {
     const message = formatApiErrorForUser(
       error instanceof Error ? error.message : 'Collection failed',
     );
+    if (wantsJson) return NextResponse.json({ error: message }, { status: 500 });
     const redirectUrl = new URL('/', origin);
     redirectUrl.searchParams.set('collectError', collectErrorCode(message));
     redirectUrl.searchParams.set('errorMessage', message);

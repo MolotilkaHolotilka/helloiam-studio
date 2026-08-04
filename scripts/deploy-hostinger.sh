@@ -23,10 +23,17 @@ RSYNC_EXCLUDES=(
   --exclude node_modules
   --exclude apps/dashboard-site/node_modules
   --exclude apps/dashboard-site/.next
+  --exclude apps/dashboard-site/data/days
+  --exclude apps/dashboard-site/data/youtube-days
+  --exclude apps/dashboard-site/data/youtube-trends
   --exclude .git
   --exclude out/renders
   --exclude '*.mp4'
   --exclude .env
+  --exclude 'helloiam-studio v_to_merge'
+  --exclude helloiam-studio-clean
+  --exclude helloiam-studio-transfer
+  --exclude helloiam-studio-to-send
 )
 
 echo "==> Remote prep: ${REMOTE}:${REMOTE_DIR}"

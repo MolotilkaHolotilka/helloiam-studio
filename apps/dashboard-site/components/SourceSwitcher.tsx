@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CollectNowButton } from '@/components/CollectNowButton';
 import {
   buildDashboardHref,
   buildSourceSwitchHref,
@@ -27,6 +28,15 @@ export function SourceSwitcher({
   rubric,
   sort,
 }: SourceSwitcherProps) {
+  const collectHref = buildDashboardHref({
+    source: activeSource,
+    tag: activeSource === 'youtube' && tab !== 'trends' ? tag : undefined,
+    tab: activeSource === 'youtube' ? tab : undefined,
+    trendTag: activeSource === 'youtube' && tab === 'trends' ? trendTag : undefined,
+    rubric: activeSource === 'exa' ? rubric : undefined,
+    sort: activeSource === 'youtube' && tab !== 'trends' ? sort : undefined,
+  });
+
   return (
     <section className="source-bar" aria-label="Раздел">
       <div className="segmented-control source-bar__list" role="tablist">
@@ -63,6 +73,12 @@ export function SourceSwitcher({
           );
         })}
       </div>
+      <CollectNowButton
+        endpoint={activeSource === 'youtube' ? '/collect-youtube' : '/collect'}
+        idleLabel={activeSource === 'youtube' ? 'Обновить видео' : 'Обновить новости'}
+        pendingLabel={activeSource === 'youtube' ? 'Собираем видео…' : 'Собираем новости…'}
+        successHref={collectHref}
+      />
     </section>
   );
 }
