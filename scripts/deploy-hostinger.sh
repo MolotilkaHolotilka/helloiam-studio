@@ -27,7 +27,10 @@ RSYNC_EXCLUDES=(
   --exclude apps/dashboard-site/data/youtube-days
   --exclude apps/dashboard-site/data/youtube-trends
   --exclude .git
+  --exclude .DS_Store
   --exclude out/renders
+  --exclude data/posts
+  --exclude public/generated/posts
   --exclude '*.mp4'
   --exclude .env
   --exclude 'helloiam-studio v_to_merge'
