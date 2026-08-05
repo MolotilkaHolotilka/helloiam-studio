@@ -1,0 +1,86 @@
+{
+  "date": "2026-06-24",
+  "collectedAt": "2026-06-24T09:10:31.643Z",
+  "tags": {
+    "armenia": {
+      "tag": "armenia",
+      "newVideos": 241,
+      "newVideosPublished24h": 241,
+      "newViews": 596621,
+      "newLikes": 19174,
+      "newComments": 1175
+    },
+    "yerevan": {
+      "tag": "yerevan",
+      "newVideos": 58,
+      "newVideosPublished24h": 58,
+      "newViews": 42997,
+      "newLikes": 791,
+      "newComments": 64
+    },
+    "visitarmenia": {
+      "tag": "visitarmenia",
+      "newVideos": 11,
+      "newVideosPublished24h": 11,
+      "newViews": 6010,
+      "newLikes": 149,
+      "newComments": 14
+    },
+    "armeniatravel": {
+      "tag": "armeniatravel",
+      "newVideos": 7,
+      "newVideosPublished24h": 7,
+      "newViews": 1246,
+      "newLikes": 55,
+      "newComments": 12
+    },
+    "hayastan": {
+      "tag": "hayastan",
+      "newVideos": 31,
+      "newVideosPublished24h": 31,
+      "newViews": 55471,
+      "newLikes": 2888,
+      "newComments": 102
+    },
+    "армения": {
+      "tag": "армения",
+      "newVideos": 165,
+      "newVideosPublished24h": 165,
+      "newViews": 922290,
+      "newLikes": 26787,
+      "newComments": 1621
+    },
+    "ереван": {
+      "tag": "ереван",
+      "newVideos": 27,
+      "newVideosPublished24h": 27,
+      "newViews": 39518,
+      "newLikes": 957,
+      "newComments": 126
+    },
+    "armfood": {
+      "tag": "armfood",
+      "newVideos": 0,
+      "newVideosPublished24h": 0,
+      "newViews": 0,
+      "newLikes": 0,
+      "newComments": 0
+    },
+    "dilijan": {
+      "tag": "dilijan",
+      "newVideos": 2,
+      "newVideosPublished24h": 2,
+      "newViews": 117,
+      "newLikes": 3,
+      "newComments": 0
+    },
+    "garni": {
+      "tag": "garni",
+      "newVideos": 0,
+      "newVideosPublished24h": 0,
+      "newViews": 0,
+      "newLikes": 0,
+      "newComments": 0
+    }
+  }
+}

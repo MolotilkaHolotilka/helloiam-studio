@@ -30,6 +30,15 @@ const cardBase: React.CSSProperties = {
   overflow: 'hidden',
 };
 
+/** Bottom-weighted boxes for square ALL EMOJIS stickers on hello slides (Rubric 03/04). */
+const EMOJI_INTRO_IMAGE_LAYOUTS: Record<
+  string,
+  {left: number; top: number; width: number; height: number}
+> = {
+  'emoji-lavash': {left: -40, top: 400, width: 1160, height: 1160},
+  'emoji-matsun': {left: -60, top: 420, width: 1200, height: 1200},
+};
+
 const INTRO_IMAGE_LAYOUTS: Record<
   string,
   {left: number; top: number; width: number; height: number}
@@ -37,13 +46,24 @@ const INTRO_IMAGE_LAYOUTS: Record<
   lavash: {left: -182, top: -238, width: 2060, height: 2060},
   dolma: {left: -271, top: 224, width: 1861, height: 1861},
   matsun: {left: -251, top: 0, width: 2478, height: 2478},
+  ...EMOJI_INTRO_IMAGE_LAYOUTS,
 };
 
 const INTRO_TITLE_WIDTH: Record<string, number> = {
-  lavash: 636,
-  dolma: 620,
-  matsun: 693,
+  lavash: 780,
+  dolma: 780,
+  matsun: 820,
+  'emoji-lavash': 780,
+  'emoji-matsun': 820,
 };
+
+function isEmojiIntroLayout(introLayout: string): boolean {
+  return introLayout.startsWith('emoji-');
+}
+
+function normalizeHelloTitle(title: string): string {
+  return title.replace(/(\r?\n)I(\r?\n)AM/gi, '$1I AM');
+}
 
 function mediaSource(image?: unknown): string | null {
   if (typeof image !== 'string' || !image) return null;
@@ -128,8 +148,8 @@ export function Card1Hello({
     extrapolateRight: 'clamp',
   });
   const image = mediaSource(card.image);
-  const title = asText(card.title, 'HELLO, I AM');
-  const accent = asText(card.titleAccent, '');
+  const title = normalizeHelloTitle(asText(card.title, 'HELLO, I AM'));
+  const accent = asText(card.item ?? card.titleAccent, '');
   const label = asText(card.label, 'AM FOOD');
   const background = asText(card.background, '#d9dde0');
   const titleColor = asText(card.titleColor, '#0f0f10');
@@ -137,7 +157,8 @@ export function Card1Hello({
   const labelColor = asText(card.labelColor, '#000000');
   const introLayout = asText(card.introLayout, 'lavash');
   const imageBox = INTRO_IMAGE_LAYOUTS[introLayout] || INTRO_IMAGE_LAYOUTS.lavash;
-  const titleWidth = INTRO_TITLE_WIDTH[introLayout] || 636;
+  const titleWidth = INTRO_TITLE_WIDTH[introLayout] || INTRO_TITLE_WIDTH.lavash;
+  const emojiIntro = isEmojiIntroLayout(introLayout);
 
   return (
     <div style={{...cardBase, background, opacity: cardOpacity}}>
@@ -158,9 +179,9 @@ export function Card1Hello({
               width: '100%',
               height: '100%',
               objectFit: 'contain',
-              objectPosition: 'center',
+              objectPosition: emojiIntro ? 'center bottom' : 'center',
               transform: `scale(${bgScale})`,
-              transformOrigin: 'center',
+              transformOrigin: emojiIntro ? 'center bottom' : 'center',
             }}
           />
         </div>
@@ -230,13 +251,14 @@ export function Card2Quote({
     extrapolateRight: 'clamp',
   });
   const title = asText(card.title, 'HELLO, I AM');
-  const titleAccent = asText(card.titleAccent, '');
-  const quote = asText(card.quote, '');
+  const titleAccent = asText(card.item ?? card.titleAccent, '');
+  const quote = asText(card.fact ?? card.quote, '');
   const label = asText(card.label, 'AM FOOD');
   const background = asText(card.background, '#d9dde0');
-  const quoteColor = asText(card.quoteColor, '#d61e23');
   const titleColor = asText(card.titleColor, '#0f0f10');
-  const accentColor = asText(card.accentColor, titleColor);
+  const schemeSecond = asText(card.schemeSecondColor, '');
+  const storedQuote = asText(card.quoteColor, '');
+  const quoteColor = asText(schemeSecond || storedQuote, '#FFC53A');
   const labelColor = asText(card.labelColor, '#000000');
   const headerLine: React.CSSProperties = {
     fontFamily: instrumentSans,
@@ -263,7 +285,7 @@ export function Card2Quote({
           {title}
         </div>
         {titleAccent ? (
-          <div style={{...headerLine, color: accentColor}}>{titleAccent}</div>
+          <div style={{...headerLine, color: titleColor}}>{titleAccent}</div>
         ) : null}
       </div>
 

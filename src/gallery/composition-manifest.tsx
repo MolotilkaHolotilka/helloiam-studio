@@ -8,6 +8,12 @@ import {schema as schema_post_104, DURATION as duration_post_104} from '../templ
 import {SoftFloatCard as Card_post_104} from '../templates/post-104/presets/soft-float';
 import {schema as schema_post_112, DURATION as duration_post_112} from '../templates/post-112/schema';
 import {SoftFloatCard as Card_post_112} from '../templates/post-112/presets/soft-float';
+import {schema as schema_post_126, DURATION as duration_post_126} from '../templates/post-126/schema';
+import {SoftFloatCard as Card_post_126} from '../templates/post-126/presets/soft-float';
+import {schema as schema_post_130, DURATION as duration_post_130} from '../templates/post-130/schema';
+import {SoftFloatCard as Card_post_130} from '../templates/post-130/presets/soft-float';
+import {schema as schema_post_131, DURATION as duration_post_131} from '../templates/post-131/schema';
+import {SoftFloatCard as Card_post_131} from '../templates/post-131/presets/soft-float';
 import {schema as schema_post_5, DURATION as duration_post_5} from '../templates/post-5/schema';
 import {SoftFloatCard as Card_post_5} from '../templates/post-5/presets/soft-float';
 import {schema as schema_post_70, DURATION as duration_post_70} from '../templates/post-70/schema';
@@ -38,14 +44,18 @@ import {SoftFloatCard as Card_rubric_card} from '../templates/rubric-card/preset
 function makeComposition(Card: React.ComponentType<any>, segmentFrames: number) {
   const Wrapped: React.FC<Record<string, unknown>> = (props) => {
     const frame = useCurrentFrame();
-    const imageSrc = resolveImageSrc(props.image);
+    const staticStill = props.__staticStill === true || props.__staticStill === 'true';
+    const textOverlayOnly = props.__textOverlayOnly === true || props.__textOverlayOnly === 'true';
+    const stillFrame = Math.min(30, Math.max(0, segmentFrames - 1));
+    const imageSrc = textOverlayOnly ? undefined : resolveImageSrc(props.image);
     return (
-      <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', background: '#c8ccd0'}}>
+      <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', background: textOverlayOnly ? 'transparent' : '#c8ccd0'}}>
         <Card
           card={props}
-          localFrame={frame}
+          localFrame={staticStill ? stillFrame : frame}
           segmentFrames={segmentFrames}
           imageSrc={imageSrc}
+          videoSrc={staticStill || textOverlayOnly ? undefined : resolveImageSrc(props.video)}
         />
       </AbsoluteFill>
     );
@@ -84,11 +94,64 @@ export const GALLERY_COMPOSITIONS = [
     schema: schema_post_112,
     defaultProps: {
           "background": "#FFC53A",
-          "body2": "helloiam am",
-          "body2Color": "#0F0F10",
+          "brandLeft": "helloiam",
+          "brandRight": "am",
+          "brandColor": "#0F0F10",
           "image": ""
     },
     Component: makeComposition(Card_post_112, duration_post_112),
+  },
+  {
+    id: 'Post126Css',
+    duration: duration_post_126,
+    schema: schema_post_126,
+    defaultProps: {
+          "background": "#D9DDE0",
+          "title": "Hello, WORLD",
+          "titleColor": "#0F0F10",
+          "quote": "Armenia welcomed 172,705 international visitors in April 2026",
+          "quoteColor": "#D61E23",
+          "label": "AM NEWS",
+          "labelColor": "#4A7BFF",
+          "image": "generated/post-126.png"
+    },
+    Component: makeComposition(Card_post_126, duration_post_126),
+  },
+  {
+    id: 'Post130Css',
+    duration: duration_post_130,
+    schema: schema_post_130,
+    defaultProps: {
+          "background": "#D9DDE0",
+          "title": "Hello, WORLD",
+          "titleColor": "#0F0F10",
+          "quote": "Travel platforms and international media increasingly describe Armenia as Europe's next rising tourism star. Visitors are drawn by the country's mix of ancient history, dramatic landscapes, Soviet-modernist aesthetics and famously overwhelming hospitality. Unfortunately for tourists, \"light local dinner\" in Armenia still translates to approximately 14 dishes, emotional toasts and a grandmother personally monitoring whether you finished your food.",
+          "quoteColor": "#0F0F10",
+          "label": "AM NEWS",
+          "labelColor": "#4A7BFF",
+          "source": "source: armradio.am",
+          "sourceColor": "#000000",
+          "image": "generated/post-130.png"
+    },
+    Component: makeComposition(Card_post_130, duration_post_130),
+  },
+  {
+    id: 'Post131Css',
+    duration: duration_post_131,
+    schema: schema_post_131,
+    defaultProps: {
+          "background": "#D9DDE0",
+          "title": "Hello, WORLD",
+          "titleColor": "#0F0F10",
+          "quote": "Tourism growth in 2026 signals a major shift in how Armenia is perceived internationally. What was once considered a niche destination for adventurous travelers is quickly becoming part of mainstream European travel culture. Locals, however, remain deeply suspicious of anyone calling the country a \"secret spot\" while simultaneously posting 47 Instagram stories about it.",
+          "quoteColor": "#0F0F10",
+          "label": "AM NEWS",
+          "labelColor": "#4A7BFF",
+          "source": "source: armradio.am",
+          "sourceColor": "#000000",
+          "image": "generated/post-131.png"
+    },
+    Component: makeComposition(Card_post_131, duration_post_131),
   },
   {
     id: 'Post5Css',
@@ -96,8 +159,10 @@ export const GALLERY_COMPOSITIONS = [
     schema: schema_post_5,
     defaultProps: {
           "background": "#FFC53A",
-          "title": "HELLO,\nI AM\nDZIRANI",
+          "title": "HELLO,\nI AM",
+          "titleAccent": "DZIRANI",
           "titleColor": "#0F0F10",
+          "accentColor": "#D61E23",
           "label": "AM FOOD",
           "labelColor": "#000000",
           "image": ""
@@ -193,7 +258,7 @@ export const GALLERY_COMPOSITIONS = [
     schema: schema_post_96,
     defaultProps: {
           "background": "#000000",
-          "title": "AM MEANS\nARMENIA",
+          "title": "AM\nMEANS\nARMENIA",
           "titleColor": "#FFC53A",
           "image": "generated/image-79-1.png"
     },

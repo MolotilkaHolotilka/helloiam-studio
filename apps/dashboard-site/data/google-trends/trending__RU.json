@@ -1,0 +1,419 @@
+{
+  "geo": "RU",
+  "collectedAt": "2026-06-25T11:10:40.441Z",
+  "trends": [
+    {
+      "query": "вк удалили из апстор",
+      "approxTraffic": "10 000+",
+      "trafficSortValue": 10000,
+      "startedAt": "Thu, 25 Jun 2026 03:50:00 -0700",
+      "picture": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQlNmO7g5yWIqAWy6HS0OPblvPNIjZUhjjZ1zfgl-gN5do-h0968Zt0Y0drWno",
+      "pictureSource": "Meduza",
+      "breakdown": [
+        "Из App Store удалили VK Video и «Одноклассники»",
+        "«Перейдите на Android»: в Кремле прокомментировали удаление приложений VK из App Store",
+        "Пресс-релиз VK"
+      ],
+      "news": [
+        {
+          "title": "Из App Store удалили VK Video и «Одноклассники»",
+          "url": "https://meduza.io/news/2026/06/25/iz-app-store-udalili-vk-video-i-odnoklassniki",
+          "source": "Meduza"
+        },
+        {
+          "title": "«Перейдите на Android»: в Кремле прокомментировали удаление приложений VK из App Store",
+          "url": "https://expert.ru/news/pereydite-na-android-v-kremle-prokommentirovali-udalenie-prilozheniy-vk-iz-app-store",
+          "source": "https://expert.ru"
+        },
+        {
+          "title": "Пресс-релиз VK",
+          "url": "https://vk.company/press/releases/12343/",
+          "source": "vk.company"
+        }
+      ],
+      "sparkline": [
+        {
+          "time": "1782381120",
+          "label": "Jun 25 at 12:52 PM",
+          "value": 100,
+          "hasData": true
+        },
+        {
+          "time": "1782382080",
+          "label": "Jun 25 at 1:08 PM",
+          "value": 99,
+          "hasData": true
+        }
+      ]
+    },
+    {
+      "query": "газ",
+      "approxTraffic": "2 000+",
+      "trafficSortValue": 2000,
+      "startedAt": "Thu, 25 Jun 2026 03:30:00 -0700",
+      "picture": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRubKNQJr_DXIsb8F9O_sWHyfb3Gx8vWb6KBUw9d9eYsl4NQoGVSfKdCqGvcpk",
+      "pictureSource": "Ведомости",
+      "breakdown": [
+        "США пригрозили приостановить поставки газа в ЕС из-за новых правил",
+        "Американские власти прекратят поставки газа в ЕС, если его власти не ослабят регуляции выбросов метана",
+        "Власти США прекратят поставки газа в ЕС из-за регуляций выбросов метана"
+      ],
+      "news": [
+        {
+          "title": "США пригрозили приостановить поставки газа в ЕС из-за новых правил",
+          "url": "https://www.vedomosti.ru/politics/news/2026/06/25/1208670-ssha-prigrozili-priostanovit",
+          "source": "Ведомости"
+        },
+        {
+          "title": "Американские власти прекратят поставки газа в ЕС, если его власти не ослабят регуляции выбросов метана",
+          "url": "https://theins.ru/news/294078",
+          "source": "The Insider"
+        },
+        {
+          "title": "Власти США прекратят поставки газа в ЕС из-за регуляций выбросов метана",
+          "url": "https://rtvi.com/obyasnyaem/vlasti-ssha-prekratyat-postavki-gaza-v-es-iz-za-regulyaczij-vybrosov-metana/",
+          "source": "RTVI"
+        }
+      ]
+    },
+    {
+      "query": "уфа нпз",
+      "approxTraffic": "2 000+",
+      "trafficSortValue": 2000,
+      "startedAt": "Thu, 25 Jun 2026 02:50:00 -0700",
+      "picture": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTXrDvp7mKmTKxMpfKRM_lpzXZGXv37LCdTsvXJKpbUaxF0UHCszPekgaOW9go",
+      "pictureSource": "Русская служба The Moscow Times",
+      "breakdown": [
+        "В Уфе после ударов беспилотников загорелись два крупных НПЗ",
+        "В Уфе возник пожар в районе НПЗ. На Урале объявлена угроза атаки беспилотников",
+        "В Уфе обломки БПЛА упали в промзоне"
+      ],
+      "news": [
+        {
+          "title": "В Уфе после ударов беспилотников загорелись два крупных НПЗ",
+          "url": "https://ru.themoscowtimes.com/2026/06/25/v-ufe-posle-udarov-bespilotnikov-zagorelis-dva-krupnih-npz-a199161",
+          "source": "Русская служба The Moscow Times"
+        },
+        {
+          "title": "В Уфе возник пожар в районе НПЗ. На Урале объявлена угроза атаки беспилотников",
+          "url": "https://meduza.io/news/2026/06/25/v-ufe-voznik-pozhar-v-rayone-npz-na-urale-ob-yavlena-ugroza-ataki-bespilotnikov",
+          "source": "Meduza"
+        },
+        {
+          "title": "В Уфе обломки БПЛА упали в промзоне",
+          "url": "https://www.interfax.ru/russia/1098247",
+          "source": "Интерфакс"
+        }
+      ],
+      "sparkline": [
+        {
+          "time": "1782351840",
+          "label": "Jun 25 at 4:44 AM",
+          "value": 100,
+          "hasData": true
+        },
+        {
+          "time": "1782370560",
+          "label": "Jun 25 at 9:56 AM",
+          "value": 29,
+          "hasData": true
+        },
+        {
+          "time": "1782371040",
+          "label": "Jun 25 at 10:04 AM",
+          "value": 36,
+          "hasData": true
+        },
+        {
+          "time": "1782371520",
+          "label": "Jun 25 at 10:12 AM",
+          "value": 34,
+          "hasData": true
+        },
+        {
+          "time": "1782372000",
+          "label": "Jun 25 at 10:20 AM",
+          "value": 32,
+          "hasData": true
+        },
+        {
+          "time": "1782372480",
+          "label": "Jun 25 at 10:28 AM",
+          "value": 39,
+          "hasData": true
+        },
+        {
+          "time": "1782372960",
+          "label": "Jun 25 at 10:36 AM",
+          "value": 21,
+          "hasData": true
+        },
+        {
+          "time": "1782379680",
+          "label": "Jun 25 at 12:28 PM",
+          "value": 27,
+          "hasData": true
+        },
+        {
+          "time": "1782381120",
+          "label": "Jun 25 at 12:52 PM",
+          "value": 24,
+          "hasData": true
+        },
+        {
+          "time": "1782381600",
+          "label": "Jun 25 at 1:00 PM",
+          "value": 26,
+          "hasData": true
+        },
+        {
+          "time": "1782382560",
+          "label": "Jun 25 at 1:16 PM",
+          "value": 31,
+          "hasData": true
+        },
+        {
+          "time": "1782383040",
+          "label": "Jun 25 at 1:24 PM",
+          "value": 25,
+          "hasData": true
+        },
+        {
+          "time": "1782383520",
+          "label": "Jun 25 at 1:32 PM",
+          "value": 37,
+          "hasData": true
+        },
+        {
+          "time": "1782384000",
+          "label": "Jun 25 at 1:40 PM",
+          "value": 34,
+          "hasData": true
+        },
+        {
+          "time": "1782384480",
+          "label": "Jun 25 at 1:48 PM",
+          "value": 55,
+          "hasData": true
+        },
+        {
+          "time": "1782384960",
+          "label": "Jun 25 at 1:56 PM",
+          "value": 36,
+          "hasData": true
+        }
+      ]
+    },
+    {
+      "query": "axe dota 2",
+      "approxTraffic": "500+",
+      "trafficSortValue": 500,
+      "startedAt": "Thu, 25 Jun 2026 03:00:00 -0700",
+      "picture": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSQu3fz8XDang_QcGJ_LhcETR4T0i05lnlWgAxwaHXRQSqldA8h3tjzuP10mw0",
+      "pictureSource": "www.offstage.ru",
+      "breakdown": [
+        "Что происходит с Axe и как это связано с новым ивентом",
+        "«Темный карнавал» в Дота 2: всё, что нужно знать",
+        "Из Dota 2 исчез герой Axe — игроки ждут начала большого ивента к The International 2026"
+      ],
+      "news": [
+        {
+          "title": "Что происходит с Axe и как это связано с новым ивентом",
+          "url": "https://www.offstage.ru/dota2/articles/vsyo-chto-izvestno-o-propazhe-axe-i-namyokah-na-tyomnyj-karnaval-v-dota-2",
+          "source": "www.offstage.ru"
+        },
+        {
+          "title": "«Темный карнавал» в Дота 2: всё, что нужно знать",
+          "url": "https://esports.ru/articles/temnyy-karnaval-ivent-v-dota-2/",
+          "source": "Esports.ru"
+        },
+        {
+          "title": "Из Dota 2 исчез герой Axe — игроки ждут начала большого ивента к The International 2026",
+          "url": "https://www.championat.ru/cybersport/news-6517798-iz-dota-2-ischez-geroj-axe-igroki-zhdut-nachala-bolshogo-iventa-k-the-international.html",
+          "source": "https://www.championat.ru/"
+        }
+      ]
+    },
+    {
+      "query": "ипотека в россии",
+      "approxTraffic": "200+",
+      "trafficSortValue": 200,
+      "startedAt": "Thu, 25 Jun 2026 03:50:00 -0700",
+      "picture": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSaw-ZTYnw38yN_hfC9N55xtM07YWyJlAvqcZ9PluRrik4EDprju4WaJmJr2Y0",
+      "pictureSource": "Журнал Домклик",
+      "breakdown": [
+        "Сбербанк снижает ставки по рыночной ипотеке",
+        "Сбербанк снижает ставки по ипотеке",
+        "Сбербанк снизит ставки по рыночной ипотеке"
+      ],
+      "news": [
+        {
+          "title": "Сбербанк снижает ставки по рыночной ипотеке",
+          "url": "https://blog.domclick.ru/novosti/post/sberbank-snizhaet-stavki-po-rynochnoj-ipoteke",
+          "source": "Журнал Домклик"
+        },
+        {
+          "title": "Сбербанк снижает ставки по ипотеке",
+          "url": "https://www.banki.ru/news/lenta/?id=11025328",
+          "source": "Банки.ру"
+        },
+        {
+          "title": "Сбербанк снизит ставки по рыночной ипотеке",
+          "url": "https://www.interfax.ru/business/1098228",
+          "source": "Интерфакс"
+        }
+      ]
+    },
+    {
+      "query": "автоваз",
+      "approxTraffic": "200+",
+      "trafficSortValue": 200,
+      "startedAt": "Thu, 25 Jun 2026 03:50:00 -0700",
+      "picture": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT8VZMcznQ2da1PJzIGdq2rNW3nCt6Ae5yiPTtcjItKniO4FiGPP5F2NQ4dUCs",
+      "pictureSource": "ВФокусе Mail",
+      "breakdown": [
+        "АвтоВАЗ расширил гамму комплектаций для Lada Iskra",
+        "«Искра» зажгла новую версию: началось производство практичной «Лады» с новой связкой агрегатов",
+        "Lada Iskra подешевела — АВТОВАЗ представил новое исполнение универсала"
+      ],
+      "news": [
+        {
+          "title": "АвтоВАЗ расширил гамму комплектаций для Lada Iskra",
+          "url": "https://vfokuse.mail.ru/news/69628233-avtovaz-rasshiril-gammu-komplektatsij-dlya-lada-iskra/",
+          "source": "ВФокусе Mail"
+        },
+        {
+          "title": "«Искра» зажгла новую версию: началось производство практичной «Лады» с новой связкой агрегатов",
+          "url": "https://avtonovostidnya.ru/avtoprom/416796-avtovaz-lada-iskra-sw",
+          "source": "Автоновости дня"
+        },
+        {
+          "title": "Lada Iskra подешевела — АВТОВАЗ представил новое исполнение универсала",
+          "url": "https://www.zr.ru/content/news/982567-lada-iskra-podeshevela-avtova/",
+          "source": "zr.ru"
+        }
+      ]
+    },
+    {
+      "query": "emirates",
+      "approxTraffic": "200+",
+      "trafficSortValue": 200,
+      "startedAt": "Thu, 25 Jun 2026 03:50:00 -0700",
+      "picture": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTHu9x0I6-qn6TAeOXpM-hIcbxwsAwC8BSzOXXuiT2CdDMVoWoCCAV_glCqXJQ",
+      "pictureSource": "Arabian Business",
+      "breakdown": [
+        "Emirates announces free five-star hotel stays for Dubai passengers",
+        "Emirates Issues New DXB Travel Advice Ahead of Busy Summer Holiday Season",
+        "Emirates offers exclusive summer deals for Kenyan travellers"
+      ],
+      "news": [
+        {
+          "title": "Emirates announces free five-star hotel stays for Dubai passengers",
+          "url": "https://www.arabianbusiness.com/abnews/emirates-free-hotel-stays-dubai-passengers",
+          "source": "Arabian Business"
+        },
+        {
+          "title": "Emirates Issues New DXB Travel Advice Ahead of Busy Summer Holiday Season",
+          "url": "https://www.rustourismnews.com/2026/06/24/emirates-issues-new-dxb-travel-advice-ahead-of-busy-summer-holiday-season/",
+          "source": "Rus Tourism News"
+        },
+        {
+          "title": "Emirates offers exclusive summer deals for Kenyan travellers",
+          "url": "https://www.traveldailymedia.com/emirates-offers-exclusive-summer-deals-for-kenyan-travellers/",
+          "source": "Travel Daily Media"
+        }
+      ]
+    },
+    {
+      "query": "военное дело",
+      "approxTraffic": "200+",
+      "trafficSortValue": 200,
+      "startedAt": "Thu, 25 Jun 2026 02:50:00 -0700",
+      "picture": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSjKFg5B9KVljRJZbTtfOZgUcXiSyo5vCLEXgRteP9jI7rkNrY6dckQ3g9ohJQ",
+      "pictureSource": "Военное дело",
+      "breakdown": [
+        "«Адмирал Нахимов» против Zumwalt: в США сравнили огневую мощь кораблей",
+        "Атомный гигант России превзошел американский Zumwalt",
+        "Адмирал Нахимов» готов к строй — США размещают крейсер в Аравийском море"
+      ],
+      "news": [
+        {
+          "title": "«Адмирал Нахимов» против Zumwalt: в США сравнили огневую мощь кораблей",
+          "url": "https://voennoedelo.com/posts/id86805-admiral-nahimov-protiv-zumwalt-v-ssha-sravnili-ognevuju-mosch-korablej",
+          "source": "Военное дело"
+        },
+        {
+          "title": "Атомный гигант России превзошел американский Zumwalt",
+          "url": "https://news.ru/world/atomnyj-gigant-rossii-prevzoshel-amerikanskij-zumwalt",
+          "source": "NEWS.ru"
+        },
+        {
+          "title": "Адмирал Нахимов» готов к строй — США размещают крейсер в Аравийском море",
+          "url": "https://pulsfid.ru/news/admiral-nahimov-gotov-k-stroy-ssha-razmeschayut-kreyser-v-araviyskom-more-310526432",
+          "source": "Пульсфид"
+        }
+      ]
+    },
+    {
+      "query": "правительство",
+      "approxTraffic": "100+",
+      "trafficSortValue": 100,
+      "startedAt": "Thu, 25 Jun 2026 03:50:00 -0700",
+      "picture": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSWO-K9QdGtX8biC8XPNK-FYLwlPvm82YkO02Yc3s0c30ROdOMOKg9-uRcLtsI",
+      "pictureSource": "Интерфакс",
+      "breakdown": [
+        "Правительство РФ рассмотрит вопрос пенсионного обеспечения граждан, проживающих в ДНР и ЛНР",
+        "Правительство РФ рассмотрит вопрос пенсионного обеспечения граждан, проживающих в ДНР и ЛНР",
+        "От «мистера Дарси» до «Мидаса наоборот». Почему ушел Кир Стармер?"
+      ],
+      "news": [
+        {
+          "title": "Правительство РФ рассмотрит вопрос пенсионного обеспечения граждан, проживающих в ДНР и ЛНР",
+          "url": "https://www.interfax.ru/russia/1098158",
+          "source": "Интерфакс"
+        },
+        {
+          "title": "Правительство РФ рассмотрит вопрос пенсионного обеспечения граждан, проживающих в ДНР и ЛНР",
+          "url": "https://prospect.com.ru/news/6817577/pravitelstvo-rf-rassmotrit-vopros-pensionnogo-obespecheniya-gragdan-progivayuschih-v-dnr-i-lnr.html",
+          "source": "https://prospect.com.ru/"
+        },
+        {
+          "title": "От «мистера Дарси» до «Мидаса наоборот». Почему ушел Кир Стармер?",
+          "url": "https://www.bbc.com/russian/articles/ckg4j1gl457o",
+          "source": "BBC"
+        }
+      ]
+    },
+    {
+      "query": "волочкова",
+      "approxTraffic": "100+",
+      "trafficSortValue": 100,
+      "startedAt": "Thu, 25 Jun 2026 02:50:00 -0700",
+      "picture": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTnZ2lZ6at7UOo3MKHSIMCq-4EYjz5DIggmRoRRQcDuFkZpXrSjDw3--qKHi5M",
+      "pictureSource": "StarHit",
+      "breakdown": [
+        "Уехала на Урал и занялась фермерством: Анастасия Волочкова тайно вышла замуж",
+        "Анастасия Волочкова в шоу «Свадьба вслепую»: поиск идеального мужчины, требования, итоги",
+        "Бизнесмен из Бурятии стал женихом Анастасии Волочковой"
+      ],
+      "news": [
+        {
+          "title": "Уехала на Урал и занялась фермерством: Анастасия Волочкова тайно вышла замуж",
+          "url": "https://www.starhit.ru/exclusive/uekhala-na-ural-i-zanyalas-fermerstvom-anastasiya-volochkova-taino-vyshla-zamuzh-7114913/",
+          "source": "StarHit"
+        },
+        {
+          "title": "Анастасия Волочкова в шоу «Свадьба вслепую»: поиск идеального мужчины, требования, итоги",
+          "url": "https://tv.mail.ru/news/129534-volochkova-ozvuchila-trebovaniya-k-budushemu-muzhu-v-romanticheskom-teleshou/",
+          "source": "ТВ Mail"
+        },
+        {
+          "title": "Бизнесмен из Бурятии стал женихом Анастасии Волочковой",
+          "url": "https://www.baikal-daily.ru/news/16/524580/",
+          "source": "Байкал-Дейли"
+        }
+      ]
+    }
+  ],
+  "partial": true
+}

@@ -7,8 +7,8 @@ export const LAYOUT: LayoutSpec = {
     {
       key: "title",
       role: "title",
-      box: {left: 243, top: 597, width: 595, height: 468},
-      alignItems: "flex-end",
+      box: {left: 243, top: 597, width: 595, height: 312},
+      alignItems: "flex-start",
       textStyle: {
         fontFamily: "sans",
         fontSize: 164,

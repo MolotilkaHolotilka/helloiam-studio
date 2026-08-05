@@ -1,67 +1,103 @@
-import {readFile, writeFile} from 'node:fs/promises';
+import {readdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 
-export const KEEP_STORY_FILES = [
-  'format-01.json',
-  'helloiam-wine-v1.json',
-  'format-03.json',
-  'iam-matsun-deep-dive.json',
-  'green-plate-intro.json',
-];
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const studioRoot = path.resolve(__dirname, '..');
 
-function formatSortKey(name) {
-  const match = /Format\s+(\d+)/i.exec(name || '');
-  return match ? Number(match[1]) : 999;
+const KEEP_STORY_FILES = new Set([
+  'rubric-01.json',
+  'rubric-02.json',
+  'rubric-03.json',
+  'rubric-04.json',
+  'rubric-05.json',
+]);
+
+/** Legacy cover paths keyed by Rubric id */
+const COVER_BY_RUBRIC = {
+  Rubric01: 'generated/template-cover-format01.png',
+  Rubric02: 'generated/template-cover-wine.png',
+  Rubric03: 'generated/template-cover-matsun.png',
+  Rubric04: 'generated/template-cover-green-plate-intro.png',
+  Rubric05: 'generated/template-cover-news.png',
+};
+
+/**
+ * @param {string} file
+ */
+function storyTemplateIdFromFile(file) {
+  const base = file.replace(/\.json$/, '');
+  const parts = base.split('-').filter(Boolean);
+  if (parts[0] === 'rubric' && parts[1]) {
+    return `Rubric${parts[1].padStart(2, '0')}`;
+  }
+  return base
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
 }
 
 /**
- * @param {string} studioRoot
+ * @param {string} file
  */
-async function loadTemplateCovers(galleryDir) {
+function storyTemplateSlugFromFile(file) {
+  return file.replace(/\.json$/, '');
+}
+
+async function main() {
+  const templatesDir = path.join(studioRoot, 'data', 'story-templates');
+  const files = (await readdir(templatesDir)).filter((file) => file.endsWith('.json'));
+  const templates = [];
+
+  let coverMap = {};
   try {
-    return JSON.parse(await readFile(path.join(galleryDir, 'template-covers.json'), 'utf8'));
+    coverMap = JSON.parse(
+      await readFile(path.join(studioRoot, 'src', 'gallery', 'template-covers.json'), 'utf8'),
+    );
   } catch {
-    return {};
+    coverMap = COVER_BY_RUBRIC;
   }
-}
 
-export async function rebuildStoryCatalog(studioRoot) {
-  const storyDir = path.join(studioRoot, 'data', 'story-templates');
-  const galleryDir = path.join(studioRoot, 'src', 'gallery');
-  const covers = await loadTemplateCovers(galleryDir);
-  const catalogTemplates = [];
+  for (const file of files.sort()) {
+    if (!KEEP_STORY_FILES.has(file)) continue;
+    const data = JSON.parse(await readFile(path.join(templatesDir, file), 'utf8'));
+    const id = data.id || storyTemplateIdFromFile(file);
+    const slug = storyTemplateSlugFromFile(file);
+    const coverImage = coverMap[id] || COVER_BY_RUBRIC[id];
+    templates.push({
+      id,
+      slug,
+      project: data.project || 'helloiam',
+      name: data.name || id,
+      description: data.description || '',
+      tag: data.tag || 'Carousel',
+      cardCount: data.cards?.length ?? 0,
+      width: data.width ?? 1080,
+      height: data.height ?? 1350,
+      durationPerCardSec: data.durationPerCardSec ?? 3,
+      ...(coverImage ? {coverImage} : {}),
+    });
+  }
 
-  for (const file of KEEP_STORY_FILES) {
-    try {
-      const story = JSON.parse(await readFile(path.join(storyDir, file), 'utf8'));
-      const entry = {
-        id: story.id,
-        project: story.project,
-        name: story.name,
-        description: story.description,
-        tag: story.tag,
-        cardCount: story.cards?.length ?? 0,
-      };
-      if (covers[story.id]) entry.coverImage = covers[story.id];
-      catalogTemplates.push(entry);
-    } catch {
-      // optional file
+  templates.sort((a, b) => a.id.localeCompare(b.id));
+
+  let projects = [{id: 'helloiam', name: 'HelloIAM', description: 'Brand carousels', accent: '#4A7BFF'}];
+  try {
+    const projectsRaw = JSON.parse(await readFile(path.join(studioRoot, 'src', 'projects.json'), 'utf8'));
+    if (Array.isArray(projectsRaw.projects) && projectsRaw.projects.length) {
+      projects = projectsRaw.projects;
     }
+  } catch {
+    // default project list
   }
-  catalogTemplates.sort((a, b) => formatSortKey(a.name) - formatSortKey(b.name));
 
-  const catalog = {
-    projects: [
-      {
-        id: 'helloiam',
-        name: 'HelloIAM',
-        description: 'Брендовые сторис и карусели',
-        accent: '#FF5C45',
-      },
-    ],
-    templates: catalogTemplates,
-  };
-
-  await writeFile(path.join(galleryDir, 'story-templates.json'), `${JSON.stringify(catalog, null, 2)}\n`);
-  return catalogTemplates;
+  const catalog = {projects, templates};
+  const outPath = path.join(studioRoot, 'src', 'gallery', 'story-templates.json');
+  await writeFile(outPath, `${JSON.stringify(catalog, null, 2)}\n`, 'utf8');
+  console.log(`Wrote ${templates.length} templates to ${outPath}`);
 }
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

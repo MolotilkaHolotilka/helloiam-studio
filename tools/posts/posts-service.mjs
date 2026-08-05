@@ -5,8 +5,13 @@ import {getPostAssetPathSet, deleteAllPostAssets} from './post-assets-service.mj
 import {
   applyPostSettingsToCards,
   normalizePostSettings,
+  syncPostName,
   validatePostSettingsPatch,
 } from './post-settings.mjs';
+import {applyRubric01TitlesToPost} from '../generation/rubric-01-titles.mjs';
+import {applyFormat05FixedToPost} from '../generation/format-05-news.mjs';
+import {LEGACY_TEMPLATE_ALIASES, normalizeTemplateId, RUBRIC05_ID, RUBRIC06_ID} from '../rubric/rubric-ids.mjs';
+import {migratePostCardProps, syncCardPropAliases} from '../card-props.mjs';
 import {RUBRIC_META_PROP_KEY_SET} from '../rubric-meta-props.mjs';
 import {loadStoryTemplate} from '../story-templates-service.mjs';
 
@@ -26,11 +31,13 @@ function postPath(studioRoot, postId) {
  */
 export function pickCardProps(props, card) {
   const allowed = new Set((card.fields || []).map((f) => f.key));
+  const aliasKeys = new Set(['quote', 'titleAccent']);
   const meta = new Set([...RUBRIC_META_PROP_KEY_SET, ...(card.metaPropKeys || [])]);
   const out = /** @type {Record<string, unknown>} */ ({});
   for (const [key, value] of Object.entries(props || {})) {
-    if (allowed.has(key) || meta.has(key)) out[key] = value;
+    if (allowed.has(key) || meta.has(key) || aliasKeys.has(key)) out[key] = value;
   }
+  syncCardPropAliases(out);
   return out;
 }
 
@@ -52,6 +59,7 @@ function sanitizePostCardProps(post) {
 export function validateCardProps(props, fields, assetPaths, metaPropKeys = []) {
   const errors = [];
   const allowedKeys = new Set(fields.map((f) => f.key));
+  const aliasKeys = new Set(['quote', 'titleAccent']);
   const internalKeys = new Set([...RUBRIC_META_PROP_KEY_SET, ...metaPropKeys]);
 
   for (const field of fields) {
@@ -82,6 +90,7 @@ export function validateCardProps(props, fields, assetPaths, metaPropKeys = []) 
 
   for (const key of Object.keys(props)) {
     if (internalKeys.has(key)) continue;
+    if (aliasKeys.has(key)) continue;
     if (!allowedKeys.has(key)) errors.push(`Неизвестное поле: ${key}`);
   }
 
@@ -102,7 +111,8 @@ export async function createPost(studioRoot, templateId) {
     templateId: template.id,
     templateName: template.name,
     name: template.name,
-    category: 'food',
+    category: template.id === RUBRIC05_ID ? 'news' : 'food',
+    colorStyleId: 'gray-blue',
     themeColor: '#D9DDE0',
     presetId: 'soft-float',
     subject: '',
@@ -129,6 +139,8 @@ export async function createPost(studioRoot, templateId) {
 
   normalizePostSettings(post);
   applyPostSettingsToCards(post);
+  applyRubric01TitlesToPost(post);
+  applyFormat05FixedToPost(post);
 
   await mkdir(postsDir(studioRoot), {recursive: true});
   await writeFile(postPath(studioRoot, id), `${JSON.stringify(post, null, 2)}\n`, 'utf8');
@@ -187,11 +199,19 @@ export async function listPosts(studioRoot) {
 export async function getPost(studioRoot, postId) {
   try {
     const post = JSON.parse(await readFile(postPath(studioRoot, postId), 'utf8'));
+    if (LEGACY_TEMPLATE_ALIASES[post.templateId]) {
+      post.templateId = normalizeTemplateId(post.templateId);
+    }
+    migratePostCardProps(post);
     normalizePostSettings(post);
+    applyPostSettingsToCards(post);
+    sanitizePostCardProps(post);
+    applyRubric01TitlesToPost(post);
+    applyFormat05FixedToPost(post);
     sanitizePostCardProps(post);
     return post;
   } catch {
-    throw new Error(`Пост не найден: ${postId}`);
+    throw new Error(`Post not found: ${postId}`);
   }
 }
 
@@ -211,15 +231,20 @@ export async function updatePostSettings(studioRoot, postId, patch, options = {}
   }
 
   if (validated.category !== undefined) post.category = validated.category;
-  if (validated.themeColor !== undefined) post.themeColor = validated.themeColor;
+  if (validated.colorStyleId !== undefined) post.colorStyleId = validated.colorStyleId;
+  if (validated.themeColor !== undefined) {
+    /* themeColor derived from colorStyleId in normalizePostSettings */
+  }
   if (validated.presetId !== undefined) post.presetId = validated.presetId;
   if (validated.subject !== undefined) {
     post.subject = validated.subject;
-    if (!patch.name) post.name = validated.subject || post.name;
   }
   if (validated.name !== undefined) post.name = validated.name;
 
+  normalizePostSettings(post);
   applyPostSettingsToCards(post);
+  applyRubric01TitlesToPost(post);
+  syncPostName(post);
   post.updatedAt = new Date().toISOString();
   await writeFile(postPath(studioRoot, postId), `${JSON.stringify(post, null, 2)}\n`, 'utf8');
   return post;
@@ -250,6 +275,8 @@ export async function updatePostCard(studioRoot, postId, cardIndex, props, optio
   }
 
   card.props = pickCardProps({...(card.props || {}), ...props}, card);
+  applyPostSettingsToCards(post);
+  applyRubric01TitlesToPost(post);
   post.updatedAt = new Date().toISOString();
   await writeFile(postPath(studioRoot, postId), `${JSON.stringify(post, null, 2)}\n`, 'utf8');
   return post;

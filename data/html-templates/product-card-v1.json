@@ -1,0 +1,27 @@
+{
+  "id": "product-card-v1",
+  "name": "Product Card 01",
+  "kind": "product-card",
+  "status": "prototype",
+  "authoring": {
+    "source": "Tengiz workflow clarification, 2026-08-05",
+    "method": "Direct HTML/CSS/JS layout followed by rendering",
+    "figmaRequired": false,
+    "animation": ["CSS", "JavaScript", "Remotion when timeline rendering is required"]
+  },
+  "canvas": {"width": 1080, "height": 1350, "aspectRatio": "4:5"},
+  "fields": [
+    {"key": "product", "label": "Product", "type": "string", "required": true},
+    {"key": "positioning", "label": "Positioning", "type": "textarea", "required": true},
+    {"key": "audience", "label": "Audience", "type": "string", "required": true},
+    {"key": "benefit", "label": "Main benefit", "type": "string", "required": true},
+    {"key": "proof", "label": "Proof", "type": "string", "required": false},
+    {"key": "price", "label": "Price", "type": "string", "required": false},
+    {"key": "cta", "label": "CTA", "type": "string", "required": true},
+    {"key": "image", "label": "Product image", "type": "image", "required": false},
+    {"key": "brandPreset", "label": "Brand preset", "type": "preset", "required": true},
+    {"key": "motion", "label": "Animation", "type": "select", "required": true}
+  ],
+  "output": ["HTML", "CSS", "JSON props", "PNG render", "MP4 when animated"],
+  "workflow": ["Configure", "Preview", "Validate", "Export HTML", "Render", "Save to Media Library"]
+}

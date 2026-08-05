@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "project": "helloiam",
+  "presets": [
+    {
+      "id": "helloiam-core",
+      "name": "HelloIAM Core",
+      "status": "active",
+      "purpose": "Default identity input for every HelloIAM generator and HTML template.",
+      "source": "Published brand case + current production templates",
+      "identity": {
+        "brandName": "HELLO I AM . AM",
+        "positioning": "Meet Armenia piece by piece through food, roads, places and everyday rituals.",
+        "audience": "Travellers looking for small, hosted food and culture tours of Armenia.",
+        "tone": ["warm", "direct", "curious", "human", "specific"],
+        "avoid": ["generic tourism clichés", "luxury language without evidence", "folklore stereotypes"]
+      },
+      "design": {
+        "colors": ["#F4F2EC", "#191917", "#FF5A48", "#FFC53A", "#C8C2E8", "#BFD9B7"],
+        "displayFont": "Instrument Sans",
+        "bodyFont": "IBM Plex Sans",
+        "monoFont": "IBM Plex Mono",
+        "logoRule": "Use the AM mark exactly as supplied; do not re-letter it.",
+        "composition": "One dominant object, strong field colour, editorial spacing and short copy."
+      },
+      "generation": {
+        "imageStyle": "Tactile editorial object, clear silhouette, warm natural detail, no stock-photo gloss.",
+        "negativePrompt": "generic travel ad, excessive text, fake logo, glossy 3D stock render, visual clutter",
+        "defaultFormats": ["1080x1350", "1080x1080", "1080x1920", "1920x1080"]
+      }
+    },
+    {
+      "id": "helloiam-news",
+      "name": "HelloIAM News",
+      "status": "active",
+      "purpose": "Editorial preset for timely news and trend cards.",
+      "source": "Rubric05 + current News production rules",
+      "identity": {
+        "brandName": "AM NEWS",
+        "positioning": "Explain why an Armenia-related signal matters without turning it into clickbait.",
+        "audience": "People following contemporary Armenia, culture, travel and society.",
+        "tone": ["clear", "editorial", "factual", "compact"],
+        "avoid": ["sensationalism", "unsupported claims", "political advocacy"]
+      },
+      "design": {
+        "colors": ["#F4F2EC", "#191917", "#FF5A48", "#FFC53A"],
+        "displayFont": "Instrument Sans",
+        "bodyFont": "IBM Plex Sans",
+        "monoFont": "IBM Plex Mono",
+        "logoRule": "AM NEWS label remains visible on the cover and source slide.",
+        "composition": "Comic-editorial frame, one source image, large headline and explicit source."
+      },
+      "generation": {
+        "imageStyle": "Editorial news illustration or documentary image with restrained brand framing.",
+        "negativePrompt": "fake quotation, fabricated event, unreadable text, tabloid collage",
+        "defaultFormats": ["1080x1350"]
+      }
+    },
+    {
+      "id": "helloiam-tours",
+      "name": "HelloIAM Tours",
+      "status": "draft",
+      "purpose": "Website and sales material for hosted Armenia tours.",
+      "source": "helloiam.am live site + HelloIAM Core",
+      "identity": {
+        "brandName": "HELLOIAM.AM",
+        "positioning": "Small-group food and culture tours with every practical detail handled.",
+        "audience": "International travellers considering a first or deeper visit to Armenia.",
+        "tone": ["inviting", "concrete", "calm", "sensory"],
+        "avoid": ["hard sell", "tour-bus language", "unverifiable superlatives"]
+      },
+      "design": {
+        "colors": ["#F4F2EC", "#191917", "#FF5A48", "#BFD9B7"],
+        "displayFont": "Instrument Sans",
+        "bodyFont": "IBM Plex Sans",
+        "monoFont": "IBM Plex Mono",
+        "logoRule": "Use HELLOIAM.AM wordmark with approved spacing.",
+        "composition": "Destination image plus one practical promise and one clear CTA."
+      },
+      "generation": {
+        "imageStyle": "Natural Armenia travel photography, human scale, food and place details, warm available light.",
+        "negativePrompt": "generic resort, crowds, staged hospitality, oversaturated landscape",
+        "defaultFormats": ["1080x1350", "1080x1920", "1920x1080"]
+      }
+    }
+  ]
+}

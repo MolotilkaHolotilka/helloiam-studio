@@ -1,5 +1,5 @@
 import React from 'react';
-import {Img, interpolate} from 'remotion';
+import {Img, Video, interpolate} from 'remotion';
 import {
   fontFamily as instrumentSans,
   loadFont as loadInstrumentSans,
@@ -28,6 +28,11 @@ function wave(frame: number, duration: number, amplitude: number, phase = 0) {
   });
 }
 
+function titleStackLines(text: string): string[] {
+  if (text.includes('\n')) return text.split('\n');
+  return [text];
+}
+
 function resolveFontFamily(style: LayoutLayer['textStyle'], layerRole: string) {
   const family = style?.fontFamily ?? (layerRole === 'quote' ? 'serif' : 'sans');
   return family === 'serif' ? instrumentSerif : instrumentSans;
@@ -46,21 +51,33 @@ function motionStyle(
   };
 }
 
+function parseTitleLineColors(raw: string | undefined): string[] | null {
+  if (!raw) return null;
+  const parts = raw.split(',').map((s) => s.trim()).filter(Boolean);
+  return parts.length > 0 ? parts : null;
+}
+
 export const GeneratedSoftFloat: React.FC<{
   layout: LayoutSpec;
-  card: Record<string, string | undefined>;
+  card: Record<string, string | undefined> & {
+    __staticStill?: boolean | string;
+    __textOverlayOnly?: boolean | string;
+  };
   localFrame: number;
   segmentFrames: number;
   imageSrc?: string;
-}> = ({layout, card, localFrame, segmentFrames, imageSrc}) => {
+  videoSrc?: string;
+}> = ({layout, card, localFrame, segmentFrames, imageSrc, videoSrc}) => {
   const background = card.background ?? layout.card.background;
+  const staticStill = card.__staticStill === true || card.__staticStill === 'true';
+  const textOverlayOnly = card.__textOverlayOnly === true || card.__textOverlayOnly === 'true';
 
   if (layout.family === 'brand-row') {
     const brandLeft = card.brandLeft ?? 'helloiam';
     const brandRight = card.brandRight ?? 'am';
     const brandColor = card.brandColor ?? '#0F0F10';
-    const rowEnter = progress(localFrame, 6, 22);
-    const floatY = wave(localFrame, segmentFrames, 3, 0);
+    const rowEnter = staticStill ? 1 : progress(localFrame, 6, 22);
+    const floatY = staticStill ? 0 : wave(localFrame, segmentFrames, 3, 0);
     return (
       <div
         style={{
@@ -68,7 +85,7 @@ export const GeneratedSoftFloat: React.FC<{
           width: layout.card.width,
           height: layout.card.height,
           overflow: 'hidden',
-          background,
+          background: textOverlayOnly ? 'transparent' : background,
         }}
       >
         <div
@@ -103,12 +120,12 @@ export const GeneratedSoftFloat: React.FC<{
     );
   }
 
-  const imageEnter = progress(localFrame, 4, 22);
-  const imageScale = interpolate(localFrame, [0, segmentFrames], [1.05, 1], {
+  const imageEnter = staticStill ? 1 : progress(localFrame, 4, 22);
+  const imageScale = staticStill ? 1 : interpolate(localFrame, [0, segmentFrames], [1.05, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const imageFloatY = wave(localFrame, segmentFrames, layout.family === 'intro-hero' ? 6 : 8, 0);
+  const imageFloatY = staticStill ? 0 : wave(localFrame, segmentFrames, layout.family === 'intro-hero' ? 6 : 8, 0);
 
   return (
     <div
@@ -120,11 +137,13 @@ export const GeneratedSoftFloat: React.FC<{
         background,
       }}
     >
-      {imageSrc && layout.imageLayers.map((box, index) => {
+      {!textOverlayOnly && (videoSrc || imageSrc) && layout.imageLayers.map((box, index) => {
+        const stillSrc = imageSrc ?? '';
         const phase = index * 12;
-        const floatY = wave(localFrame, segmentFrames, 8, phase);
-        const tilt = wave(localFrame, segmentFrames, 1.2, phase + 6);
+        const floatY = staticStill ? 0 : wave(localFrame, segmentFrames, 8, phase);
+        const tilt = staticStill ? 0 : wave(localFrame, segmentFrames, 1.2, phase + 6);
         const isIntroHero = layout.family === 'intro-hero';
+        const isNews126 = layout.family === 'news-126';
         const objectFit = box.objectFit ?? (isIntroHero ? 'contain' : 'cover');
         const baseOpacity = box.opacity ?? 1;
         return (
@@ -140,20 +159,38 @@ export const GeneratedSoftFloat: React.FC<{
               opacity: baseOpacity * imageEnter,
               transform: isIntroHero
                 ? `translateY(${imageFloatY}px)`
-                : `translateY(${floatY}px) rotate(${index % 2 === 0 ? tilt : -tilt}deg)`,
+                : isNews126
+                  ? undefined
+                  : `translateY(${floatY}px) rotate(${index % 2 === 0 ? tilt : -tilt}deg)`,
             }}
           >
-            <Img
-              src={imageSrc}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit,
-                objectPosition: objectFit === 'contain' ? 'center center' : 'center top',
-                transform: isIntroHero ? `scale(${imageScale})` : undefined,
-                transformOrigin: 'center center',
-              }}
-            />
+            {videoSrc ? (
+              <Video
+                src={videoSrc}
+                muted
+                loop
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit,
+                  objectPosition: objectFit === 'contain' ? 'center center' : 'center top',
+                  transform: isIntroHero ? `scale(${imageScale})` : undefined,
+                  transformOrigin: 'center center',
+                }}
+              />
+            ) : (
+              <Img
+                src={stillSrc}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit,
+                  objectPosition: objectFit === 'contain' ? 'center center' : 'center top',
+                  transform: isIntroHero ? `scale(${imageScale})` : undefined,
+                  transformOrigin: 'center center',
+                }}
+              />
+            )}
           </div>
         );
       })}
@@ -171,10 +208,10 @@ export const GeneratedSoftFloat: React.FC<{
           '#0F0F10';
 
         const delay = 6 + index * 4;
-        const enterOpacity = progress(localFrame, delay, delay + 16);
-        const enterY = interpolate(enterOpacity, [0, 1], [18, 0]);
-        const enterX = interpolate(progress(localFrame, delay, delay + 18), [0, 1], [-24, 0]);
-        const floatY = wave(localFrame, segmentFrames, 2, index * 8);
+        const enterOpacity = staticStill ? 1 : progress(localFrame, delay, delay + 16);
+        const enterY = staticStill ? 0 : interpolate(enterOpacity, [0, 1], [18, 0]);
+        const enterX = staticStill ? 0 : interpolate(progress(localFrame, delay, delay + 18), [0, 1], [-24, 0]);
+        const floatY = staticStill ? 0 : wave(localFrame, segmentFrames, 2, index * 8);
 
         const useSlide = layer.role === 'title' && layout.family !== 'generic';
         const motion = motionStyle(
@@ -188,9 +225,18 @@ export const GeneratedSoftFloat: React.FC<{
 
         const style = layer.textStyle;
 
-        const isIntroTitle = layout.family === 'intro-hero' && layer.key === 'title';
-        const titleAccent = card.titleAccent ?? '';
+        const hasTitleAccent = Boolean((card.item ?? card.titleAccent)?.trim());
+        const isIntroTitleSplit =
+          layout.family === 'intro-hero' && layer.key === 'title' && hasTitleAccent;
+        const isTitleStack =
+          layer.role === 'title' &&
+          (layer.alignItems === 'center' || layer.alignItems === 'flex-end');
+        const titleAccent = (card.item ?? card.titleAccent) ?? '';
         const accentColor = card.accentColor ?? card.titleAccentColor ?? '#D61E23';
+        // Per-line colors: "titleLineColors" is a comma-separated list of hex values
+        const titleLineColors = isTitleStack
+          ? parseTitleLineColors(card.titleLineColors)
+          : null;
 
         return (
           <div
@@ -210,20 +256,38 @@ export const GeneratedSoftFloat: React.FC<{
                 style?.textTransform ??
                 (layer.role === 'title' && layout.family === 'intro-hero' ? 'uppercase' : 'none'),
               textAlign: style?.textAlign ?? 'left',
-              whiteSpace: 'pre-line',
-              color: isIntroTitle ? undefined : color,
-              display: layer.alignItems || layer.role === 'label' || isIntroTitle ? 'flex' : undefined,
-              flexDirection: isIntroTitle ? 'column' : undefined,
-              alignItems:
-                layer.alignItems ?? (layer.role === 'label' ? 'flex-end' : undefined),
+              whiteSpace: isTitleStack ? undefined : 'pre-line',
+              color: isIntroTitleSplit ? undefined : color,
+              display: isTitleStack || layer.role === 'label' ? 'flex' : undefined,
+              flexDirection: isTitleStack || isIntroTitleSplit ? 'column' : undefined,
+              justifyContent: isTitleStack
+                ? layer.alignItems === 'flex-end'
+                  ? 'flex-end'
+                  : 'center'
+                : undefined,
+              alignItems: isTitleStack
+                ? 'center'
+                : layer.alignItems ?? (layer.role === 'label' ? 'flex-end' : undefined),
               ...motion,
             }}
           >
-            {isIntroTitle ? (
+            {isIntroTitleSplit ? (
               <>
                 <div style={{color}}>{text}</div>
-                {titleAccent ? <div style={{color: accentColor}}>{titleAccent}</div> : null}
+                <div style={{color: accentColor}}>{titleAccent}</div>
               </>
+            ) : isTitleStack ? (
+              titleStackLines(text).map((line, lineIndex) => (
+                <div
+                  key={lineIndex}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    color: titleLineColors?.[lineIndex] ?? color,
+                  }}
+                >
+                  {line}
+                </div>
+              ))
             ) : (
               text
             )}

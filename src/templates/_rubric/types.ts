@@ -1,6 +1,8 @@
 export type RubricCardSlot = {
   title?: string;
   titleAccent?: string;
+  item?: string;
+  fact?: string;
   quote?: string;
   body?: string;
   text?: string;
@@ -15,6 +17,8 @@ export type RubricCardSlot = {
   titleColor?: string;
   accentColor?: string;
   quoteColor?: string;
+  factColor?: string;
+  schemeSecondColor?: string;
   bodyColor?: string;
   labelColor?: string;
   brandColor?: string;

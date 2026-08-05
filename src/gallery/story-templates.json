@@ -3,55 +3,75 @@
     {
       "id": "helloiam",
       "name": "HelloIAM",
-      "description": "Брендовые сторис и карусели",
-        "accent": "#FF5C45"
+      "description": "Брендовые сторис",
+      "accent": "#4A7BFF"
     }
   ],
   "templates": [
     {
-      "id": "Format01",
+      "id": "Rubric01",
+      "slug": "rubric-01",
       "project": "helloiam",
-      "name": "Format 01",
-      "description": "HelloIAM 9-card carousel (posts 94, 95, 88, 96, 82, 91, 89, 97, 98)",
-      "tag": "Карусель",
+      "name": "Promo 01",
+      "description": "9-card HELLO I AM carousel",
+      "tag": "Carousel",
       "cardCount": 9,
+      "width": 1080,
+      "height": 1350,
+      "durationPerCardSec": 7,
       "coverImage": "generated/template-cover-format01.png"
     },
     {
-      "id": "HelloIamWineV1",
+      "id": "Rubric02",
+      "slug": "rubric-02",
       "project": "helloiam",
-      "name": "Format 02",
-      "description": "Posts 103–104: brand + Armenian wine hero",
-      "tag": "Сторис",
-      "cardCount": 2,
+      "name": "Promo 02",
+      "description": "10-slide carousel: 5 pairs of emoji card + video",
+      "tag": "Carousel",
+      "cardCount": 10,
+      "width": 1080,
+      "height": 1350,
+      "durationPerCardSec": 7,
       "coverImage": "generated/template-cover-wine.png"
     },
     {
-      "id": "Format03",
+      "id": "Rubric03",
+      "slug": "rubric-03",
       "project": "helloiam",
-      "name": "Format 03",
-      "description": "Posts 5 & 112: DZIRANI intro + helloiam",
-      "tag": "Сторис",
-      "cardCount": 2,
-      "coverImage": "generated/template-cover-format03.png"
-    },
-    {
-      "id": "IAmMatsunDeepDive",
-      "project": "helloiam",
-      "name": "Format 04",
-      "description": "Posts 111, 125×5, 115 — matsun deep-dive",
-      "tag": "Карусель",
+      "name": "Item 01",
+      "description": "7-card fact carousel (5 fact slides)",
+      "tag": "Carousel",
       "cardCount": 7,
+      "width": 1080,
+      "height": 1350,
+      "durationPerCardSec": 3,
       "coverImage": "generated/template-cover-matsun.png"
     },
     {
-      "id": "GreenPlateIntro",
+      "id": "Rubric04",
+      "slug": "rubric-04",
       "project": "helloiam",
-      "name": "Format 05",
-      "description": "Posts 111, 125, 115 — green-plate intro",
-      "tag": "Карусель",
+      "name": "Item 02",
+      "description": "3-card fact carousel (1 fact slide)",
+      "tag": "Carousel",
       "cardCount": 3,
+      "width": 1080,
+      "height": 1350,
+      "durationPerCardSec": 3,
       "coverImage": "generated/template-cover-green-plate-intro.png"
+    },
+    {
+      "id": "Rubric05",
+      "slug": "rubric-05",
+      "project": "helloiam",
+      "name": "News 01",
+      "description": "4-card AM NEWS carousel",
+      "tag": "Carousel",
+      "cardCount": 4,
+      "width": 1080,
+      "height": 1350,
+      "durationPerCardSec": 3,
+      "coverImage": "generated/template-cover-news.png"
     }
   ]
 }

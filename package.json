@@ -11,11 +11,13 @@
     "sync:gallery": "node tools/sync-gallery-manifest.mjs",
     "sync:template-references": "node tools/template-references-sync.mjs",
     "import:rubric": "node tools/import-rubric-templates.mjs && npm run sync:gallery",
-    "bootstrap:format01": "node tools/bootstrap-helloiam-9cards.mjs && npm run sync:gallery",
     "bootstrap:wine": "node tools/bootstrap-helloiam-wine-2cards.mjs && npm run sync:gallery",
-    "bootstrap:format03": "node tools/bootstrap-helloiam-format-3.mjs && npm run sync:gallery",
     "render": "node tools/render/render-cli.mjs",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "dedupe:assets": "node tools/dedupe-asset-folders.mjs",
+    "dedupe:assets:apply": "node tools/dedupe-asset-folders.mjs --apply",
+    "dashboard": "npm --prefix apps/dashboard-site run dev -- -p 3010",
+    "dashboard:install": "npm --prefix apps/dashboard-site install"
   },
   "dependencies": {
     "@remotion/cli": "4.0.460",

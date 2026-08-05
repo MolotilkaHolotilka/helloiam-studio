@@ -18,7 +18,7 @@ export const LAYOUT: LayoutSpec = {
         textAlign: "center",
         color: "#FFC53A",
       },
-      defaultText: "AM MEANS\nARMENIA",
+      defaultText: "AM\nMEANS\nARMENIA",
       defaultColor: "#FFC53A",
     }
   ],

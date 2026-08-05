@@ -227,7 +227,7 @@ const CARDS = [
             textAlign: 'center',
             color: '#FFC53A',
           },
-          defaultText: 'AM MEANS\nARMENIA',
+          defaultText: 'AM\nMEANS\nARMENIA',
           defaultColor: '#FFC53A',
         },
       ],
@@ -235,7 +235,7 @@ const CARDS = [
     },
     defaults: {
       background: '#000000',
-      title: 'AM MEANS\nARMENIA',
+      title: 'AM\nMEANS\nARMENIA',
       titleColor: '#FFC53A',
       image: 'generated/image-79-1.png',
     },

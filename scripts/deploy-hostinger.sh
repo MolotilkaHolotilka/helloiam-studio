@@ -21,13 +21,26 @@ fi
 
 RSYNC_EXCLUDES=(
   --exclude node_modules
+  --exclude apps/dashboard-site/node_modules
+  --exclude apps/dashboard-site/.next
+  --exclude apps/dashboard-site/data/days
+  --exclude apps/dashboard-site/data/youtube-days
+  --exclude apps/dashboard-site/data/youtube-trends
   --exclude .git
+  --exclude .DS_Store
   --exclude out/renders
+  --exclude data/posts
+  --exclude public/generated/posts
+  --exclude '*.mp4'
   --exclude .env
+  --exclude 'helloiam-studio v_to_merge'
+  --exclude helloiam-studio-clean
+  --exclude helloiam-studio-transfer
+  --exclude helloiam-studio-to-send
 )
 
 echo "==> Remote prep: ${REMOTE}:${REMOTE_DIR}"
-"${SSH[@]}" "$REMOTE" "mkdir -p ${REMOTE_DIR}/public/generated ${REMOTE_DIR}/out/renders ${REMOTE_DIR}/data/posts ${REMOTE_DIR}/data/story-templates ${REMOTE_DIR}/src/lib ${REMOTE_DIR}/src/templates ${REMOTE_DIR}/src/gallery ${REMOTE_DIR}/ALL\\ EMOJIS"
+"${SSH[@]}" "$REMOTE" "mkdir -p ${REMOTE_DIR}/public/generated ${REMOTE_DIR}/out/renders ${REMOTE_DIR}/data/posts ${REMOTE_DIR}/data/story-templates ${REMOTE_DIR}/data ${REMOTE_DIR}/src/lib ${REMOTE_DIR}/src/templates ${REMOTE_DIR}/src/gallery ${REMOTE_DIR}/ALL\\ EMOJIS"
 
 echo "==> Rsync code"
 "${RSYNC[@]}" "${RSYNC_EXCLUDES[@]}" "${LOCAL_DIR}/" "${REMOTE}:${REMOTE_DIR}/"

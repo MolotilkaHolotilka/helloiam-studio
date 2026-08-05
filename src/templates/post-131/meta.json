@@ -1,0 +1,34 @@
+{
+  "id": "Post131Css",
+  "project": "helloiam",
+  "name": "Кадр 131 — новость, текст",
+  "description": "Format 05 — AM NEWS body slide (variant)",
+  "tag": "HelloIAM",
+  "templateDir": "post-131",
+  "preset": "soft-float",
+  "durationFrames": 90,
+  "propsFields": [
+    {"key": "title", "type": "string", "label": "Заголовок"},
+    {"key": "titleColor", "type": "color", "label": "Цвет заголовка"},
+    {"key": "quote", "type": "textarea", "label": "Текст"},
+    {"key": "quoteColor", "type": "color", "label": "Цвет текста"},
+    {"key": "label", "type": "string", "label": "Метка"},
+    {"key": "labelColor", "type": "color", "label": "Цвет метки"},
+    {"key": "source", "type": "string", "label": "Источник"},
+    {"key": "sourceColor", "type": "color", "label": "Цвет источника"},
+    {"key": "image", "type": "image", "label": "Фото"},
+    {"key": "background", "type": "color", "label": "Фон"}
+  ],
+  "defaultProps": {
+    "background": "#D9DDE0",
+    "title": "Hello, WORLD",
+    "titleColor": "#0F0F10",
+    "quote": "Tourism growth in 2026 signals a major shift in how Armenia is perceived internationally. What was once considered a niche destination for adventurous travelers is quickly becoming part of mainstream European travel culture. Locals, however, remain deeply suspicious of anyone calling the country a \"secret spot\" while simultaneously posting 47 Instagram stories about it.",
+    "quoteColor": "#0F0F10",
+    "label": "AM NEWS",
+    "labelColor": "#4A7BFF",
+    "source": "source: armradio.am",
+    "sourceColor": "#000000",
+    "image": "generated/post-131.png"
+  }
+}

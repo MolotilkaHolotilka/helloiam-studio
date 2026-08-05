@@ -1,0 +1,99 @@
+{
+  "id": "HelloIamNewsV1",
+  "project": "helloiam",
+  "name": "Format 05",
+  "description": "Posts 126, 130, 131 — AM NEWS (3 cards)",
+  "tag": "Карусель",
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardSec": 3,
+  "cards": [
+    {
+      "cardIndex": 0,
+      "compositionId": "Post126Css",
+      "label": "Кадр 126 — обложка",
+      "fields": [
+        {"key": "title", "type": "string", "label": "Заголовок"},
+        {"key": "titleColor", "type": "color", "label": "Цвет заголовка"},
+        {"key": "quote", "type": "textarea", "label": "Заголовок новости"},
+        {"key": "quoteColor", "type": "color", "label": "Цвет заголовка новости"},
+        {"key": "label", "type": "string", "label": "Метка"},
+        {"key": "labelColor", "type": "color", "label": "Цвет метки"},
+        {"key": "image", "type": "image", "label": "Фото"},
+        {"key": "background", "type": "color", "label": "Фон"}
+      ],
+      "defaultProps": {
+        "background": "#D9DDE0",
+        "title": "Hello, WORLD",
+        "titleColor": "#0F0F10",
+        "quote": "Armenia welcomed 172,705 international visitors in April 2026",
+        "quoteColor": "#D61E23",
+        "label": "AM NEWS",
+        "labelColor": "#4A7BFF",
+        "image": ""
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 1,
+      "compositionId": "Post130Css",
+      "label": "Кадр 130 — текст",
+      "fields": [
+        {"key": "title", "type": "string", "label": "Заголовок"},
+        {"key": "titleColor", "type": "color", "label": "Цвет заголовка"},
+        {"key": "quote", "type": "textarea", "label": "Текст"},
+        {"key": "quoteColor", "type": "color", "label": "Цвет текста"},
+        {"key": "label", "type": "string", "label": "Метка"},
+        {"key": "labelColor", "type": "color", "label": "Цвет метки"},
+        {"key": "source", "type": "string", "label": "Источник"},
+        {"key": "sourceColor", "type": "color", "label": "Цвет источника"},
+        {"key": "image", "type": "image", "label": "Фото"},
+        {"key": "background", "type": "color", "label": "Фон"}
+      ],
+      "defaultProps": {
+        "background": "#D9DDE0",
+        "title": "Hello, WORLD",
+        "titleColor": "#0F0F10",
+        "quote": "Travel platforms and international media increasingly describe Armenia as Europe's next rising tourism star. Visitors are drawn by the country's mix of ancient history, dramatic landscapes, Soviet-modernist aesthetics and famously overwhelming hospitality. Unfortunately for tourists, \"light local dinner\" in Armenia still translates to approximately 14 dishes, emotional toasts and a grandmother personally monitoring whether you finished your food.",
+        "quoteColor": "#0F0F10",
+        "label": "AM NEWS",
+        "labelColor": "#4A7BFF",
+        "source": "source: armradio.am",
+        "sourceColor": "#000000",
+        "image": ""
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 2,
+      "compositionId": "Post131Css",
+      "label": "Кадр 131 — текст",
+      "fields": [
+        {"key": "title", "type": "string", "label": "Заголовок"},
+        {"key": "titleColor", "type": "color", "label": "Цвет заголовка"},
+        {"key": "quote", "type": "textarea", "label": "Текст"},
+        {"key": "quoteColor", "type": "color", "label": "Цвет текста"},
+        {"key": "label", "type": "string", "label": "Метка"},
+        {"key": "labelColor", "type": "color", "label": "Цвет метки"},
+        {"key": "source", "type": "string", "label": "Источник"},
+        {"key": "sourceColor", "type": "color", "label": "Цвет источника"},
+        {"key": "image", "type": "image", "label": "Фото"},
+        {"key": "background", "type": "color", "label": "Фон"}
+      ],
+      "defaultProps": {
+        "background": "#D9DDE0",
+        "title": "Hello, WORLD",
+        "titleColor": "#0F0F10",
+        "quote": "Tourism growth in 2026 signals a major shift in how Armenia is perceived internationally. What was once considered a niche destination for adventurous travelers is quickly becoming part of mainstream European travel culture. Locals, however, remain deeply suspicious of anyone calling the country a \"secret spot\" while simultaneously posting 47 Instagram stories about it.",
+        "quoteColor": "#0F0F10",
+        "label": "AM NEWS",
+        "labelColor": "#4A7BFF",
+        "source": "source: armradio.am",
+        "sourceColor": "#000000",
+        "image": ""
+      },
+      "durationFrames": 90
+    }
+  ]
+}

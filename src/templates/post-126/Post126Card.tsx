@@ -31,6 +31,7 @@ export const POST_126_PLACEHOLDER = staticFile('generated/post-126.png');
 
 export type Post126CardData = {
   title?: string;
+  fact?: string;
   quote?: string;
   label?: string;
   image?: string;
@@ -79,13 +80,6 @@ function enterScale(frame: number, delay: number, from = 0.96) {
   };
 }
 
-function layerFloat(frame: number, duration: number, phase: number) {
-  return {
-    y: wave(frame, duration, 8, phase),
-    tilt: wave(frame, duration, 1.2, phase + 6),
-  };
-}
-
 function motionStyle(
   enter: {opacity: number; x?: number; y?: number; scale?: number},
   floatY = 0,
@@ -107,7 +101,7 @@ export const Post126Card: React.FC<{
 }> = ({card, localFrame, segmentFrames, imageSrc = POST_126_PLACEHOLDER}) => {
   const title = card.title ?? 'Hello, WORLD';
   const quote =
-    card.quote ?? 'Armenia welcomed 172,705 international visitors in April 2026';
+    card.fact ?? card.quote ?? 'Armenia welcomed 172,705 international visitors in April 2026';
   const label = card.label ?? 'AM NEWS';
   const background = card.background ?? '#D9DDE0';
   const titleColor = card.titleColor ?? '#0F0F10';
@@ -122,26 +116,20 @@ export const Post126Card: React.FC<{
   const titleFloat = wave(localFrame, segmentFrames, 2, 0);
   const quoteFloat = wave(localFrame, segmentFrames, 3, 8);
   const labelFloat = wave(localFrame, segmentFrames, 2, 20);
-  const image43 = layerFloat(localFrame, segmentFrames, 0);
-  const image74 = layerFloat(localFrame, segmentFrames, 12);
 
-  const imageStyle = (y: number, tilt: number): React.CSSProperties => ({
+  const imageStyle: React.CSSProperties = {
     position: 'absolute',
     inset: 0,
     width: '100%',
     height: '100%',
     objectFit: 'cover',
     objectPosition: 'center top',
-    transform: `translateY(${y}px) rotate(${tilt}deg)`,
-  });
+  };
 
   return (
     <div style={{...CARD, background}}>
       <div style={{...IMAGE_BOX, ...motionStyle(imageEnter)}}>
-        <Img src={imageSrc} style={imageStyle(image43.y, image43.tilt)} />
-      </div>
-      <div style={{...IMAGE_BOX, ...motionStyle(imageEnter)}}>
-        <Img src={imageSrc} style={imageStyle(image74.y, -image74.tilt)} />
+        <Img src={imageSrc} style={imageStyle} />
       </div>
 
       <div

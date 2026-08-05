@@ -1,4 +1,5 @@
 import {createServer} from 'node:http';
+import {isDashboardPath, proxyDashboardRequest} from './dashboard-proxy.mjs';
 import {readdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {syncGalleryManifest} from '../tools/gallery-sync.mjs';
@@ -15,10 +16,13 @@ import {
   updatePostCard,
   updatePostSettings,
 } from '../tools/posts/posts-service.mjs';
-import {BRAND_COLORS, CATEGORY_LABELS, POST_CATEGORIES} from '../tools/posts/post-settings.mjs';
+import {COLOR_STYLES, CATEGORY_LABELS, POST_CATEGORIES} from '../tools/posts/post-settings.mjs';
 import {
   generatePostContent,
+  generatePostImagePrompts,
   generatePostImages,
+  generatePostTexts,
+  generatePostVideos,
   isFalConfigured,
   isLlmConfigured,
   updatePostGeneration,
@@ -32,8 +36,33 @@ import {
 import {renderPost, renderPostCard} from '../tools/posts/render-post.mjs';
 import {buildPostZip} from '../tools/posts/download-post-zip.mjs';
 import {loadStoryTemplate} from '../tools/story-templates-service.mjs';
-import {addEmojiToPost, listEmojis, resolveEmojiPath} from '../tools/emojis/emojis-service.mjs';
+import {loadChangelog} from '../tools/changelog-service.mjs';
+import {
+  addBrandCardToPost,
+  addBrandCardSlotToPost,
+  listBrandCards,
+  resetBrandCardSlotsForPost,
+  resolveBrandCardPath,
+} from '../tools/cards/cards-service.mjs';
+import {addEmojiToPost, addEmojiSlotToPost, listEmojis, resolveEmojiPath} from '../tools/emojis/emojis-service.mjs';
+import {generateEmoji} from '../tools/generation/emoji-generator.mjs';
 import {listTemplateSlideReferences} from '../tools/template-references.mjs';
+import {
+  getResearchArchive,
+  getResearchSnapshot,
+  getTrendFeed,
+  getResolvedResearchFavorites,
+  searchResearch,
+} from '../tools/new-ia/research-read-service.mjs';
+import {
+  createCalendarEvent,
+  deleteCalendarEvent,
+  listCalendarEvents,
+  updateCalendarEvent,
+} from '../tools/calendar/calendar-service.mjs';
+import {createCollab, deleteCollab, listCollabs, updateCollab} from '../tools/collabs/collabs-service.mjs';
+import {getSiteStatus} from '../tools/site/site-status-service.mjs';
+import {getBrandPresets, getTemplateRegistry} from '../tools/new-ia/template-registry-service.mjs';
 
 const HEX_COLOR = /^#[0-9A-Fa-f]{6}$/;
 const TEXTAREA_KEYS = new Set(['quote', 'body']);
@@ -167,6 +196,53 @@ function sendJson(res, status, payload) {
   res.end(`${JSON.stringify(payload)}\n`);
 }
 
+function parsePromptSections(raw) {
+  const matches = [...raw.matchAll(/^##\s+([a-z0-9_-]+)\s*$/gim)];
+  return matches.map((match, index) => {
+    const start = match.index ?? 0;
+    const contentStart = start + match[0].length;
+    const next = matches[index + 1];
+    const end = next?.index ?? raw.length;
+    const key = match[1].toLowerCase();
+    return {
+      key,
+      title: match[0].replace(/^##\s+/, '').trim(),
+      content: raw.slice(contentStart, end).replace(/^\n/, '').replace(/\s+$/, ''),
+    };
+  });
+}
+
+async function loadPromptLibrary(studioRoot) {
+  const filePath = path.join(studioRoot, 'docs', 'GENERATION_PROMPTS.md');
+  const raw = await readFile(filePath, 'utf8');
+  return {sections: parsePromptSections(raw)};
+}
+
+async function updatePromptSection(studioRoot, key, content) {
+  if (!/^[a-z0-9_-]+$/i.test(key)) {
+    throw new Error('Invalid prompt section key');
+  }
+  if (typeof content !== 'string') {
+    throw new Error('Prompt content must be a string');
+  }
+  const filePath = path.join(studioRoot, 'docs', 'GENERATION_PROMPTS.md');
+  const raw = await readFile(filePath, 'utf8');
+  const matches = [...raw.matchAll(/^##\s+([a-z0-9_-]+)\s*$/gim)];
+  const matchIndex = matches.findIndex((match) => match[1].toLowerCase() === key.toLowerCase());
+  if (matchIndex < 0) {
+    throw new Error(`Prompt section not found: ${key}`);
+  }
+  const match = matches[matchIndex];
+  const contentStart = (match.index ?? 0) + match[0].length;
+  const next = matches[matchIndex + 1];
+  const end = next?.index ?? raw.length;
+  const cleanContent = content.replace(/\s+$/, '');
+  const nextSeparator = next ? '\n\n' : '\n';
+  const updated = `${raw.slice(0, contentStart)}\n\n${cleanContent}${nextSeparator}${raw.slice(end).replace(/^\s+/, '')}`;
+  await writeFile(filePath, updated);
+  return loadPromptLibrary(studioRoot);
+}
+
 /**
  * @param {{ studioRoot: string, galleryDir: string }} options
  */
@@ -178,6 +254,7 @@ export function createGalleryServer({studioRoot, galleryDir}) {
     '.html': 'text/html; charset=utf-8',
     '.css': 'text/css; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
+    '.js': 'text/javascript; charset=utf-8',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
@@ -193,9 +270,17 @@ export function createGalleryServer({studioRoot, galleryDir}) {
     if (method === 'GET' && urlPath === '/api/story-templates') {
       try {
         const raw = await readFile(path.join(galleryDir, 'story-templates.json'), 'utf8');
-        sendJson(res, 200, JSON.parse(raw));
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          sendJson(res, 200, {
+            projects: [{id: 'helloiam', name: 'HelloIAM', accent: '#4A7BFF'}],
+            templates: parsed.map((t) => ({...t, project: t.project || 'helloiam'})),
+          });
+          return;
+        }
+        sendJson(res, 200, parsed);
       } catch (error) {
-        sendJson(res, 500, {error: error.message || 'Не удалось загрузить шаблоны'});
+        sendJson(res, 500, {error: error.message || 'Failed to load templates'});
       }
       return;
     }
@@ -234,6 +319,54 @@ export function createGalleryServer({studioRoot, galleryDir}) {
       return;
     }
 
+    if (method === 'POST' && urlPath === '/api/emojis/generate') {
+      try {
+        const body = await readJsonBody(req, 16_000);
+        const name = typeof body.name === 'string' ? body.name.trim() : '';
+        if (!name) {
+          sendJson(res, 400, {error: 'Укажите name — название предмета для генерации'});
+          return;
+        }
+        const overwrite = body.overwrite !== false;
+        const result = await generateEmoji(name, studioRoot, {overwrite});
+        sendJson(res, 200, {ok: true, ...result});
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Ошибка генерации эмодзи'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/cards') {
+      try {
+        const cards = await listBrandCards(studioRoot);
+        sendJson(res, 200, {cards});
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Не удалось загрузить карточки'});
+      }
+      return;
+    }
+
+    const brandCardFileMatch = urlPath.match(/^\/api\/cards\/([^/]+)$/);
+    if (method === 'GET' && brandCardFileMatch) {
+      const filename = decodeURIComponent(brandCardFileMatch[1]);
+      try {
+        const filePath = resolveBrandCardPath(studioRoot, filename);
+        const body = await readFile(filePath);
+        const ext = path.extname(filename).toLowerCase();
+        const contentType =
+          ext === '.webp'
+            ? 'image/webp'
+            : ext === '.jpg' || ext === '.jpeg'
+              ? 'image/jpeg'
+              : 'image/png';
+        res.writeHead(200, {'Content-Type': contentType});
+        res.end(body);
+      } catch (error) {
+        sendJson(res, 404, {error: error.message || 'Карточка не найдена'});
+      }
+      return;
+    }
+
     const emojiFileMatch = urlPath.match(/^\/api\/emojis\/([^/]+)$/);
     if (method === 'GET' && emojiFileMatch) {
       const filename = decodeURIComponent(emojiFileMatch[1]);
@@ -255,14 +388,196 @@ export function createGalleryServer({studioRoot, galleryDir}) {
       return;
     }
 
+    if (method === 'GET' && urlPath === '/api/changelog') {
+      try {
+        const changelog = await loadChangelog(studioRoot);
+        sendJson(res, 200, changelog);
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not load changelog'});
+      }
+      return;
+    }
+
     if (method === 'GET' && urlPath === '/api/app-config') {
       sendJson(res, 200, {
         admin: process.env.ADMIN === '1' || process.env.ADMIN === 'true',
         llmConfigured: isLlmConfigured(),
         falConfigured: Boolean(process.env.FAL_API_KEY?.trim()),
         categories: POST_CATEGORIES.map((id) => ({id, label: CATEGORY_LABELS[id]})),
-        brandColors: BRAND_COLORS,
+        colorStyles: COLOR_STYLES.map(({id, label, themeColor, colors}) => ({
+          id,
+          label,
+          themeColor,
+          background: colors?.background || themeColor,
+          accentColor: colors?.accentColor || themeColor,
+          textColor: colors?.titleColor || '#FFFFFF',
+        })),
+        brandColors: COLOR_STYLES.map(({id, label, themeColor}) => ({id, hex: themeColor, label})),
       });
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/research') {
+      try {
+        const params = new URL(req.url || '/', 'http://localhost').searchParams;
+        const source = params.get('source') || 'news';
+        const date = params.get('date') || undefined;
+        sendJson(res, 200, await getResearchSnapshot(studioRoot, source, date));
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Could not load research data'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/research/favorites') {
+      try {
+        sendJson(res, 200, await getResolvedResearchFavorites(studioRoot));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not load favorites'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/research/search') {
+      try {
+        const params = new URL(req.url || '/', 'http://localhost').searchParams;
+        sendJson(res, 200, await searchResearch(studioRoot, params.get('q') || ''));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not search research'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/research/trends') {
+      try {
+        const params = new URL(req.url || '/', 'http://localhost').searchParams;
+        sendJson(res, 200, await getTrendFeed(studioRoot, {
+          period: params.get('period') || 'day',
+          source: params.get('source') || 'all',
+          hashtag: params.get('hashtag') || '',
+        }));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not load trend feed'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/brand-presets') {
+      try {
+        sendJson(res, 200, await getBrandPresets(studioRoot));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not load brand presets'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/template-registry') {
+      try {
+        sendJson(res, 200, await getTemplateRegistry(studioRoot));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not build template registry'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/research/archive') {
+      try {
+        sendJson(res, 200, await getResearchArchive(studioRoot));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not load research archive'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/site-status') {
+      try {
+        sendJson(res, 200, await getSiteStatus());
+      } catch (error) {
+        sendJson(res, 502, {error: error.message || 'Could not inspect public site'});
+      }
+      return;
+    }
+
+    if (urlPath === '/api/calendar') {
+      try {
+        if (method === 'GET') {
+          sendJson(res, 200, {items: await listCalendarEvents(studioRoot)});
+          return;
+        }
+        if (method === 'POST') {
+          const body = await readJsonBody(req, 32_000);
+          sendJson(res, 201, {event: await createCalendarEvent(studioRoot, body)});
+          return;
+        }
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Calendar request failed'});
+        return;
+      }
+    }
+
+    const calendarEventMatch = urlPath.match(/^\/api\/calendar\/([^/]+)$/);
+    if (calendarEventMatch && (method === 'PUT' || method === 'DELETE')) {
+      try {
+        const id = decodeURIComponent(calendarEventMatch[1]);
+        const event = method === 'PUT'
+          ? await updateCalendarEvent(studioRoot, id, await readJsonBody(req, 32_000))
+          : await deleteCalendarEvent(studioRoot, id);
+        sendJson(res, 200, {ok: true, event});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Calendar update failed'});
+      }
+      return;
+    }
+
+    if (urlPath === '/api/collabs') {
+      try {
+        if (method === 'GET') {
+          sendJson(res, 200, {items: await listCollabs(studioRoot)});
+          return;
+        }
+        if (method === 'POST') {
+          const body = await readJsonBody(req, 48_000);
+          sendJson(res, 201, {item: await createCollab(studioRoot, body)});
+          return;
+        }
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Collabs request failed'});
+        return;
+      }
+    }
+
+    const collabMatch = urlPath.match(/^\/api\/collabs\/([^/]+)$/);
+    if (collabMatch && (method === 'PUT' || method === 'DELETE')) {
+      try {
+        const id = decodeURIComponent(collabMatch[1]);
+        const item = method === 'PUT'
+          ? await updateCollab(studioRoot, id, await readJsonBody(req, 48_000))
+          : await deleteCollab(studioRoot, id);
+        sendJson(res, 200, {ok: true, item});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Collabs update failed'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/prompts') {
+      try {
+        sendJson(res, 200, await loadPromptLibrary(studioRoot));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not load prompts'});
+      }
+      return;
+    }
+
+    const promptSectionMatch = urlPath.match(/^\/api\/prompts\/([^/]+)$/);
+    if (method === 'PUT' && promptSectionMatch) {
+      try {
+        const key = decodeURIComponent(promptSectionMatch[1]);
+        const body = await readJsonBody(req, 512_000);
+        sendJson(res, 200, await updatePromptSection(studioRoot, key, body.content));
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Could not save prompt'});
+      }
       return;
     }
 
@@ -325,6 +640,25 @@ export function createGalleryServer({studioRoot, galleryDir}) {
       }
     }
 
+    const postCardAssetMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/assets\/from-card$/);
+    if (method === 'POST' && postCardAssetMatch) {
+      const postId = decodeURIComponent(postCardAssetMatch[1]);
+      try {
+        const body = await readJsonBody(req, 16_000);
+        const cardId = typeof body.cardId === 'string' ? body.cardId.trim() : '';
+        if (!cardId) {
+          sendJson(res, 400, {error: 'Укажите cardId'});
+          return;
+        }
+        const asset = await addBrandCardToPost(studioRoot, postId, cardId);
+        const post = await getPost(studioRoot, postId);
+        sendJson(res, 200, {ok: true, asset, post});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Не удалось добавить карточку'});
+      }
+      return;
+    }
+
     const postEmojiAssetMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/assets\/from-emoji$/);
     if (method === 'POST' && postEmojiAssetMatch) {
       const postId = decodeURIComponent(postEmojiAssetMatch[1]);
@@ -340,6 +674,66 @@ export function createGalleryServer({studioRoot, galleryDir}) {
         sendJson(res, 200, {ok: true, asset, post});
       } catch (error) {
         sendJson(res, 400, {error: error.message || 'Не удалось добавить эмодзи'});
+      }
+      return;
+    }
+
+    const postEmojiSlotMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/assets\/from-emoji-slot$/);
+    if (method === 'POST' && postEmojiSlotMatch) {
+      const postId = decodeURIComponent(postEmojiSlotMatch[1]);
+      try {
+        const body = await readJsonBody(req, 16_000);
+        const emojiId = typeof body.emojiId === 'string' ? body.emojiId.trim() : '';
+        const slot = typeof body.slot === 'number' ? body.slot : parseInt(body.slot, 10);
+        if (!emojiId) {
+          sendJson(res, 400, {error: 'Укажите emojiId'});
+          return;
+        }
+        if (isNaN(slot) || slot < 0 || slot > 4) {
+          sendJson(res, 400, {error: 'slot должен быть числом от 0 до 4'});
+          return;
+        }
+        const result = await addEmojiSlotToPost(studioRoot, postId, emojiId, slot);
+        sendJson(res, 200, {ok: true, asset: result, post: result.post});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Не удалось добавить эмодзи'});
+      }
+      return;
+    }
+
+    const postCardSlotMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/assets\/from-card-slot$/);
+    if (method === 'POST' && postCardSlotMatch) {
+      const postId = decodeURIComponent(postCardSlotMatch[1]);
+      try {
+        const body = await readJsonBody(req, 16_000);
+        const cardId = typeof body.cardId === 'string' ? body.cardId.trim() : '';
+        const slot = typeof body.slot === 'number' ? body.slot : parseInt(body.slot, 10);
+        if (!cardId) {
+          sendJson(res, 400, {error: 'Укажите cardId'});
+          return;
+        }
+        if (isNaN(slot) || slot < 0 || slot > 4) {
+          sendJson(res, 400, {error: 'slot должен быть числом от 0 до 4'});
+          return;
+        }
+        const result = await addBrandCardSlotToPost(studioRoot, postId, cardId, slot);
+        sendJson(res, 200, {ok: true, asset: result, post: result.post});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Не удалось добавить карточку'});
+      }
+      return;
+    }
+
+    const postCardSlotsResetMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/assets\/reset-card-slots$/);
+    if (method === 'POST' && postCardSlotsResetMatch) {
+      const postId = decodeURIComponent(postCardSlotsResetMatch[1]);
+      try {
+        const body = await readJsonBody(req, 200_000);
+        const slots = Array.isArray(body.slots) ? body.slots : [];
+        const post = await resetBrandCardSlotsForPost(studioRoot, postId, slots);
+        sendJson(res, 200, {ok: true, post});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Не удалось сохранить порядок карточек'});
       }
       return;
     }
@@ -383,6 +777,30 @@ export function createGalleryServer({studioRoot, galleryDir}) {
       return;
     }
 
+    const postGenerateTextsMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/generate-texts$/);
+    if (method === 'POST' && postGenerateTextsMatch) {
+      const postId = decodeURIComponent(postGenerateTextsMatch[1]);
+      try {
+        const post = await generatePostTexts(studioRoot, postId);
+        sendJson(res, 200, {ok: true, post});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Text generation failed'});
+      }
+      return;
+    }
+
+    const postGeneratePromptsMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/generate-prompts$/);
+    if (method === 'POST' && postGeneratePromptsMatch) {
+      const postId = decodeURIComponent(postGeneratePromptsMatch[1]);
+      try {
+        const post = await generatePostImagePrompts(studioRoot, postId);
+        sendJson(res, 200, {ok: true, post});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Picture description generation failed'});
+      }
+      return;
+    }
+
     const postGenerateMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/generate-content$/);
     if (method === 'POST' && postGenerateMatch) {
       const postId = decodeURIComponent(postGenerateMatch[1]);
@@ -407,6 +825,27 @@ export function createGalleryServer({studioRoot, galleryDir}) {
         sendJson(res, 200, {ok: true, post, results});
       } catch (error) {
         sendJson(res, 400, {error: error.message || 'Генерация изображений не удалась'});
+      }
+      return;
+    }
+
+    const postGenerateVideosMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/generate-videos$/);
+    if (method === 'POST' && postGenerateVideosMatch) {
+      const postId = decodeURIComponent(postGenerateVideosMatch[1]);
+      try {
+        const body = await readJsonBody(req, 50_000).catch(() => ({}));
+        const cardIndexes = Array.isArray(body.cardIndexes)
+          ? body.cardIndexes.map(Number).filter((n) => !Number.isNaN(n))
+          : undefined;
+        const seconds = Number(body.seconds);
+        const {post, results, errors} = await generatePostVideos(studioRoot, postId, {
+          cardIndexes,
+          ...(seconds > 0 ? {seconds} : {}),
+          force: body.force === true,
+        });
+        sendJson(res, 200, {ok: true, post, results, errors});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Генерация видео не удалась'});
       }
       return;
     }
@@ -519,6 +958,27 @@ export function createGalleryServer({studioRoot, galleryDir}) {
       return;
     }
 
+    const postPngZipMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/download-png\.zip$/);
+    if (method === 'GET' && postPngZipMatch) {
+      const postId = decodeURIComponent(postPngZipMatch[1]);
+      try {
+        const {zipPath, filename} = await buildPostZip(studioRoot, postId, {
+          png: true,
+          mp4: false,
+          suffix: 'png',
+        });
+        const body = await readFile(zipPath);
+        res.writeHead(200, {
+          'Content-Type': 'application/zip',
+          'Content-Disposition': `attachment; filename="${filename}"`,
+        });
+        res.end(body);
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Не удалось собрать PNG ZIP'});
+      }
+      return;
+    }
+
     const postCardMatch = urlPath.match(/^\/api\/posts\/([^/]+)\/cards\/(\d+)$/);
     if (method === 'PUT' && postCardMatch) {
       const postId = decodeURIComponent(postCardMatch[1]);
@@ -559,36 +1019,6 @@ export function createGalleryServer({studioRoot, galleryDir}) {
         sendJson(res, 200, {ok: true, ...result});
       } catch (error) {
         sendJson(res, 500, {error: error.message || 'Рендер не удался'});
-      }
-      return;
-    }
-
-    if (method === 'POST' && urlPath === '/api/render-preview') {
-      try {
-        const body = await readJsonBody(req, 200_000);
-        const compositionId = body.compositionId;
-        if (typeof compositionId !== 'string' || !compositionId.trim()) {
-          sendJson(res, 400, {error: 'Укажите compositionId'});
-          return;
-        }
-        const postId = typeof body.postId === 'string' && body.postId.trim() ? body.postId.trim() : 'live';
-        const cardIndex = Number.isFinite(body.cardIndex) ? String(body.cardIndex) : '0';
-        const outRelative = `preview/posts/${postId}/${cardIndex}`;
-        const result = await renderComposition(
-          studioRoot,
-          compositionId.trim(),
-          body.props && typeof body.props === 'object' ? body.props : {},
-          {
-            video: false,
-            propsOnly: true,
-            outRelative,
-            urlBase: `/renders/${outRelative}`,
-            durationFrames: body.durationFrames,
-          },
-        );
-        sendJson(res, 200, {ok: true, ...result});
-      } catch (error) {
-        sendJson(res, 500, {error: error.message || 'Превью не удалось'});
       }
       return;
     }
@@ -724,6 +1154,11 @@ export function createGalleryServer({studioRoot, galleryDir}) {
       return;
     }
 
+    if (isDashboardPath(urlPath)) {
+      proxyDashboardRequest(req, res);
+      return;
+    }
+
     const filePath =
       urlPath === '/' || urlPath === '/index.html'
         ? path.join(galleryDir, 'picker.html')
@@ -750,7 +1185,19 @@ export function createGalleryServer({studioRoot, galleryDir}) {
       }
       const body = await readFile(filePath);
       const ext = path.extname(filePath);
-      res.writeHead(200, {'Content-Type': mime[ext] || 'text/plain'});
+      const headers = {'Content-Type': mime[ext] || 'text/plain'};
+      if (
+        urlPath === '/' ||
+        urlPath === '/index.html' ||
+        urlPath === '/studio-ui.css' ||
+        urlPath === '/architecture-preview.html' ||
+        urlPath === '/architecture-preview.css' ||
+        urlPath === '/architecture-project-config.js' ||
+        urlPath === '/picker.html'
+      ) {
+        headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+      }
+      res.writeHead(200, headers);
       res.end(body);
     } catch {
       res.writeHead(404);

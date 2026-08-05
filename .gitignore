@@ -1,6 +1,24 @@
 node_modules
+apps/dashboard-site/node_modules
+apps/dashboard-site/.next
+apps/dashboard-site/data/days/*.json
+apps/dashboard-site/data/youtube-days/*.json
+apps/dashboard-site/data/youtube-trends/*.json
 out
 data/posts/*.json
 public/generated/posts/
+.cursor/
+.env.local
+.cache/
+.turbo/
+*.log
+*.mp4
+*.mov
+*.webm
+*.zip
 .DS_Store
 .env
+helloiam-studio v_to_merge/
+helloiam-studio-clean/
+helloiam-studio-transfer/
+helloiam-studio-to-send/

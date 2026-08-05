@@ -19,9 +19,22 @@
     "1": "generated/template-references/GreenPlateIntro/slide-1.png",
     "2": "generated/template-references/GreenPlateIntro/slide-2.png"
   },
+  "HelloIamNewsV1": {
+    "0": "generated/template-references/HelloIamNewsV1/slide-0.png",
+    "1": "generated/template-references/HelloIamNewsV1/slide-1.png",
+    "2": "generated/template-references/HelloIamNewsV1/slide-2.png"
+  },
   "HelloIamWineV1": {
     "0": "generated/template-references/HelloIamWineV1/slide-0.png",
-    "1": "generated/template-references/HelloIamWineV1/slide-1.png"
+    "1": "generated/template-references/HelloIamWineV1/slide-1.png",
+    "2": "generated/template-references/HelloIamWineV1/slide-2.png",
+    "3": "generated/template-references/HelloIamWineV1/slide-3.png",
+    "4": "generated/template-references/HelloIamWineV1/slide-4.png",
+    "5": "generated/template-references/HelloIamWineV1/slide-5.png",
+    "6": "generated/template-references/HelloIamWineV1/slide-6.png",
+    "7": "generated/template-references/HelloIamWineV1/slide-7.png",
+    "8": "generated/template-references/HelloIamWineV1/slide-8.png",
+    "9": "generated/template-references/HelloIamWineV1/slide-9.png"
   },
   "IAmMatsunDeepDive": {
     "0": "generated/template-references/IAmMatsunDeepDive/slide-0.png",

@@ -1,0 +1,551 @@
+{
+  "id": "Rubric03",
+  "project": "helloiam",
+  "name": "Item 01",
+  "description": "7-card fact carousel (5 fact slides)",
+  "tag": "Carousel",
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardSec": 3,
+  "cards": [
+    {
+      "cardIndex": 0,
+      "compositionId": "RubricCardCss",
+      "label": "Обложка",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "item",
+          "type": "string",
+          "label": "Headline item"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout",
+        "introLayout"
+      ],
+      "defaultProps": {
+        "engine": "green-plate",
+        "cardKind": "hello",
+        "cardIndex": 0,
+        "cardCount": 7,
+        "title": "HELLO,\nI AM",
+        "titleAccent": "ITEM",
+        "label": "AM FOOD",
+        "background": "#D9DDE0",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "",
+        "introLayout": "matsun",
+        "item": "ITEM"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 1,
+      "compositionId": "RubricCardCss",
+      "label": "Слайд 2",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "item",
+          "type": "string",
+          "label": "Headline item"
+        },
+        {
+          "key": "fact",
+          "type": "textarea",
+          "label": "Slide text"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "quoteColor",
+          "type": "color",
+          "label": "Цвет цитаты"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
+      "defaultProps": {
+        "engine": "green-plate",
+        "cardKind": "quote",
+        "cardIndex": 1,
+        "cardCount": 7,
+        "title": "HELLO,\nI AM",
+        "titleAccent": "ITEM",
+        "quote": "",
+        "label": "AM FOOD",
+        "background": "#D9DDE0",
+        "quoteColor": "#D61E23",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "",
+        "fact": "",
+        "item": "ITEM"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 2,
+      "compositionId": "RubricCardCss",
+      "label": "Слайд 3",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "item",
+          "type": "string",
+          "label": "Headline item"
+        },
+        {
+          "key": "fact",
+          "type": "textarea",
+          "label": "Slide text"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "quoteColor",
+          "type": "color",
+          "label": "Цвет цитаты"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
+      "defaultProps": {
+        "engine": "green-plate",
+        "cardKind": "quote",
+        "cardIndex": 2,
+        "cardCount": 7,
+        "title": "HELLO,\nI AM",
+        "titleAccent": "ITEM",
+        "quote": "",
+        "label": "AM FOOD",
+        "background": "#D9DDE0",
+        "quoteColor": "#D61E23",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "",
+        "fact": "",
+        "item": "ITEM"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 3,
+      "compositionId": "RubricCardCss",
+      "label": "Слайд 4",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "item",
+          "type": "string",
+          "label": "Headline item"
+        },
+        {
+          "key": "fact",
+          "type": "textarea",
+          "label": "Slide text"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "quoteColor",
+          "type": "color",
+          "label": "Цвет цитаты"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
+      "defaultProps": {
+        "engine": "green-plate",
+        "cardKind": "quote",
+        "cardIndex": 3,
+        "cardCount": 7,
+        "title": "HELLO,\nI AM",
+        "titleAccent": "ITEM",
+        "quote": "",
+        "label": "AM FOOD",
+        "background": "#D9DDE0",
+        "quoteColor": "#D61E23",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "",
+        "fact": "",
+        "item": "ITEM"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 4,
+      "compositionId": "RubricCardCss",
+      "label": "Слайд 5",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "item",
+          "type": "string",
+          "label": "Headline item"
+        },
+        {
+          "key": "fact",
+          "type": "textarea",
+          "label": "Slide text"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "quoteColor",
+          "type": "color",
+          "label": "Цвет цитаты"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
+      "defaultProps": {
+        "engine": "green-plate",
+        "cardKind": "quote",
+        "cardIndex": 4,
+        "cardCount": 7,
+        "title": "HELLO,\nI AM",
+        "titleAccent": "ITEM",
+        "quote": "",
+        "label": "AM FOOD",
+        "background": "#D9DDE0",
+        "quoteColor": "#D61E23",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "",
+        "fact": "",
+        "item": "ITEM"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 5,
+      "compositionId": "RubricCardCss",
+      "label": "Слайд 6",
+      "fields": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": "Заголовок"
+        },
+        {
+          "key": "item",
+          "type": "string",
+          "label": "Headline item"
+        },
+        {
+          "key": "fact",
+          "type": "textarea",
+          "label": "Slide text"
+        },
+        {
+          "key": "label",
+          "type": "string",
+          "label": "Метка"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "quoteColor",
+          "type": "color",
+          "label": "Цвет цитаты"
+        },
+        {
+          "key": "titleColor",
+          "type": "color",
+          "label": "Цвет заголовка"
+        },
+        {
+          "key": "accentColor",
+          "type": "color",
+          "label": "Цвет акцента"
+        },
+        {
+          "key": "labelColor",
+          "type": "color",
+          "label": "Цвет метки"
+        }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
+      "defaultProps": {
+        "engine": "green-plate",
+        "cardKind": "quote",
+        "cardIndex": 5,
+        "cardCount": 7,
+        "title": "HELLO,\nI AM",
+        "titleAccent": "ITEM",
+        "quote": "",
+        "label": "AM FOOD",
+        "background": "#D9DDE0",
+        "quoteColor": "#D61E23",
+        "titleColor": "#0F0F10",
+        "accentColor": "#D61E23",
+        "labelColor": "#000000",
+        "image": "",
+        "fact": "",
+        "item": "ITEM"
+      },
+      "durationFrames": 90
+    },
+    {
+      "cardIndex": 6,
+      "compositionId": "RubricCardCss",
+      "label": "Бренд",
+      "fields": [
+        {
+          "key": "brandLeft",
+          "type": "string",
+          "label": "Текст слева"
+        },
+        {
+          "key": "brandRight",
+          "type": "string",
+          "label": "Текст справа"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Эмодзи / фото"
+        },
+        {
+          "key": "background",
+          "type": "color",
+          "label": "Фон"
+        },
+        {
+          "key": "brandColor",
+          "type": "color",
+          "label": "Цвет бренда"
+        }
+      ],
+      "metaPropKeys": [
+        "engine",
+        "cardKind",
+        "cardIndex",
+        "cardCount",
+        "cardLayout"
+      ],
+      "defaultProps": {
+        "engine": "green-plate",
+        "cardKind": "brand",
+        "cardIndex": 6,
+        "cardCount": 7,
+        "brandLeft": "helloiam",
+        "brandRight": "am",
+        "background": "#0F0F10",
+        "brandColor": "#FFFFFF",
+        "image": ""
+      },
+      "durationFrames": 90
+    }
+  ]
+}

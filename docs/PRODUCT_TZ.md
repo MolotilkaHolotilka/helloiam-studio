@@ -429,4 +429,54 @@ _archive/
 - [x] **Обложки шаблонов** — превью первой карточки в каталоге
 - [x] **Удаление постов**, автосохранение, рендер одной карточки
 
-*Alpha v001 + пост-релизная полировка закрыты.*
+*Alpha v001 + post-release polish complete.*
+
+---
+
+## 16. Rubric v2 glossary (call recording, 2026)
+
+### Terminology
+
+| UI (EN) | Was in code | JSON field | Meaning |
+|---------|-------------|------------|---------|
+| **Rubric** | Format, template | `templateId` → `Rubric01`…`Rubric05` | Layout + card count + pipeline |
+| **Topic** | category label | `category` → `AM FOOD` etc. on slides | FOOD / SOUNDS / CULTURE / PLACES / NEWS |
+| **Subject** | `post.subject` | `subject` | Auto = `item` from emoji (LLM `{subject}`); not user-entered on Rubric 01–04 |
+| **Post name** | `name` | `name` | Auto: `{rubricName} · {item}` (Rubric 05: `{rubricName} · {infopov}`) |
+| **Headline item** | `titleAccent` | `item` | From emoji, UPPERCASE |
+| **Slide text** | `quote` | `fact` | Only LLM-generated text per slide |
+| **Color style** | `themeColor` swatches | `colorStyleId` | Preset in Settings only |
+
+### Rubric rename map
+
+| Rubric | Cards | Old `templateId` | New `templateId` | Old file | New file |
+|--------|-------|------------------|------------------|----------|----------|
+| Rubric 01 | 9 | `Format01` | `Rubric01` | `format-01.json` | `rubric-01.json` |
+| Rubric 02 | 2 | `HelloIamWineV1` | `Rubric02` | `helloiam-wine-v1.json` | `rubric-02.json` |
+| Rubric 03 | 7 | `IAmMatsunDeepDive` | `Rubric03` | `iam-matsun-deep-dive.json` | `rubric-03.json` |
+| Rubric 04 | 3 | `GreenPlateIntro` | `Rubric04` | `green-plate-intro.json` | `rubric-04.json` |
+| Rubric 05 | 3 | `HelloIamNewsV1` | `Rubric05` | `format-05-news.json` | `rubric-05.json` |
+
+Legacy `templateId` values are aliased at read time for one release.
+
+### Emoji placement
+
+| Rubric | First slide | Last slide |
+|--------|-------------|------------|
+| 01, 02, 05 | — | emoji sticker |
+| 03, 04 | emoji | emoji |
+
+### Content pipeline
+
+1. **Settings** — Rubric, Topic, Emoji (→ item), Color style. Rubric 05: Infopov only.
+2. **Content** — Write all slide texts → picture descriptions → make all pictures.
+3. **Export** — Build PNG stills.
+4. **Download** — ZIP.
+
+### Plain language (no jargon in UI)
+
+| Avoid | Use |
+|-------|-----|
+| prompt, LLM, render | picture description, slide text, build PNG |
+| Generate content | Write all slide texts |
+

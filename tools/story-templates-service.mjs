@@ -1,5 +1,6 @@
 import {readdir, readFile} from 'node:fs/promises';
 import path from 'node:path';
+import {LEGACY_TEMPLATE_ALIASES, normalizeTemplateId} from './rubric/rubric-ids.mjs';
 
 /**
  * @param {string} templateId
@@ -16,8 +17,9 @@ function templateSlug(templateId) {
  * @param {string} templateId
  */
 export async function loadStoryTemplate(studioRoot, templateId) {
+  const canonicalId = normalizeTemplateId(templateId);
   const dir = path.join(studioRoot, 'data', 'story-templates');
-  const slug = templateSlug(templateId);
+  const slug = templateSlug(canonicalId);
   const candidates = [
     path.join(dir, `${slug}.json`),
     path.join(dir, `${slug.replace(/-/g, '')}.json`),
@@ -25,7 +27,10 @@ export async function loadStoryTemplate(studioRoot, templateId) {
   for (const filePath of candidates) {
     try {
       const data = JSON.parse(await readFile(filePath, 'utf8'));
-      if (data.id === templateId) return data;
+      if (data.id === canonicalId || data.id === templateId) {
+        data.id = canonicalId;
+        return data;
+      }
     } catch (error) {
       if (error.code !== 'ENOENT') throw error;
     }
@@ -35,11 +40,14 @@ export async function loadStoryTemplate(studioRoot, templateId) {
     if (!file.endsWith('.json')) continue;
     try {
       const data = JSON.parse(await readFile(path.join(dir, file), 'utf8'));
-      if (data.id === templateId) return data;
+      if (data.id === canonicalId || data.id === templateId || LEGACY_TEMPLATE_ALIASES[data.id] === canonicalId) {
+        data.id = canonicalId;
+        return data;
+      }
     } catch {
       // skip unreadable files
     }
   }
 
-  throw new Error(`Шаблон не найден: ${templateId}`);
+  throw new Error(`Template not found: ${templateId}`);
 }

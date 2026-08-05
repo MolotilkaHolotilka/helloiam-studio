@@ -9,6 +9,10 @@ export const RUBRIC_META_PROP_KEYS = [
   'cardCount',
   'cardLayout',
   'introLayout',
+  // System-managed visual prop for Rubric01 multi-color title lines
+  'titleLineColors',
+  /** Rubric03/04: second swatch color — fact body text */
+  'schemeSecondColor',
 ];
 
 export const RUBRIC_META_PROP_KEY_SET = new Set(RUBRIC_META_PROP_KEYS);

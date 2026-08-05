@@ -101,28 +101,21 @@ export const Post126CardSlideFly: React.FC<{
   const titleDrift = drift(localFrame, segmentFrames, 6, 0, 'x');
   const quoteDrift = drift(localFrame, segmentFrames, 5, 10, 'x');
   const labelDrift = drift(localFrame, segmentFrames, 4, 18, 'y');
-  const imageDriftA = drift(localFrame, segmentFrames, 12, 0, 'y');
-  const imageDriftB = drift(localFrame, segmentFrames, 8, 14, 'x');
-  const imageTiltA = clamped(localFrame, [0, segmentFrames / 2, segmentFrames], [-2.4, 2.4, -2.4]);
-  const imageTiltB = clamped(localFrame + 10, [0, segmentFrames / 2, segmentFrames], [2, -2, 2]);
+  const imageDrift = drift(localFrame, segmentFrames, 12, 0, 'y');
 
-  const imageStyle = (y: number, x: number, tilt: number): React.CSSProperties => ({
+  const imageStyle: React.CSSProperties = {
     position: 'absolute',
     inset: 0,
     width: '100%',
     height: '100%',
     objectFit: 'cover',
     objectPosition: 'center top',
-    transform: `translate(${x}px, ${y}px) rotate(${tilt}deg)`,
-  });
+  };
 
   return (
     <div style={{...CARD, background}}>
-      <div style={{...IMAGE_BOX, ...motionStyle(imageEnter, imageDriftB.x, imageDriftA.y)}}>
-        <Img src={imageSrc} style={imageStyle(0, 0, imageTiltA)} />
-      </div>
-      <div style={{...IMAGE_BOX, ...motionStyle(imageEnter, -imageDriftB.x, -imageDriftA.y * 0.6)}}>
-        <Img src={imageSrc} style={imageStyle(0, 0, imageTiltB)} />
+      <div style={{...IMAGE_BOX, ...motionStyle(imageEnter, 0, imageDrift.y)}}>
+        <Img src={imageSrc} style={imageStyle} />
       </div>
 
       <div

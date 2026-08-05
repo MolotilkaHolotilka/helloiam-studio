@@ -1,0 +1,44 @@
+{
+  "tags": [
+    {
+      "tag": "armenia",
+      "enabled": true
+    },
+    {
+      "tag": "yerevan",
+      "enabled": true
+    },
+    {
+      "tag": "visitarmenia",
+      "enabled": true
+    },
+    {
+      "tag": "armeniatravel",
+      "enabled": true
+    },
+    {
+      "tag": "hayastan",
+      "enabled": true
+    },
+    {
+      "tag": "армения",
+      "enabled": true
+    },
+    {
+      "tag": "ереван",
+      "enabled": true
+    },
+    {
+      "tag": "armfood",
+      "enabled": true
+    },
+    {
+      "tag": "dilijan",
+      "enabled": true
+    },
+    {
+      "tag": "garni",
+      "enabled": true
+    }
+  ]
+}
