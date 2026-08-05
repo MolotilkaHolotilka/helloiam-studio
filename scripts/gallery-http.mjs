@@ -47,6 +47,22 @@ import {
 import {addEmojiToPost, addEmojiSlotToPost, listEmojis, resolveEmojiPath} from '../tools/emojis/emojis-service.mjs';
 import {generateEmoji} from '../tools/generation/emoji-generator.mjs';
 import {listTemplateSlideReferences} from '../tools/template-references.mjs';
+import {
+  getResearchArchive,
+  getResearchSnapshot,
+  getTrendFeed,
+  getResolvedResearchFavorites,
+  searchResearch,
+} from '../tools/new-ia/research-read-service.mjs';
+import {
+  createCalendarEvent,
+  deleteCalendarEvent,
+  listCalendarEvents,
+  updateCalendarEvent,
+} from '../tools/calendar/calendar-service.mjs';
+import {createCollab, deleteCollab, listCollabs, updateCollab} from '../tools/collabs/collabs-service.mjs';
+import {getSiteStatus} from '../tools/site/site-status-service.mjs';
+import {getBrandPresets, getTemplateRegistry} from '../tools/new-ia/template-registry-service.mjs';
 
 const HEX_COLOR = /^#[0-9A-Fa-f]{6}$/;
 const TEXTAREA_KEYS = new Set(['quote', 'body']);
@@ -238,6 +254,7 @@ export function createGalleryServer({studioRoot, galleryDir}) {
     '.html': 'text/html; charset=utf-8',
     '.css': 'text/css; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
+    '.js': 'text/javascript; charset=utf-8',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
@@ -397,6 +414,149 @@ export function createGalleryServer({studioRoot, galleryDir}) {
         })),
         brandColors: COLOR_STYLES.map(({id, label, themeColor}) => ({id, hex: themeColor, label})),
       });
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/research') {
+      try {
+        const params = new URL(req.url || '/', 'http://localhost').searchParams;
+        const source = params.get('source') || 'news';
+        const date = params.get('date') || undefined;
+        sendJson(res, 200, await getResearchSnapshot(studioRoot, source, date));
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Could not load research data'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/research/favorites') {
+      try {
+        sendJson(res, 200, await getResolvedResearchFavorites(studioRoot));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not load favorites'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/research/search') {
+      try {
+        const params = new URL(req.url || '/', 'http://localhost').searchParams;
+        sendJson(res, 200, await searchResearch(studioRoot, params.get('q') || ''));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not search research'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/research/trends') {
+      try {
+        const params = new URL(req.url || '/', 'http://localhost').searchParams;
+        sendJson(res, 200, await getTrendFeed(studioRoot, {
+          period: params.get('period') || 'day',
+          source: params.get('source') || 'all',
+          hashtag: params.get('hashtag') || '',
+        }));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not load trend feed'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/brand-presets') {
+      try {
+        sendJson(res, 200, await getBrandPresets(studioRoot));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not load brand presets'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/template-registry') {
+      try {
+        sendJson(res, 200, await getTemplateRegistry(studioRoot));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not build template registry'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/new-ia/research/archive') {
+      try {
+        sendJson(res, 200, await getResearchArchive(studioRoot));
+      } catch (error) {
+        sendJson(res, 500, {error: error.message || 'Could not load research archive'});
+      }
+      return;
+    }
+
+    if (method === 'GET' && urlPath === '/api/site-status') {
+      try {
+        sendJson(res, 200, await getSiteStatus());
+      } catch (error) {
+        sendJson(res, 502, {error: error.message || 'Could not inspect public site'});
+      }
+      return;
+    }
+
+    if (urlPath === '/api/calendar') {
+      try {
+        if (method === 'GET') {
+          sendJson(res, 200, {items: await listCalendarEvents(studioRoot)});
+          return;
+        }
+        if (method === 'POST') {
+          const body = await readJsonBody(req, 32_000);
+          sendJson(res, 201, {event: await createCalendarEvent(studioRoot, body)});
+          return;
+        }
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Calendar request failed'});
+        return;
+      }
+    }
+
+    const calendarEventMatch = urlPath.match(/^\/api\/calendar\/([^/]+)$/);
+    if (calendarEventMatch && (method === 'PUT' || method === 'DELETE')) {
+      try {
+        const id = decodeURIComponent(calendarEventMatch[1]);
+        const event = method === 'PUT'
+          ? await updateCalendarEvent(studioRoot, id, await readJsonBody(req, 32_000))
+          : await deleteCalendarEvent(studioRoot, id);
+        sendJson(res, 200, {ok: true, event});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Calendar update failed'});
+      }
+      return;
+    }
+
+    if (urlPath === '/api/collabs') {
+      try {
+        if (method === 'GET') {
+          sendJson(res, 200, {items: await listCollabs(studioRoot)});
+          return;
+        }
+        if (method === 'POST') {
+          const body = await readJsonBody(req, 48_000);
+          sendJson(res, 201, {item: await createCollab(studioRoot, body)});
+          return;
+        }
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Collabs request failed'});
+        return;
+      }
+    }
+
+    const collabMatch = urlPath.match(/^\/api\/collabs\/([^/]+)$/);
+    if (collabMatch && (method === 'PUT' || method === 'DELETE')) {
+      try {
+        const id = decodeURIComponent(collabMatch[1]);
+        const item = method === 'PUT'
+          ? await updateCollab(studioRoot, id, await readJsonBody(req, 48_000))
+          : await deleteCollab(studioRoot, id);
+        sendJson(res, 200, {ok: true, item});
+      } catch (error) {
+        sendJson(res, 400, {error: error.message || 'Collabs update failed'});
+      }
       return;
     }
 
@@ -1030,6 +1190,9 @@ export function createGalleryServer({studioRoot, galleryDir}) {
         urlPath === '/' ||
         urlPath === '/index.html' ||
         urlPath === '/studio-ui.css' ||
+        urlPath === '/architecture-preview.html' ||
+        urlPath === '/architecture-preview.css' ||
+        urlPath === '/architecture-project-config.js' ||
         urlPath === '/picker.html'
       ) {
         headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';

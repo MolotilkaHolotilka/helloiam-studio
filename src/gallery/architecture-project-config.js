@@ -1,0 +1,36 @@
+window.ARCHITECTURE_PROJECT_CONFIG = {
+  id: "helloiam",
+  name: "Hello I Am",
+  version: "universal-template-v1",
+  enabledModules: [
+    "dashboard",
+    "brand",
+    "research",
+    "content",
+    "opportunities",
+    "creative-tools",
+    "analytics",
+    "site",
+    "knowledge",
+    "systems",
+  ],
+  labels: {
+    cases: "Cases",
+    opportunities: "Collabs",
+  },
+  itemGenerator: {
+    kind: "emoji",
+    implementationLabel: "HelloIAM emoji objects",
+    singularLabel: "emoji object",
+    subjectPlaceholder: "e.g. pomegranate, duduk, lavash",
+  },
+  enabledTools: [
+    "post-generator",
+    "item-generator",
+    "product-card",
+    "template-studio",
+    "image-generator",
+    "video-generator",
+    "share-cards",
+  ],
+};

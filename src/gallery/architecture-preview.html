@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title>Hello I Am — New IA Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Instrument+Sans:wght@700&family=Inter:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/architecture-preview.css" />
+    <script src="/architecture-project-config.js"></script>
+  </head>
+  <body>
+    <div class="preview-shell">
+      <aside class="preview-sidebar" aria-label="New architecture navigation">
+        <div class="preview-brand">
+          <a href="#/dashboard" id="preview-project-name">Hello I Am</a>
+          <span>New IA</span>
+        </div>
+        <nav class="preview-nav" id="preview-nav"></nav>
+        <div class="preview-mode-switch" aria-label="Architecture mode">
+          <span>Architecture</span>
+          <div>
+            <a href="/picker.html#/dashboard" id="architecture-current-link">Current</a>
+            <span aria-current="page">New IA</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="preview-workspace">
+        <header class="preview-header">
+          <button type="button" class="preview-menu-button" id="preview-menu-button" aria-expanded="false" aria-controls="preview-sidebar">Menu</button>
+          <div>
+            <span class="preview-kicker" id="preview-breadcrumb">Hello I Am / Dashboard</span>
+            <h1 id="preview-title">Dashboard</h1>
+          </div>
+          <span class="preview-badge">UI prototype</span>
+        </header>
+        <nav class="preview-subnav" id="preview-subnav" aria-label="Section navigation"></nav>
+        <main class="preview-main" id="preview-main"></main>
+      </div>
+    </div>
+
+    <script>
+      const ARCHITECTURE_MODE_KEY = "helloiam-architecture-mode";
+      const projectConfig = window.ARCHITECTURE_PROJECT_CONFIG;
+      const moduleCatalog = [
+        { id: "dashboard", label: "Dashboard", href: "#/dashboard" },
+        { id: "brand", label: "Brand", href: "#/brand" },
+        { id: "research", label: "Research", href: "#/research/trends" },
+        { id: "content", label: "Content", href: "#/content/posts" },
+        { id: "cases", label: projectConfig.labels.cases || "Cases", href: "#/cases/all" },
+        { id: "opportunities", label: projectConfig.labels.opportunities || "Opportunities", href: "#/opportunities/candidates" },
+        { id: "creative-tools", label: "Creative tools", href: "#/creative-tools/post-generator" },
+        { id: "analytics", label: "Analytics", href: "#/analytics" },
+        { id: "site", label: "Site", href: "#/site" },
+        { id: "knowledge", label: "Knowledge", href: "#/knowledge/docs" },
+        { id: "systems", label: "Systems", href: "#/systems" },
+      ];
+      const navItems = moduleCatalog
+        .filter((item) => projectConfig.enabledModules.includes(item.id))
+        .map((item, index) => ({ ...item, index: String(index + 1).padStart(2, "0") }));
+      const subnav = {
+        brand: [
+          ["overview", "Brand info"], ["presets", "Brand presets"], ["guidelines", "Visual guidelines"], ["assets", "Brand assets"],
+        ],
+        research: [
+          ["trends", "Trends"], ["search", "Search"], ["favorites", "Favorites"], ["archive", "Archive"],
+        ],
+        content: [
+          ["posts", "Posts"], ["calendar", "Calendar"], ["assets", "Media library"],
+        ],
+        cases: [
+          ["all", "All"], ["published", "Published"], ["drafts", "Drafts"], ["archive", "Archive"],
+        ],
+        opportunities: [
+          ["candidates", "Candidates"], ["partners", "Partners"], ["active", "Active"], ["archive", "Archive"],
+        ],
+        "creative-tools": [
+          ["post-generator", "Post generator"], ["item-generator", "Item generator"], ["product-card", "Product cards"], ["template-studio", "Template studio"], ["image-generator", "Image generator"], ["video-generator", "Video generator"], ["share-cards", "Share cards"],
+        ],
+        analytics: [
+          ["content", "Content"], ["channels", "Channels"], ["research", "Research"], ["production", "Production"], ["formats", "Format comparison"],
+        ],
+        site: [
+          ["overview", "Overview"], ["pages", "Pages & routes"], ["content", "Content"], ["seo", "SEO & share"], ["forms", "Forms & leads"], ["publishing", "Publishing"], ["files", "Files"],
+        ],
+        systems: [
+          ["changelog", "Changelog"], ["ai", "AI settings"], ["integrations", "Integrations"], ["automation", "Automation"], ["runtime", "Runtime"], ["access", "Access"],
+        ],
+        knowledge: [
+          ["docs", "Docs"], ["runbooks", "Runbooks"], ["references", "References"], ["pipelines", "Pipeline map"], ["decisions", "Decisions"], ["archive", "Archive"],
+        ],
+      };
+      const defaults = {
+        brand: "overview", research: "trends", content: "posts", cases: "all", opportunities: "candidates", "creative-tools": "post-generator", analytics: "content", site: "overview", knowledge: "docs", systems: "changelog",
+      };
+      const analyticsChannelViews = ["overview", "instagram", "youtube", "tiktok", "website", "email", "comparison"];
+      const validTopRoutes = new Set(navItems.map((item) => item.id));
+      const mascotAttributes = ["Face", "Head", "Body", "Controls", "Storage", "Arms / Hands", "Modules", "Labels", "Finish"];
+      let mascotBuilt = false;
+      let mascotGenerated = false;
+      let selectedPose = "03";
+      const trendFilters = {period: "day", source: "all", hashtag: ""};
+      const mediaFilters = {query: "", source: "all", usage: "all"};
+      let mediaCache = null;
+
+      const escapeHtml = (value) => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+      function sectionSubnavItems(section) {
+        const items = subnav[section];
+        if (section !== "creative-tools" || !items) return items;
+        return items.filter(([id]) => projectConfig.enabledTools.includes(id));
+      }
+
+      function parseRoute() {
+        const raw = window.location.hash.replace(/^#\/?/, "");
+        const legacyRoutes = {
+          "projects/all": "#/knowledge/archive",
+          "projects/published": "#/knowledge/archive",
+          "projects/drafts": "#/knowledge/archive",
+          "projects/archive": "#/knowledge/archive",
+          "projects/test-pack": "#/knowledge/archive",
+          "cases/all": "#/knowledge/archive",
+          "cases/published": "#/knowledge/archive",
+          "cases/drafts": "#/knowledge/archive",
+          "cases/archive": "#/knowledge/archive",
+          "cases/test-pack": "#/knowledge/archive",
+          "research/news": "#/research/trends",
+          "research/videos": "#/research/trends",
+          "analytics/published": "#/analytics/channels/overview",
+          "brand/collabs": "#/opportunities/candidates",
+          "content/create": "#/creative-tools/post-generator",
+          "content/mascots": "#/creative-tools/item-generator",
+          "content/prompts": "#/systems/ai",
+          "content/pipeline-map": "#/knowledge/pipelines",
+          "content/pipelines": "#/knowledge/pipelines",
+          "creative-tools/emoji-generator": "#/creative-tools/item-generator",
+          "creative-tools/mascot-generator": "#/creative-tools/item-generator",
+        };
+        if (legacyRoutes[raw]) {
+          window.location.replace(legacyRoutes[raw]);
+          return null;
+        }
+        const [sectionRaw, subRaw, detailRaw] = raw.split("/");
+        const section = sectionRaw || "dashboard";
+        if (!validTopRoutes.has(section)) return { invalid: true };
+        const items = sectionSubnavItems(section);
+        if (!items) return { section, sub: "" };
+        const candidate = subRaw || defaults[section];
+        const sub = items.some(([id]) => id === candidate) ? candidate : items[0][0];
+        const detail = section === "analytics" && sub === "channels" && analyticsChannelViews.includes(detailRaw) ? detailRaw : section === "analytics" && sub === "channels" ? "overview" : "";
+        return { section, sub, detail };
+      }
+
+      function previewToCurrentHash(route) {
+        if (route.section === "brand") return route.sub === "collabs" ? "#/brand/collabs" : "#/brand";
+        if (route.section === "research") return "#/news-trends";
+        if (route.section === "content") {
+          if (route.sub === "assets") return "#/content/images";
+          return "#/content/posts";
+        }
+        if (route.section === "cases") return "#/content/posts";
+        if (route.section === "opportunities") return "#/brand/collabs";
+        if (route.section === "creative-tools") {
+          if (route.sub === "post-generator" || route.sub === "item-generator") return "#/content/create";
+          return "#/content/images";
+        }
+        if (route.section === "analytics") return "#/analytics";
+        if (route.section === "site") return "#/site";
+        if (route.section === "knowledge") return route.sub === "pipelines" || route.sub === "references" ? "#/content/pipeline-map" : "#/systems/changelog";
+        if (route.section === "systems") return route.sub === "ai" ? "#/content/prompts" : "#/systems/changelog";
+        return "#/dashboard";
+      }
+
+      function statCard(label, value, note) {
+        return `<article class="preview-stat"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><p>${escapeHtml(note)}</p></article>`;
+      }
+
+      function featureCard(title, description, meta = "Prototype") {
+        return `<article class="preview-card"><span class="preview-card-meta">${escapeHtml(meta)}</span><h3>${escapeHtml(title)}</h3><p>${escapeHtml(description)}</p></article>`;
+      }
+
+      function factRow(label, value, note = "") {
+        return `<div class="preview-fact-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong>${note ? `<p>${escapeHtml(note)}</p>` : ""}</div>`;
+      }
+
+      function sourceNote(text) {
+        return `<div class="preview-source-note"><span>Source</span><p>${escapeHtml(text)}</p><a href="https://bots-n-bones.com/works/helloiam-am?from=works" target="_blank" rel="noreferrer">Open Bots &amp; Bones case ↗</a></div>`;
+      }
+
+      function pageIntro(label, title, description, action = "") {
+        return `<section class="preview-intro"><div><span>${escapeHtml(label)}</span><h2>${escapeHtml(title)}</h2><p>${escapeHtml(description)}</p></div>${action}</section>`;
+      }
+
+      function renderDashboard() {
+        return `${pageIntro("Project dashboard", "HelloIAM at a glance", "A combined operational picture of this project: research, production, media, publishing, partnerships and system changes.", '<a class="preview-primary" href="#/creative-tools/post-generator">Create post</a>')}<div id="dashboard-live" class="preview-live-region"><div class="preview-empty">Loading project state…</div></div>`;
+      }
+
+      function renderBrand(sub) {
+        if (sub === "overview") return `
+          ${pageIntro("Brand / Brand info", "Armenia introduces itself", "Hello I Am . AM is a travel and cultural brand that presents Armenia through contemporary visual storytelling.")}
+          <div class="preview-brand-statement"><span>Positioning</span><h3>A human, contemporary Armenia — told through objects, rituals, places and everyday details instead of tourism clichés.</h3></div>
+          <div class="preview-facts-grid">
+            ${factRow("Name idea", "I am / AM", "A personal introduction paired with Armenia’s country code.")}
+            ${factRow("Core system", "Armenia through objects", "One visual language connects culture, content and the website.")}
+            ${factRow("Editorial lenses", "Food · Road · Place · Ritual", "Lenses for discovering the country, not service categories.")}
+            ${factRow("Tone", "Human · contemporary · specific", "Warm and curious; free from conventional travel advertising.")}
+          </div>
+          <section class="preview-section-head"><div><span>Working audiences · prototype assumption</span><h2>Who the system speaks to</h2></div></section>
+          <div class="preview-grid preview-grid-three">
+            ${featureCard("Culture-led travellers", "People choosing a destination through food, design, stories and local detail.", "Primary audience")}
+            ${featureCard("Armenian diaspora", "People reconnecting with a contemporary expression of Armenian culture.", "Community")}
+            ${featureCard("Local makers & hosts", "Chefs, guides, artists and places that can become part of the object-led story.", "Contributors")}
+          </div>${sourceNote("Positioning and naming are taken from the published Hello I Am . AM case. Audience groups are working assumptions for this prototype.")}`;
+        if (sub === "presets") return `${pageIntro("Brand / Brand presets", "Inputs for every generator", "Presets package positioning, voice, design tokens and generation constraints before content is created.")}<div class="preview-shared-pipeline-note"><span>Input, not output</span><p>Generators select a preset; they do not invent the brand rules themselves.</p></div><div id="brand-presets-live" class="preview-live-region"><div class="preview-empty">Loading brand presets…</div></div>`;
+        if (sub === "guidelines") return `
+          ${pageIntro("Brand / Visual guidelines", "One object. One frame. One line.", "A deliberately plain system gives every Armenian object room to keep its own character.")}
+          <section class="preview-section-head"><div><span>Identity</span><h2>Color system</h2></div></section>
+          <div class="preview-palette">
+            ${[["Cream","#FFF3D8","Brand canvas · posts"],["Cream soft","#FFF9EA","Light surfaces"],["Ink","#17110B","Wordmark · text"],["Red","#FF3B12","Accent · links"],["Yellow","#FFC83D","Emoji highlight"],["Blue","#245DFF","Emoji accents"],["Green","#3C7B36","Emoji accents"],["Dark","#17120D","Video plates"]].map(([name,hex,use]) => `<article style="--swatch:${hex}"><i></i><span>${escapeHtml(name)}</span><strong>${escapeHtml(hex)}</strong><p>${escapeHtml(use)}</p></article>`).join("")}
+          </div>
+          <section class="preview-section-head"><div><span>Identity</span><h2>Typography</h2></div></section>
+          <div class="preview-type-specimen"><article><span>Logo · Instrument Sans 760 · lowercase</span><h3 class="preview-logo-type">hello i am . am</h3></article><article><span>Display · Space Grotesk 560</span><h3>A new way to experience Armenia</h3></article><article><span>Body · IBM Plex Sans 400</span><p>Food, roads, places, objects and small cultural moments become a visual language.</p></article><article><span>Mono · IBM Plex Mono 500</span><code>FOOD · ROAD · PLACE · RITUAL</code></article></div>
+          <section class="preview-section-head"><div><span>Composition rules</span><h2>Stable frame, expressive object</h2></div></section>
+          <div class="preview-grid preview-grid-three">${featureCard("Unit", "One dish, place, ritual or detail per frame.", "01")}${featureCard("Placement", "Object centred on warm cream with generous air around it.", "02")}${featureCard("Caption", "The construction stays “Hello, I am …”; only the object name changes.", "03")}</div>
+          ${sourceNote("Palette, type hierarchy, composition and editorial lenses are taken from the published case.")}`;
+        return `
+          ${pageIntro("Brand / Brand assets", "Brand assets", "Reusable identity building blocks that every project and generator can reference.")}
+          <div class="preview-grid preview-grid-three">
+            ${featureCard("Logo system", "The AM mark works as both an introduction and Armenia’s country code; it is never re-lettered.", "Core asset")}
+            ${featureCard("50 emoji objects", "Food, roads, places and rituals: from khorovats and duduk to Ararat, tuf and Armenian cars.", "Object library")}
+            ${featureCard("Editorial references", "Object posts, atmospheric videos and comic-style news cards.", "Approved outputs")}
+          </div>
+          <section class="preview-section-head"><div><span>Production formats</span><h2>One object, every channel</h2></div></section>
+          <div class="preview-format-strip">${[["1:1","Object post","Feed · 1080×1080"],["4:5","Carousel","Route · multi-slide"],["9:16","Reels · Stories","Vertical object video"],["16:9","Site · covers","Hero and editorial covers"]].map(([ratio,name,use]) => `<article><strong>${ratio}</strong><span>${escapeHtml(name)}</span><p>${escapeHtml(use)}</p></article>`).join("")}</div>
+          <section class="preview-section-head"><div><span>Live Current storage</span><h2>Available brand media</h2></div><a href="#/content/assets">Open Media library</a></section><div id="brand-assets-live" class="preview-live-region"><div class="preview-empty">Loading brand media…</div></div>
+          ${sourceNote("The object library size, content formats and usage rules are documented in the published case.")}`;
+      }
+
+      function researchCard(type, title, description, metric) {
+        return `<article class="preview-signal-card"><div><span>${escapeHtml(type)}</span><span>${escapeHtml(metric)}</span></div><h3>${escapeHtml(title)}</h3><p>${escapeHtml(description)}</p><footer><button type="button" class="preview-text-action" data-favorite>☆ Save</button><button type="button" class="preview-primary preview-small" data-use-source="${escapeHtml(title)}">Use in post</button></footer></article>`;
+      }
+
+      function researchToolbar(source) {
+        const youtube = source === "videos" || source === "trends";
+        return `<div class="preview-research-toolbar"><button type="button" class="preview-primary" data-collect-research="${youtube ? "youtube" : "news"}">${youtube ? "Parse YouTube now" : "Parse news now"}</button><span data-collect-status>Uses the same Current collector</span><label>Collection date<select id="research-date-select" disabled><option>Loading…</option></select></label></div>`;
+      }
+
+      function renderResearch(sub) {
+        if (sub === "trends") return `
+          ${pageIntro("Research / Trends", "What is moving now", "One trend workspace across connected channels, with period, source and hashtag controls.")}
+          <form class="preview-trend-controls" id="trend-controls">
+            <label><span>Period</span><select name="period"><option value="day" ${trendFilters.period === "day" ? "selected" : ""}>Today</option><option value="week" ${trendFilters.period === "week" ? "selected" : ""}>Week</option><option value="month" ${trendFilters.period === "month" ? "selected" : ""}>Month</option></select></label>
+            <label><span>Source</span><select name="source"><option value="all" ${trendFilters.source === "all" ? "selected" : ""}>All connected</option><option value="youtube" ${trendFilters.source === "youtube" ? "selected" : ""}>YouTube</option><option value="news" ${trendFilters.source === "news" ? "selected" : ""}>News</option><option value="tiktok" ${trendFilters.source === "tiktok" ? "selected" : ""}>TikTok · not connected</option></select></label>
+            <label class="is-wide"><span>Hashtag</span><input name="hashtag" value="${escapeHtml(trendFilters.hashtag)}" placeholder="#armenia or leave empty" /></label>
+            <button class="preview-primary" type="submit">Apply</button>
+          </form>
+          <div class="preview-research-toolbar"><button type="button" class="preview-primary" data-collect-research="youtube">Parse YouTube now</button><button type="button" class="preview-secondary" data-collect-research="news">Parse news now</button><span data-collect-status>Updates the same Current archives</span></div>
+          <div id="research-live" class="preview-live-region"><div class="preview-empty">Loading cross-channel trends…</div></div>`;
+        if (sub === "favorites") return `${pageIntro("Research / Favorites", "Saved sources from Current", "News and YouTube bookmarks use the same favorites store as Current.")}<div id="research-live" class="preview-live-region"><div class="preview-empty">Loading Favorites…</div></div>`;
+        if (sub === "search") return `${pageIntro("Research / Search", "Keyword search", "A separate workspace for finding exact subjects and phrases across News and YouTube archives.")}<form class="preview-search" id="research-search"><label for="search-query">Words or phrase</label><div><input id="search-query" placeholder="e.g. Armenian architecture" /><button class="preview-primary" type="submit">Search</button></div></form><div id="research-live" class="preview-live-region"><div class="preview-empty">Enter words to search the Current archive. Hashtag exploration belongs in Trends.</div></div>`;
+        return `${pageIntro("Research / Archive", "Browse collection history", "Every saved News, YouTube and Trends snapshot, grouped by its actual collection date.")}<div id="research-live" class="preview-live-region"><div class="preview-empty">Loading Archive…</div></div>`;
+      }
+
+      function renderPostWorkflow() {
+        return `
+          ${pageIntro("Creative tools / Post generator", "The Current Create pipeline", "This is the same production module used by Current: the same templates, format-specific steps, validation, generation, export and gallery.", '<a class="preview-secondary" href="/picker.html#/content/create" data-current-link>Open full screen ↗</a>')}
+          <div class="preview-shared-pipeline-note"><span>Shared production module</span><p>Changes made here are real and appear in Current Posts. New IA no longer keeps a separate mock pipeline.</p></div>
+          <iframe class="preview-current-create-frame" src="/picker.html?embed=content#/content/create" title="Current Create pipeline"></iframe>`;
+      }
+
+      function renderMascot() {
+        return `
+          ${pageIntro("Creative tools / Item generator", "Project item: mascot", "The universal Item Generator slot uses a mascot workflow for this project: theme, pose and nine project-specific attributes.")}
+          <div class="preview-shared-pipeline-note"><span>Project implementation</span><p>${escapeHtml(projectConfig.itemGenerator?.implementationLabel || "Mascot generator")}</p></div>
+          <div class="preview-mascot-layout">
+            <section class="preview-mascot-pose"><span>01 · Pose</span><div class="preview-mascot-figure" aria-label="Selected mascot pose"><i></i><b></b><em></em></div><div class="preview-pose-list">${["01","02","03","04","05","06","07","08"].map((pose) => `<button type="button" class="${pose === selectedPose ? "is-selected" : ""}" data-pose="${pose}">${pose}</button>`).join("")}</div></section>
+            <section class="preview-mascot-builder"><span>02 · Theme and attributes</span><label for="mascot-theme">Theme</label><div class="preview-inline-field"><input id="mascot-theme" value="${mascotBuilt ? "A calm field research bot" : ""}" placeholder="e.g. A field research bot" /><button class="preview-primary" id="build-attributes" type="button">Build attributes</button></div><div class="preview-attribute-grid">${mascotAttributes.map((name, index) => `<label><span>${String(index + 1).padStart(2,"0")} · ${escapeHtml(name)}</span><input ${mascotBuilt ? "" : "disabled"} value="${mascotBuilt ? escapeHtml(`${name} detail for a calm research character`) : ""}" placeholder="Build from the theme" /></label>`).join("")}</div><div class="preview-generate-row"><span id="mascot-status">${mascotGenerated ? "Prototype result ready · not saved" : mascotBuilt ? "9 attributes ready for review" : "Build attributes to continue"}</span><button type="button" class="preview-primary" id="generate-mascot" ${mascotBuilt ? "" : "disabled"}>Generate mascot</button></div>${mascotGenerated ? '<div class="preview-prototype-result"><div class="preview-mascot-figure"><i></i><b></b><em></em></div><div><span>Gallery preview</span><h3>Calm field research bot</h3><p>Front pose · 9 attributes · local prototype state</p></div></div>' : ""}</section>
+          </div>`;
+      }
+
+      function renderEmojiItemGenerator() {
+        const config = projectConfig.itemGenerator || {};
+        return `${pageIntro("Creative tools / Item generator", "Project item: emoji object", "The universal Item Generator slot is implemented for HelloIAM as a branded Armenian emoji-object generator. Other projects can replace this workflow without changing the architecture.")}
+          <div class="preview-shared-pipeline-note"><span>Project implementation</span><p>${escapeHtml(config.implementationLabel || "HelloIAM emoji objects")} · generated results are saved to the real Current emoji catalog.</p></div>
+          <form class="preview-item-generator-form" id="item-generator-form">
+            <label for="item-generator-subject"><span>Object subject</span><strong>What should HelloIAM turn into an emoji?</strong></label>
+            <div><input id="item-generator-subject" name="name" required maxlength="100" placeholder="${escapeHtml(config.subjectPlaceholder || "e.g. pomegranate")}" /><button type="submit" class="preview-primary">Generate item</button></div>
+            <p data-item-generator-status>Uses the existing HelloIAM image-generation pipeline and style reference.</p>
+          </form>
+          <section class="preview-section-head"><div><span>Current catalog</span><h2>Reusable HelloIAM items</h2></div></section>
+          <div id="item-generator-live" class="preview-live-region"><div class="preview-empty">Loading item catalog…</div></div>`;
+      }
+
+      function renderItemGenerator() {
+        return projectConfig.itemGenerator?.kind === "mascot" ? renderMascot() : renderEmojiItemGenerator();
+      }
+
+      function renderContent(sub) {
+        const data = {
+          posts: ["Posts", "Individual publication units from the same storage used by Current.", []],
+          calendar: ["Calendar", "A shared publishing schedule with channel, owner, approval and release status.", [["This week", "4 planned publications"],["Awaiting approval", "2 content drafts"],["Published", "12 items this month"]]],
+          assets: ["Media library", "Working images and generated files from the same storage used by Current.", []],
+        }[sub];
+        if (sub === "posts") {
+          return `${pageIntro("Content / Posts", "The Current Posts workspace", "This is the same working Posts module used by Current: the same table, statuses, preview, downloads and post actions.", '<a href="/picker.html#/content/posts" class="preview-secondary" data-current-link>Open full screen ↗</a>')}
+            <div class="preview-shared-pipeline-note"><span>Shared production module</span><p>Posts and actions shown here are real. New IA no longer maintains a separate read-only card list.</p></div>
+            <iframe class="preview-current-posts-frame" src="/picker.html?embed=content#/content/posts" title="Current Posts workspace"></iframe>`;
+        }
+        if (sub === "assets") {
+          return `${pageIntro(`Content / ${data[0]}`, data[0], "Search and filter every available media file by origin and usage.")}
+            <form class="preview-media-filters" id="media-filters"><label class="is-wide"><span>Search</span><input name="query" value="${escapeHtml(mediaFilters.query)}" placeholder="Filename or path" /></label><label><span>Source</span><select name="source"><option value="all">All sources</option><option value="builtin" ${mediaFilters.source === "builtin" ? "selected" : ""}>Built-in</option><option value="uploaded" ${mediaFilters.source === "uploaded" ? "selected" : ""}>Uploaded / generated</option><option value="post" ${mediaFilters.source === "post" ? "selected" : ""}>From posts</option></select></label><label><span>Usage</span><select name="usage"><option value="all">All usage</option><option value="used" ${mediaFilters.usage === "used" ? "selected" : ""}>Used in posts</option><option value="unused" ${mediaFilters.usage === "unused" ? "selected" : ""}>Unused</option></select></label><button class="preview-primary" type="submit">Apply filters</button><button class="preview-secondary" type="button" data-reset-media>Reset</button></form>
+            <div id="content-live" class="preview-live-region"><div class="preview-empty">Loading ${escapeHtml(data[0])}…</div></div>`;
+        }
+        return `${pageIntro("Content / Calendar", "Publishing calendar", "Plan releases by week, assign an owner and channel, connect a Current post and move each publication through production statuses.")}
+          <div id="calendar-live" class="preview-live-region"><div class="preview-empty">Loading Calendar…</div></div>`;
+      }
+
+      function renderCases(sub) {
+        const labels = {
+          all: ["All cases", "Campaigns and larger initiatives that combine posts, site pages, assets and analytics."],
+          published: ["Published cases", "Live initiatives with destination, publication date and performance link."],
+          drafts: ["Draft cases", "Multi-output work that is still being developed or reviewed."],
+          archive: ["Cases archive", "Completed and retired initiatives preserved as case history."],
+        };
+        if (sub === "published" || sub === "archive") {
+          const [title, description] = labels[sub];
+          return `${pageIntro(`${projectConfig.labels.cases} / ${sub}`, title, description)}<div class="preview-empty"><strong>No ${escapeHtml(sub)} cases yet</strong><span>test-pack is an active draft and remains visible in All and Drafts.</span></div>`;
+        }
+        if (sub === "all" || sub === "drafts") {
+          const [title, description] = labels[sub];
+          return `${pageIntro(`${projectConfig.labels.cases} / ${sub}`, title, description, '<a href="#/creative-tools/post-generator" class="preview-primary">Create new</a>')}<a class="preview-project-list-card" href="#/cases/test-pack"><div><span>Active draft · TP-001</span><h3>test-pack</h3><p>Armenia through everyday objects · 12 of 18 deliverables ready</p></div><strong>68% →</strong></a>`;
+        }
+        return `${pageIntro(`${projectConfig.labels.cases} / ${sub}`, "test-pack", "A connected case that groups a brief, research, posts, assets, collaborators, calendar entries, site outputs and measurement.", '<a href="#/creative-tools/post-generator" class="preview-primary">Add output</a>')}
+          <div class="preview-project-hero"><div><span>Active draft · TP-001</span><h3>Armenia through everyday objects</h3><p>Test the universal project container by turning one cultural theme into a coordinated multi-channel release.</p></div><div class="preview-project-progress"><strong>68%</strong><span>12 of 18 deliverables ready</span><i><b></b></i></div></div>
+          <div class="preview-project-map">
+            ${[["Brief","Object-led August release","Ready"],["Research","News · video · hashtag signals","Linked"],["Content","Posts · reel · carousel · story","In production"],["Media","Emoji · stills · video sources","Linked"],["Collabs","Chef · guide · photographer","2 active"],["Calendar","10–16 August","7 slots"],["Site","Guide · story · request form","Draft"],["Analytics","Reach · saves · completion","Planned"]].map(([name,detail,status]) => `<article><span>${escapeHtml(status)}</span><strong>${escapeHtml(name)}</strong><p>${escapeHtml(detail)}</p></article>`).join("")}
+          </div>
+          <section class="preview-section-head"><div><span>Live relationships</span><h2>Existing Posts and Media</h2></div></section>
+          <div id="project-live" class="preview-live-region"><div class="preview-empty">Loading linked workspace data…</div></div>
+          <div class="preview-note">Prototype assumption · test-pack metadata and relationships are invented. The shown posts and assets are read from the real Current workspace and are not modified.</div>`;
+      }
+
+      function renderOpportunities(sub) {
+        const labels = {
+          candidates: ["Candidates", "Potential collaborations, partners and editorial opportunities."],
+          partners: ["Partners", "Approved organisations and people with active project context."],
+          active: ["Active opportunities", "Confirmed work with owner, next step and deadline."],
+          archive: ["Opportunity archive", "Completed, declined and paused opportunities."],
+        };
+        const [title, description] = labels[sub];
+        return `${pageIntro(`${projectConfig.labels.opportunities} / ${sub}`, title, description)}<div id="opportunities-live" class="preview-live-region"><div class="preview-empty">Loading Collabs…</div></div>`;
+      }
+
+      const collabStatusLabels = {
+        candidate: "Candidate",
+        partner: "Partner",
+        active: "Active",
+        completed: "Completed",
+        paused: "Paused",
+        declined: "Declined",
+      };
+      const collabTabStatuses = {
+        candidates: ["candidate"],
+        partners: ["partner"],
+        active: ["active"],
+        archive: ["completed", "paused", "declined"],
+      };
+      let collabCache = {items: []};
+      let collabEditingId = "";
+      let collabQuery = "";
+      let collabEditorOpen = false;
+
+      function collabDefaultStatus(sub) {
+        return collabTabStatuses[sub]?.[0] || "candidate";
+      }
+
+      function renderCollabWorkspace(sub) {
+        const items = collabCache.items || [];
+        const current = collabEditingId ? items.find((item) => item.id === collabEditingId) : null;
+        const allowed = new Set(collabTabStatuses[sub] || []);
+        const query = collabQuery.trim().toLowerCase();
+        const visible = items.filter((item) => allowed.has(item.status) && (!query || [item.title, item.organization, item.owner, item.category, item.summary].some((value) => String(value || "").toLowerCase().includes(query))));
+        const candidates = items.filter((item) => item.status === "candidate").length;
+        const partners = items.filter((item) => item.status === "partner").length;
+        const active = items.filter((item) => item.status === "active").length;
+        const archive = items.filter((item) => ["completed", "paused", "declined"].includes(item.status)).length;
+        const status = current?.status || collabDefaultStatus(sub);
+        const value = (field) => escapeHtml(current?.[field] || "");
+        return `<div class="preview-live-summary preview-live-summary-four">${[["Candidates", candidates], ["Partners", partners], ["Active", active], ["Archive", archive]].map(([label, count]) => `<div><span>${label}</span><strong>${count}</strong></div>`).join("")}</div>
+          <div class="preview-collab-toolbar"><label><span>Search this tab</span><input type="search" value="${escapeHtml(collabQuery)}" placeholder="Idea, partner, owner…" data-collab-search /></label><div><span>${visible.length} of ${items.filter((item) => allowed.has(item.status)).length} records</span><button type="button" class="preview-primary preview-small" data-collab-new>Add collab</button></div></div>
+          ${collabEditorOpen || current ? `
+          <section class="preview-collab-editor">
+            <div class="preview-collab-editor-head"><div><span>${current ? "Edit record" : "New opportunity"}</span><h3>${current ? escapeHtml(current.title) : "Add collaboration"}</h3></div><p>Records are saved in the project workspace and move between tabs when their stage changes.</p></div>
+            <form id="collab-form" class="preview-collab-form" data-collab-id="${escapeHtml(current?.id || "")}">
+              <label class="is-wide"><span>Idea / title</span><input name="title" required maxlength="180" value="${value("title")}" placeholder="Collaboration idea" /></label>
+              <label><span>Organisation</span><input name="organization" maxlength="120" value="${value("organization")}" placeholder="Partner or creator" /></label>
+              <label><span>Owner</span><input name="owner" maxlength="80" value="${value("owner")}" placeholder="Ovanes, Andrey, Stas…" /></label>
+              <label><span>Stage</span><select name="status">${Object.entries(collabStatusLabels).map(([id, label]) => `<option value="${id}" ${status === id ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}</select></label>
+              <label><span>Fit score</span><input name="fitScore" type="number" min="0" max="100" value="${current?.fitScore ?? 0}" /></label>
+              <label><span>Due date</span><input name="dueDate" type="date" value="${value("dueDate")}" /></label>
+              <label><span>Category</span><input name="category" maxlength="80" value="${value("category")}" placeholder="Food · Creator" /></label>
+              <label class="is-wide"><span>Contact</span><input name="contact" maxlength="160" value="${value("contact")}" placeholder="Name, email or contact state" /></label>
+              <label class="is-wide"><span>Summary</span><input name="summary" maxlength="500" value="${value("summary")}" placeholder="What are we making together?" /></label>
+              <label class="is-wide"><span>Next step</span><input name="nextStep" maxlength="300" value="${value("nextStep")}" placeholder="Concrete next action" /></label>
+              <label class="is-wide"><span>Deliverables</span><input name="deliverables" maxlength="300" value="${value("deliverables")}" placeholder="Reel · carousel · site story" /></label>
+              <label class="is-wide"><span>Notes / materials</span><input name="notes" maxlength="700" value="${value("notes")}" placeholder="Materials, rights and approval notes" /></label>
+              <div class="preview-collab-submit"><span data-collab-form-status>${current ? "Editing saved record" : "Ready to save"}</span><button type="button" class="preview-secondary" data-collab-cancel>Cancel</button><button type="submit" class="preview-primary">${current ? "Save changes" : "Add collab"}</button></div>
+            </form>
+          </section>` : ""}
+          ${visible.length ? `<div class="preview-collab-grid">${visible.map((item) => `<article class="preview-collab-card" data-status="${escapeHtml(item.status)}"><header><span>${escapeHtml(item.category)}</span><strong>${item.fitScore ? `${item.fitScore}% fit` : "Not scored"}</strong></header><h3>${escapeHtml(item.title)}</h3><a href="${item.contact && item.contact.includes("@") ? `mailto:${escapeHtml(item.contact.split("·").pop().trim())}` : "#"}" ${item.contact && item.contact.includes("@") ? "" : 'data-collab-noop="true"'}>${escapeHtml(item.organization || "Independent collaborator")}</a><p>${escapeHtml(item.summary || "No summary yet.")}</p><dl><div><dt>Owner</dt><dd>${escapeHtml(item.owner)}</dd></div><div><dt>Deadline</dt><dd>${escapeHtml(item.dueDate ? formatLiveDate(item.dueDate, true) : "Open")}</dd></div><div><dt>Next step</dt><dd>${escapeHtml(item.nextStep || "Define next action")}</dd></div><div><dt>Deliverables</dt><dd>${escapeHtml(item.deliverables || "Not specified")}</dd></div></dl>${item.notes ? `<div class="preview-collab-notes"><span>Materials / notes</span><p>${escapeHtml(item.notes)}</p></div>` : ""}<footer><select data-collab-status="${escapeHtml(item.id)}" aria-label="Stage for ${escapeHtml(item.title)}">${Object.entries(collabStatusLabels).map(([id, label]) => `<option value="${id}" ${item.status === id ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}</select><div><button type="button" class="preview-text-action" data-collab-edit="${escapeHtml(item.id)}">Edit</button><button type="button" class="preview-text-action is-danger" data-collab-delete="${escapeHtml(item.id)}">Delete</button></div></footer></article>`).join("")}</div>` : '<div class="preview-empty"><strong>No matching Collabs</strong><span>Change the search or add a new record for this stage.</span></div>'}
+          <div class="preview-note">Working Collabs · the original eight Current ideas were used as the starting point. Partner details, scores and planning fields are working seed data and can now be edited.</div>`;
+      }
+
+      function bindCollabActions(root, route) {
+        root.querySelectorAll("[data-collab-noop]").forEach((link) => link.addEventListener("click", (event) => event.preventDefault()));
+        root.querySelector("[data-collab-new]")?.addEventListener("click", () => {
+          collabEditingId = "";
+          collabEditorOpen = true;
+          root.innerHTML = renderCollabWorkspace(route.sub);
+          bindCollabActions(root, route);
+          root.querySelector("#collab-form input")?.focus();
+        });
+        root.querySelector("[data-collab-search]")?.addEventListener("input", (event) => {
+          collabQuery = event.currentTarget.value;
+          root.innerHTML = renderCollabWorkspace(route.sub);
+          bindCollabActions(root, route);
+          const search = root.querySelector("[data-collab-search]");
+          search?.focus();
+          search?.setSelectionRange(collabQuery.length, collabQuery.length);
+        });
+        root.querySelector("[data-collab-cancel]")?.addEventListener("click", () => {
+          collabEditingId = "";
+          collabEditorOpen = false;
+          root.innerHTML = renderCollabWorkspace(route.sub);
+          bindCollabActions(root, route);
+        });
+        root.querySelectorAll("[data-collab-edit]").forEach((button) => button.addEventListener("click", () => {
+          collabEditingId = button.dataset.collabEdit;
+          collabEditorOpen = true;
+          root.innerHTML = renderCollabWorkspace(route.sub);
+          bindCollabActions(root, route);
+          root.querySelector("#collab-form")?.scrollIntoView({behavior: "smooth", block: "start"});
+        }));
+        root.querySelector("#collab-form")?.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const id = form.dataset.collabId;
+          const submit = form.querySelector('button[type="submit"]');
+          const status = form.querySelector("[data-collab-form-status]");
+          submit.disabled = true;
+          status.textContent = "Saving…";
+          try {
+            const body = Object.fromEntries(new FormData(form).entries());
+            const response = await fetch(id ? `/api/collabs/${encodeURIComponent(id)}` : "/api/collabs", {method: id ? "PUT" : "POST", headers: {"Content-Type": "application/json", Accept: "application/json"}, body: JSON.stringify(body)});
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || "Could not save Collab");
+            collabEditingId = "";
+            collabEditorOpen = false;
+            const saved = data.item;
+            const destination = saved.status === "candidate" ? "candidates" : saved.status === "partner" ? "partners" : saved.status === "active" ? "active" : "archive";
+            if (destination !== route.sub) window.location.hash = `#/opportunities/${destination}`;
+            else await loadLiveData(route);
+          } catch (error) {
+            submit.disabled = false;
+            status.textContent = error.message;
+          }
+        });
+        root.querySelectorAll("[data-collab-status]").forEach((select) => select.addEventListener("change", async () => {
+          select.disabled = true;
+          try {
+            const response = await fetch(`/api/collabs/${encodeURIComponent(select.dataset.collabStatus)}`, {method: "PUT", headers: {"Content-Type": "application/json", Accept: "application/json"}, body: JSON.stringify({status: select.value})});
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || "Could not update stage");
+            await loadLiveData(route);
+          } catch (error) {
+            select.disabled = false;
+            window.alert(error.message);
+          }
+        }));
+        root.querySelectorAll("[data-collab-delete]").forEach((button) => button.addEventListener("click", async () => {
+          const item = collabCache.items.find((entry) => entry.id === button.dataset.collabDelete);
+          if (!window.confirm(`Delete “${item?.title || "this Collab"}”?`)) return;
+          button.disabled = true;
+          try {
+            const response = await fetch(`/api/collabs/${encodeURIComponent(button.dataset.collabDelete)}`, {method: "DELETE", headers: {Accept: "application/json"}});
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || "Could not delete Collab");
+            await loadLiveData(route);
+          } catch (error) {
+            button.disabled = false;
+            window.alert(error.message);
+          }
+        }));
+      }
+
+      function renderCreativeTools(sub) {
+        if (sub === "post-generator") return renderPostWorkflow();
+        if (sub === "item-generator") return renderItemGenerator();
+        if (sub === "product-card") return `${pageIntro("Creative tools / Product cards","Product Card 01","Configure positioning and offer fields, preview the actual HTML layout and export a standalone file.")}
+          <div class="preview-product-workspace"><form class="preview-product-form" id="product-card-form"><label><span>Brand preset</span><select name="brandPreset"><option value="core">HelloIAM Core</option><option value="news">HelloIAM News</option><option value="tours">HelloIAM Tours</option></select></label><label><span>Animation</span><select name="motion"><option value="none">None</option><option value="fade">CSS fade</option><option value="rise">CSS rise</option></select></label><label class="is-wide"><span>Product</span><input name="product" required value="Weekend Reset" /></label><label class="is-wide"><span>Positioning</span><textarea name="positioning" required>Four days of Armenia built around long tables, mountain light and zero logistics.</textarea></label><label><span>Audience</span><input name="audience" value="Culture-led travellers" /></label><label><span>Main benefit</span><input name="benefit" value="A complete hosted introduction" /></label><label><span>Proof</span><input name="proof" value="4 days · 3 nights · groups of 4–8" /></label><label><span>Price</span><input name="price" value="From £790 pp" /></label><label class="is-wide"><span>CTA</span><input name="cta" value="Meet your first AM" /></label><div class="preview-product-actions"><button class="preview-primary" type="button" data-export-product-html>Export HTML</button><span data-product-status>Direct HTML/CSS layout · no Figma step</span></div></form><div class="preview-product-stage"><article class="preview-product-card" id="product-card-preview" data-preset="core" data-motion="none"><header><span data-product-brand>HELLO I AM . AM</span><small data-product-audience>Culture-led travellers</small></header><div><span>Hosted Armenia tour</span><h3 data-product-name>Weekend Reset</h3><p data-product-positioning>Four days of Armenia built around long tables, mountain light and zero logistics.</p></div><footer><div><strong data-product-price>From £790 pp</strong><small data-product-proof>4 days · 3 nights · groups of 4–8</small></div><b data-product-cta>Meet your first AM →</b></footer></article></div></div><div class="preview-note">Workflow confirmed with Tengiz · layout directly in HTML/CSS/JS, preview, then render. CSS is one animation option; Remotion remains available for timeline output.</div>`;
+        if (sub === "template-studio") return `${pageIntro("Creative tools / Template studio","Internal HTML template registry","Settings extracted from Current templates plus the direct HTML/CSS/JS authoring contract confirmed with Tengiz.")}<div id="template-studio-live" class="preview-live-region"><div class="preview-empty">Auditing local templates…</div></div>`;
+        if (sub === "image-generator") return `${pageIntro("Creative tools / Image generator","Image brief workspace","Prepare a brand-safe still-image brief, then hand it to the real Current generation pipeline.")}
+          <form class="preview-creative-workspace" data-creative-brief="image"><label><span>Subject</span><input name="subject" required placeholder="e.g. Apricot on a cream field"/></label><label><span>Usage</span><select name="usage"><option>Instagram carousel</option><option>Site editorial</option><option>Story / Reel cover</option></select></label><label><span>Format</span><select name="format"><option>4:5 portrait</option><option>1:1 square</option><option>9:16 vertical</option><option>16:9 landscape</option></select></label><label><span>Brand treatment</span><select name="style"><option>Object on cream</option><option>Editorial photography</option><option>Comic news frame</option></select></label><label class="is-wide"><span>Direction</span><input name="direction" placeholder="Composition, atmosphere and required details"/></label><button class="preview-primary" type="submit">Build image brief</button></form><div id="creative-brief-output" class="preview-creative-output"><span>Output</span><strong>Complete the fields to assemble a production brief.</strong></div>`;
+        if (sub === "video-generator") return `${pageIntro("Creative tools / Video generator","Video scene workspace","Define one short-form scene with motion, timing and channel before continuing in the post pipeline.")}
+          <form class="preview-creative-workspace" data-creative-brief="video"><label><span>Hero object</span><input name="subject" required placeholder="e.g. Duduk in a quiet room"/></label><label><span>Channel</span><select name="usage"><option>Instagram Reels</option><option>TikTok</option><option>Stories</option><option>Site hero</option></select></label><label><span>Duration</span><select name="format"><option>5 seconds</option><option>8 seconds</option><option>12 seconds</option></select></label><label><span>Camera</span><select name="style"><option>Slow push-in</option><option>Locked composition</option><option>Handheld detail</option><option>Orbit object</option></select></label><label class="is-wide"><span>Motion direction</span><input name="direction" placeholder="Object motion, atmosphere and ending frame"/></label><button class="preview-primary" type="submit">Build video brief</button></form><div id="creative-brief-output" class="preview-creative-output"><span>Output</span><strong>Complete the fields to assemble a scene brief.</strong></div>`;
+        return `${pageIntro("Creative tools / Share cards","Share-card preview","Compose the social preview attached to a Site page or editorial story.")}
+          <div class="preview-share-layout"><form class="preview-creative-workspace preview-share-form" id="share-card-form"><label><span>Source</span><select name="source"><option>HelloIAM home</option><option>Route page</option><option>Editorial story</option><option>Place page</option></select></label><label><span>Accent</span><select name="accent"><option value="cream">Cream</option><option value="red">Red</option><option value="yellow">Yellow</option></select></label><label class="is-wide"><span>Title</span><input name="title" value="Armenia through everyday objects" maxlength="80"/></label><label class="is-wide"><span>Description</span><input name="description" value="Food, roads, places and rituals — one human story at a time." maxlength="140"/></label></form><div class="preview-share-card" id="share-card-preview" data-accent="cream"><span>HELLO I AM . AM</span><strong>Armenia through everyday objects</strong><p>Food, roads, places and rituals — one human story at a time.</p><small>helloiam.am</small></div></div>`;
+      }
+
+      function renderKnowledge(sub) {
+        if (sub === "docs") return `${pageIntro("Knowledge / Docs","Product documentation","The working index for architecture, content rules and connected services.")}<div class="preview-knowledge-list">${[["Architecture","Universal top-level modules, project configuration and Current/New IA compatibility.","architecture-project-config.js"],["Content formats","Promo 01 · 9 slides; Promo 02 · 10 slides; News 01 · editorial carousel; Item · project object.","data/story-templates"],["Data ownership","Posts, media and prompts remain in Current; Calendar and Collabs use independent JSON stores.","data/"],["Integrations","Research collectors, LLM, FAL and filesystem storage responsibilities.","Systems / Integrations"]].map(([title,body,source])=>`<article><span>${escapeHtml(source)}</span><strong>${escapeHtml(title)}</strong><p>${escapeHtml(body)}</p></article>`).join("")}</div>`;
+        if (sub === "runbooks") return `${pageIntro("Knowledge / Runbooks","Repeatable operating procedures","Concrete checks for the workflows the team performs repeatedly.")}<div class="preview-runbooks">${[["Daily research collection",["Check Automation shows the latest 12:00 run","Open Research / Archive and confirm News + YouTube counts","Use manual Parse only when the scheduled snapshot is missing"]],["Content production",["Create or open a post in Post Generator","Complete settings, texts and media steps","Review every slide before export","Schedule the approved output in Calendar"]],["Release",["Run TypeScript check","Verify Current and New IA routes","Record user-facing and technical changes in Changelog","Deploy with the project hosting script"]]].map(([name,steps])=>`<section><h3>${escapeHtml(name)}</h3><ol>${steps.map((step)=>`<li>${escapeHtml(step)}</li>`).join("")}</ol></section>`).join("")}</div>`;
+        if (sub === "references") return `${pageIntro("Knowledge / References","Approved project sources","Where brand, editorial and technical decisions come from.")}<div class="preview-system-table"><article><strong>Published brand case</strong><span>Positioning and visual system</span><span>bots-n-bones.com/works/helloiam-am</span><a href="https://bots-n-bones.com/works/helloiam-am?from=works" target="_blank" rel="noreferrer">Open ↗</a></article><article><strong>Current post data</strong><span>Production source</span><span>data/posts/*.json</span><a href="#/content/posts">Open</a></article><article><strong>Prompt library</strong><span>Generation rules</span><span>Real editable Current prompts</span><a href="#/systems/ai">Open</a></article><article><strong>Brand media</strong><span>Objects and cards</span><span>ALL EMOJIS · ALL CARDS · public/generated</span><a href="#/brand/assets">Open</a></article></div>`;
+        if (sub === "pipelines") return `${pageIntro("Knowledge / Pipeline map","Inputs → generation → output","The production contract for every current HelloIAM format.")}<div class="preview-format-comparison"><header><span>Format</span><span>Slides</span><span>Primary input</span><span>Output</span></header>${[["Promo 01","9","Subject + category","Carousel + video"],["Promo 02","10","Subject + media","Mixed carousel"],["News 01","Template-defined","Research source","News carousel"],["Item","1","Object name","Reusable emoji PNG"]].map((row)=>`<article><strong>${row[0]}</strong><span>${row[1]}</span><span>${row[2]}</span><span>${row[3]}</span></article>`).join("")}</div><div class="preview-flow-map"><a href="#/research/trends"><span>01</span><strong>Source</strong><small>Research or brief</small></a><i>→</i><a href="#/creative-tools/post-generator"><span>02</span><strong>Generate</strong><small>Texts · images · video</small></a><i>→</i><a href="#/content/posts"><span>03</span><strong>Review</strong><small>Slides · status · export</small></a><i>→</i><a href="#/content/calendar"><span>04</span><strong>Schedule</strong><small>Owner · channel · date</small></a></div>`;
+        if (sub === "decisions") return `${pageIntro("Knowledge / Decisions","Architecture decision record","The choices that define the reusable template and their current state.")}<div class="preview-decisions">${[["ADR-001","Separate URL per project","Accepted","Every brand receives its own deployment and configuration; there is no project switcher."],["ADR-002","Current remains production","Accepted","New IA can reuse Current modules but must not remove or rewrite the original application."],["ADR-003","Item Generator","Deferred","Item Generator remains unchanged during the current architecture stage."],["ADR-004","Cases module","Archived","Cases are removed from primary navigation; the previous prototype and test-pack are preserved in Knowledge / Archive."],["ADR-005","Template authoring","Accepted","Templates are laid out directly in HTML/CSS/JS and then rendered; Figma is not required."],["ADR-006","Brand presets","Accepted","Positioning, design tokens and generator constraints are project inputs, not generated outputs."]].map(([id,title,state,body])=>`<article><span>${id} · ${state}</span><strong>${title}</strong><p>${body}</p></article>`).join("")}</div>`;
+        return `${pageIntro("Knowledge / Archive","Archived modules","Removed navigation concepts are preserved here so earlier work and decisions are not lost.")}<div class="preview-project-hero"><div><span>Archived module · TP-001</span><h3>Cases / test-pack</h3><p>The Cases experiment grouped a brief, research, posts, assets, Collabs, Calendar, Site and Analytics. It is no longer part of the universal primary navigation.</p></div><div class="preview-project-progress"><strong>68%</strong><span>Prototype state at archival</span><i><b></b></i></div></div><div class="preview-note">The implementation remains in the codebase and can be restored through project configuration. No Current posts or media were removed.</div>`;
+      }
+
+      function formatLiveDate(value, dateOnly = false) {
+        if (!value) return "—";
+        const date = new Date(dateOnly ? `${value}T12:00:00` : value);
+        if (Number.isNaN(date.getTime())) return value;
+        return new Intl.DateTimeFormat("ru-RU", dateOnly
+          ? {day: "numeric", month: "short", year: "numeric"}
+          : {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}
+        ).format(date);
+      }
+
+      function formatLiveNumber(value) {
+        return new Intl.NumberFormat("ru-RU", {notation: Number(value) >= 10000 ? "compact" : "standard", maximumFractionDigits: 1}).format(Number(value) || 0);
+      }
+
+      function safeExternalUrl(value) {
+        try {
+          const url = new URL(value);
+          return ["http:", "https:"].includes(url.protocol) ? url.href : "#";
+        } catch {
+          return "#";
+        }
+      }
+
+      function publicMediaUrl(assetPath) {
+        return `/public/${String(assetPath).split("/").map(encodeURIComponent).join("/")}`;
+      }
+
+      async function fetchLiveJson(url) {
+        const response = await fetch(url, {headers: {Accept: "application/json"}});
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
+        return data;
+      }
+
+      function liveSummary(items) {
+        return `<div class="preview-live-summary">${items.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}</div>`;
+      }
+
+      function renderLivePosts(posts) {
+        const ready = posts.filter((post) => post.hasRender).length;
+        const visible = posts.slice(0, 30);
+        return `${liveSummary([["Total posts", String(posts.length)], ["Rendered", String(ready)], ["Drafts", String(posts.length - ready)]])}
+          <div class="preview-live-grid">${visible.map((post) => {
+            const imagePath = post.lastRender?.cards?.[0]?.stillUrl || (post.firstCard?.props?.image ? publicMediaUrl(post.firstCard.props.image) : "");
+            return `<article class="preview-live-card">
+              <div class="preview-live-media">${imagePath ? `<img src="${escapeHtml(imagePath)}" alt="" loading="lazy" />` : `<span>${escapeHtml(post.templateName || "Post")}</span>`}</div>
+              <div class="preview-live-body"><div class="preview-live-meta"><span>${escapeHtml(post.templateName || post.templateId || "Post")}</span><span>${post.hasRender ? "Rendered" : "Draft"}</span></div><h3>${escapeHtml(post.name || post.subject || post.templateName || "Untitled post")}</h3><p>${escapeHtml(`${post.cardCount || 0} slides · updated ${formatLiveDate(post.updatedAt)}`)}</p><a href="/picker.html#/content/posts/${encodeURIComponent(post.id)}" data-current-link>Open in Current</a></div>
+            </article>`;
+          }).join("")}</div>${posts.length > visible.length ? `<p class="preview-live-footnote">Showing ${visible.length} latest posts of ${posts.length}.</p>` : ""}`;
+      }
+
+      function renderLiveAssets(data) {
+        const byPath = new Map();
+        for (const asset of data.assets || []) byPath.set(asset.path, {...asset, uses: 0});
+        for (const binding of data.bindings || []) {
+          const current = byPath.get(binding.path) || {path: binding.path, name: binding.path.split("/").pop(), kind: "post", uses: 0};
+          current.uses += 1;
+          byPath.set(binding.path, current);
+        }
+        const allAssets = [...byPath.values()].sort((a, b) => b.uses - a.uses || a.name.localeCompare(b.name));
+        const query = mediaFilters.query.toLowerCase();
+        const assets = allAssets.filter((asset) => (!query || `${asset.name} ${asset.path}`.toLowerCase().includes(query)) && (mediaFilters.source === "all" || asset.kind === mediaFilters.source) && (mediaFilters.usage === "all" || (mediaFilters.usage === "used" ? asset.uses > 0 : asset.uses === 0)));
+        return `${liveSummary([["Shown", `${assets.length}/${allAssets.length}`], ["Library files", String((data.assets || []).length)], ["Post bindings", String((data.bindings || []).length)]])}
+          ${assets.length ? `<div class="preview-media-grid">${assets.map((asset) => `<figure class="preview-media-item"><img src="${escapeHtml(publicMediaUrl(asset.path))}" alt="${escapeHtml(asset.name || "Media asset")}" loading="lazy" /><figcaption><strong>${escapeHtml(asset.name || asset.path)}</strong><span>${escapeHtml(asset.uses ? `${asset.uses} post bindings` : asset.kind || "media")}</span></figcaption></figure>`).join("")}</div>` : '<div class="preview-empty"><strong>No media matches</strong><span>Change or reset the filters.</span></div>'}`;
+      }
+
+      function renderItemCatalog(data) {
+        const emojis = data.emojis || [];
+        if (!emojis.length) return '<div class="preview-empty"><strong>No items yet</strong><span>Generate the first project item above.</span></div>';
+        return `${liveSummary([["Item type", "Emoji object"], ["Catalog", String(emojis.length)], ["Storage", "Current · shared"]])}<div class="preview-item-catalog">${emojis.map((emoji) => `<figure><img src="${escapeHtml(emoji.url)}" alt="${escapeHtml(emoji.name)}" loading="lazy" /><figcaption>${escapeHtml(emoji.name)}</figcaption></figure>`).join("")}</div>`;
+      }
+
+      function renderBrandAssetsLive(data) {
+        const assets = data.assets.assets || []; const emojis=data.emojis.emojis||[]; const cards=data.cards.cards||[];
+        const samples = [...emojis.slice(0,8).map((item)=>({name:item.name,url:item.url,type:"Emoji"})), ...cards.slice(0,4).map((item)=>({name:item.name,url:item.url,type:"Brand card"}))];
+        return `${liveSummary([["Media files",String(assets.length)],["Emoji objects",String(emojis.length)],["Brand cards",String(cards.length)]])}<div class="preview-item-catalog">${samples.map((item)=>`<figure><img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.name)}" loading="lazy"/><figcaption>${escapeHtml(`${item.type} · ${item.name}`)}</figcaption></figure>`).join("")}</div>`;
+      }
+
+      function renderBrandPresetsLive(data) {
+        const presets = data.presets || [];
+        return `${liveSummary([["Presets",String(presets.length)],["Active",String(presets.filter((item)=>item.status==="active").length)],["Project",data.project || "—"]])}<div class="preview-preset-grid">${presets.map((preset)=>`<article><header><span>${escapeHtml(preset.status)}</span><strong>${escapeHtml(preset.name)}</strong></header><p>${escapeHtml(preset.purpose)}</p><dl><div><dt>Positioning</dt><dd>${escapeHtml(preset.identity?.positioning || "—")}</dd></div><div><dt>Tone</dt><dd>${escapeHtml((preset.identity?.tone || []).join(" · "))}</dd></div><div><dt>Typography</dt><dd>${escapeHtml([preset.design?.displayFont,preset.design?.bodyFont].filter(Boolean).join(" · "))}</dd></div><div><dt>Image rule</dt><dd>${escapeHtml(preset.generation?.imageStyle || "—")}</dd></div></dl><div class="preview-preset-colors">${(preset.design?.colors||[]).map((color)=>`<i style="--preset-color:${escapeHtml(color)}" title="${escapeHtml(color)}"></i>`).join("")}</div><footer><span>${escapeHtml(preset.source || "Project input")}</span><a href="#/creative-tools/template-studio">Use in template</a></footer></article>`).join("")}</div>`;
+      }
+
+      function renderTemplateRegistry(data) {
+        const templates=data.templates||[]; const production=templates.filter((item)=>item.status==="production").length;
+        return `${liveSummary([["Templates",String(templates.length)],["Production",String(production)],["Figma required",data.authoringModel?.figmaRequired ? "Yes" : "No"]])}<div class="preview-brand-statement"><span>Authoring contract</span><h3>${escapeHtml(data.authoringModel?.method || "Direct layout → render")}</h3><p>${escapeHtml(data.authoringModel?.ownership || "")}</p></div><section class="preview-section-head"><div><span>Universal contract</span><h2>Preset → template → output</h2></div></section><div class="preview-template-contract">${Object.entries(data.universalContract||{}).map(([name,values])=>`<article><span>${escapeHtml(name)}</span>${(values||[]).map((value)=>`<strong>${escapeHtml(value)}</strong>`).join("")}</article>`).join("")}</div><section class="preview-section-head"><div><span>Local audit</span><h2>Registered templates and settings</h2></div></section><div class="preview-template-table">${templates.map((template)=>`<article><div><span>${escapeHtml(`${template.kind} · ${template.status}`)}</span><strong>${escapeHtml(template.name || template.id)}</strong><small>${escapeHtml(template.sourceFile || template.authoring?.method || template.id)}</small></div><div><span>Canvas</span><strong>${escapeHtml(template.canvas?.width ? `${template.canvas.width}×${template.canvas.height}` : template.canvas?.aspectRatio || "Defined in HTML")}</strong></div><div><span>Structure</span><strong>${escapeHtml(template.cardCount != null ? `${template.cardCount} cards · ${template.fields?.length||0} fields` : `${template.fields?.length||0} fields`)}</strong></div><div><span>Settings</span><strong>${escapeHtml((template.settings || template.workflow || []).join(" · "))}</strong></div></article>`).join("")}</div><div class="preview-note">New templates may be authored locally by coding agents, validated against the field contract, registered here and only then exposed to generators.</div>`;
+      }
+
+      function renderDashboardLive(data) {
+        const posts = data.posts.posts || [];
+        const assetPaths = new Set([...(data.assets.assets || []).map((item) => item.path), ...(data.assets.bindings || []).map((item) => item.path)]);
+        const researchLatest = data.research.dates?.[0] || {};
+        const researchItems = Number(researchLatest.news || 0) + Number(researchLatest.videos || 0) + Number(researchLatest.trends || 0);
+        const rendered = posts.filter((post) => post.hasRender).length;
+        const activeCollabs = (data.collabs.items || []).filter((item) => item.status === "active").length;
+        const calendarReady = (data.calendar.items || []).filter((item) => ["ready", "published"].includes(item.status)).length;
+        const release = data.changelog.entries?.[0];
+        const changes = release?.changes?.slice(0, 5) || [];
+        const recentPosts = posts.slice(0, 5);
+        return `<div class="preview-live-summary preview-live-summary-four">${[["Posts",posts.length],["Rendered",rendered],["Media",assetPaths.size],["Latest research",researchItems]].map(([label,value])=>`<div><span>${label}</span><strong>${value}</strong></div>`).join("")}</div>
+          <div class="preview-dashboard-actions"><a href="#/research/trends"><span>01 · Discover</span><strong>Research signals</strong><small>${researchLatest.date ? `${researchLatest.date} · ${researchItems} collected items` : "Collect the first snapshot"}</small></a><a href="#/creative-tools/post-generator"><span>02 · Produce</span><strong>Create content</strong><small>${posts.length - rendered} drafts · ${rendered} rendered</small></a><a href="#/content/calendar"><span>03 · Schedule</span><strong>Publishing calendar</strong><small>${calendarReady} ready · ${(data.calendar.items || []).length} total</small></a><a href="#/opportunities/active"><span>04 · Collaborate</span><strong>Active Collabs</strong><small>${activeCollabs} active relationships</small></a></div>
+          <div class="preview-dashboard-columns"><section><div class="preview-section-head"><div><span>Recent work</span><h2>Latest Current posts</h2></div><a href="#/content/posts">Open Posts</a></div><div class="preview-dashboard-list">${recentPosts.map((post) => `<a href="/picker.html#/content/posts/${encodeURIComponent(post.id)}" data-current-link><div><span>${escapeHtml(post.templateName || "Post")}</span><strong>${escapeHtml(post.name || post.subject || "Untitled")}</strong></div><small>${escapeHtml(`${post.cardCount || 0} slides · ${post.hasRender ? "rendered" : "draft"}`)}</small></a>`).join("")}</div></section><section><div class="preview-section-head"><div><span>Version ${escapeHtml(data.changelog.productVersion || "—")}</span><h2>Recent changes</h2></div><a href="#/systems/changelog">Full changelog</a></div><div class="preview-dashboard-changes">${changes.map((change) => `<article><span>${escapeHtml(`${change.type} · ${change.area}`)}</span><strong>${escapeHtml(change.summary)}</strong></article>`).join("")}</div></section></div>
+          <div class="preview-note">Live workspace summary · Posts, media, research, Calendar, Collabs and version history are read from the same data used by Current.</div>`;
+      }
+
+      function researchFavoriteButton(type, id, favoriteIds) {
+        const active = favoriteIds.has(`${type}:${id}`);
+        return `<button type="button" class="preview-text-action${active ? " is-saved" : ""}" data-research-favorite data-favorite-type="${escapeHtml(type)}" data-favorite-id="${escapeHtml(id)}">${active ? "★ Saved" : "☆ Save"}</button>`;
+      }
+
+      function liveNewsCard(item, favoriteIds = new Set(), date = "") {
+        return `<article class="preview-live-card preview-live-card--signal">
+          <a class="preview-live-media" href="${escapeHtml(safeExternalUrl(item.url))}" target="_blank" rel="noreferrer">${item.imageUrl ? `<img src="${escapeHtml(safeExternalUrl(item.imageUrl))}" alt="" loading="lazy" />` : `<span>${escapeHtml(item.categoryLabel || "News")}</span>`}</a>
+          <div class="preview-live-body"><div class="preview-live-meta"><span>${escapeHtml(item.categoryLabel || item.category || "News")}</span><span>${escapeHtml(date || `${item.importanceScore || 0}/10`)}</span></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.summary || item.sourceName || "")}</p><footer><span>${escapeHtml(item.sourceName || "Source")}</span><div>${researchFavoriteButton("news", item.id, favoriteIds)}<button type="button" class="preview-primary preview-small" data-use-source="${escapeHtml(item.title)}">Use in post</button></div></footer></div>
+        </article>`;
+      }
+
+      function liveVideoCard(item, favoriteIds = new Set(), date = "") {
+        return `<article class="preview-live-card preview-live-card--signal">
+          <a class="preview-live-media" href="${escapeHtml(safeExternalUrl(item.url))}" target="_blank" rel="noreferrer">${item.thumbnailUrl ? `<img src="${escapeHtml(safeExternalUrl(item.thumbnailUrl))}" alt="" loading="lazy" />` : `<span>YouTube</span>`}</a>
+          <div class="preview-live-body"><div class="preview-live-meta"><span>${escapeHtml(item.channelName || "YouTube")}</span><span>${escapeHtml(date || item.duration || "Video")}</span></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(`${formatLiveNumber(item.viewCount)} views · ${formatLiveNumber(item.likeCount)} likes · ${formatLiveNumber(item.commentCount)} comments`)}</p><footer><span>${escapeHtml((item.matchedHashtags || item.hashtags || []).slice(0, 2).map((tag) => `#${String(tag).replace(/^#/, "")}`).join(" "))}</span><div>${researchFavoriteButton("youtube", item.id, favoriteIds)}<button type="button" class="preview-primary preview-small" data-use-source="${escapeHtml(item.title)}">Use in post</button></div></footer></div>
+        </article>`;
+      }
+
+      function renderLiveNews(data, favoriteIds = new Set()) {
+        const items = [...(data.items || [])].sort((a, b) => (b.importanceScore || 0) - (a.importanceScore || 0));
+        return `${liveSummary([["Collection", formatLiveDate(data.date, true)], ["News", String(items.length)], ["Updated", formatLiveDate(data.collectedAt)]])}
+          <div class="preview-live-grid">${items.slice(0, 24).map((item) => liveNewsCard(item, favoriteIds)).join("")}</div>`;
+      }
+
+      function renderLiveVideos(data, favoriteIds = new Set()) {
+        const items = [...(data.items || [])].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+        return `${liveSummary([["Collection", formatLiveDate(data.date, true)], ["Videos", String(items.length)], ["Updated", formatLiveDate(data.collectedAt)]])}
+          <div class="preview-live-grid">${items.slice(0, 24).map((item) => liveVideoCard(item, favoriteIds)).join("")}</div>${items.length > 24 ? `<p class="preview-live-footnote">Showing 24 most viewed videos of ${items.length}.</p>` : ""}`;
+      }
+
+      function renderLiveTrends(data) {
+        const tags = Object.values(data.tags || {}).sort((a, b) => (b.newViews || 0) - (a.newViews || 0));
+        const maxViews = Math.max(1, ...tags.map((tag) => Number(tag.newViews) || 0));
+        return `${liveSummary([["Snapshot", formatLiveDate(data.date, true)], ["Tracked tags", String(tags.length)], ["Updated", formatLiveDate(data.collectedAt)]])}
+          <div class="preview-live-trends">${tags.map((tag) => `<article><div><strong>#${escapeHtml(tag.tag)}</strong><span>${formatLiveNumber(tag.newVideos)} videos</span></div><i style="--trend:${Math.max(2, Math.round((Number(tag.newViews || 0) / maxViews) * 100))}%"></i><footer><span>${formatLiveNumber(tag.newViews)} views</span><span>${formatLiveNumber(tag.newLikes)} likes</span><span>${formatLiveNumber(tag.newComments)} comments</span></footer></article>`).join("")}</div>`;
+      }
+
+      function renderUnifiedTrends(data, favoriteIds = new Set()) {
+        const tags = data.tags || [];
+        const items = data.items || [];
+        const connected = data.connections || {};
+        const periodLabel = data.period === "month" ? "Month" : data.period === "week" ? "Week" : "Today";
+        const sourceLabel = data.source === "all" ? "All connected" : data.source === "youtube" ? "YouTube" : data.source === "news" ? "News" : "TikTok";
+        const connectionCards = [["YouTube",connected.youtube,"Videos + hashtag velocity"],["News",connected.news,"Articles + editorial importance"],["TikTok",connected.tiktok,"Awaiting account/API connection"]];
+        const tagSection = tags.length ? `<section class="preview-section-head"><div><span>Hashtags · ${escapeHtml(periodLabel)}</span><h2>Momentum</h2></div></section><div class="preview-live-trends">${tags.slice(0,18).map((tag) => `<button type="button" data-trend-tag="${escapeHtml(tag.tag)}"><div><strong>#${escapeHtml(tag.tag)}</strong><span>${formatLiveNumber(tag.newVideos)} videos</span></div><i style="--trend:${Math.max(2,Math.round((Number(tag.newViews||0)/Math.max(1,...tags.map((row)=>Number(row.newViews)||0)))*100))}%"></i><footer><span>${formatLiveNumber(tag.newViews)} views</span><span>${formatLiveNumber(tag.newLikes)} likes</span><span>${formatLiveNumber(tag.newComments)} comments</span></footer></button>`).join("")}</div>` : "";
+        return `${liveSummary([["Period",periodLabel],["Source",sourceLabel],["Signals",String(items.length)]])}<div class="preview-trend-sources">${connectionCards.map(([name,isConnected,description])=>`<article class="${isConnected ? "is-connected" : ""}"><span>${isConnected ? "Connected" : "Not connected"}</span><strong>${name}</strong><p>${description}</p></article>`).join("")}</div>${data.hashtag ? `<div class="preview-note"><strong>Hashtag filter · #${escapeHtml(data.hashtag)}</strong><span>${items.length} matching signals in the selected period.</span></div>` : ""}${tagSection}<section class="preview-section-head"><div><span>Feed</span><h2>Trend signals</h2></div></section>${items.length ? renderResearchResultItems(items,favoriteIds) : `<div class="preview-empty"><strong>No signals for this selection</strong><span>${data.source === "tiktok" ? "TikTok is not connected yet." : "Try another period, source or hashtag."}</span></div>`}`;
+      }
+
+      function renderResearchResultItems(items, favoriteIds = new Set()) {
+        if (!items.length) return `<div class="preview-empty"><strong>No results</strong><span>Try another query or collect fresh data.</span></div>`;
+        return `<div class="preview-live-grid">${items.map((row) => row.kind === "news" ? liveNewsCard(row.item, favoriteIds, formatLiveDate(row.date, true)) : liveVideoCard(row.item, favoriteIds, formatLiveDate(row.date, true))).join("")}</div>`;
+      }
+
+      function renderLiveFavorites(data) {
+        const items = data.items || [];
+        const favoriteIds = new Set(data.ids || []);
+        const newsCount = items.filter((row) => row.kind === "news").length;
+        const videoCount = items.length - newsCount;
+        return `${liveSummary([["Saved", String(items.length)], ["News", String(newsCount)], ["YouTube", String(videoCount)]])}${items.length ? renderResearchResultItems(items, favoriteIds) : '<div class="preview-empty"><strong>Nothing saved yet</strong><span>Use ☆ Save on a News or YouTube card. Favorites are shared with Current.</span></div>'}`;
+      }
+
+      function renderSearchResults(data) {
+        const favoriteIds = new Set((data.items || []).filter((row) => row.isFavorite).map((row) => `${row.kind === "youtube" ? "youtube" : "news"}:${row.item.id}`));
+        return `${liveSummary([["Query", data.query || "—"], ["Found", String(data.total ?? data.items?.length ?? 0)], ["Shown", String(data.items?.length || 0)]])}${renderResearchResultItems(data.items || [], favoriteIds)}`;
+      }
+
+      function renderResearchArchive(data) {
+        const dates = data.dates || [];
+        if (!dates.length) return `<div class="preview-empty"><strong>No collections</strong><span>Run News or YouTube parsing to create the first snapshot.</span></div>`;
+        return `<div class="preview-archive-list">${dates.map((row) => `<article><div><span>Collection</span><strong>${escapeHtml(formatLiveDate(row.date, true))}</strong></div><div class="preview-archive-actions">${row.news ? `<button type="button" data-archive-source="news" data-archive-date="${escapeHtml(row.date)}"><strong>${row.news}</strong><span>News</span></button>` : ""}${row.videos ? `<button type="button" data-archive-source="videos" data-archive-date="${escapeHtml(row.date)}"><strong>${row.videos}</strong><span>Videos</span></button>` : ""}${row.trends ? `<button type="button" data-archive-source="trends" data-archive-date="${escapeHtml(row.date)}"><strong>${row.trends}</strong><span>Trends</span></button>` : ""}</div></article>`).join("")}</div>`;
+      }
+
+      const researchSelectedDates = {};
+
+      function syncResearchDateControl(route, data) {
+        const select = document.getElementById("research-date-select");
+        if (!select) return;
+        select.disabled = false;
+        select.innerHTML = (data.dates || []).map((date) => `<option value="${escapeHtml(date)}" ${date === data.date ? "selected" : ""}>${escapeHtml(formatLiveDate(date, true))}</option>`).join("");
+        select.addEventListener("change", () => {
+          researchSelectedDates[route.sub] = select.value;
+          const host = document.getElementById("research-live");
+          if (host) host.innerHTML = '<div class="preview-empty">Loading collection…</div>';
+          loadLiveData(route);
+        });
+      }
+
+      function renderTestPackLive(posts, assetData) {
+        const linkedPosts = posts.slice(0, 6);
+        const linkedAssets = (assetData.assets || []).slice(0, 8);
+        return `${liveSummary([["Linked posts", String(linkedPosts.length)], ["Linked media", String(linkedAssets.length)], ["Storage", "Current · read-only"]])}
+          <div class="preview-project-live-columns"><section><h3>Post outputs</h3><div>${linkedPosts.map((post) => `<a href="/picker.html#/content/posts/${encodeURIComponent(post.id)}" data-current-link><span>${escapeHtml(post.templateName || "Post")}</span><strong>${escapeHtml(post.name || post.subject || post.templateName || "Untitled")}</strong><small>${escapeHtml(`${post.cardCount || 0} slides · ${post.hasRender ? "rendered" : "draft"}`)}</small></a>`).join("")}</div></section><section><h3>Media sources</h3><div class="preview-project-assets">${linkedAssets.map((asset) => `<figure><img src="${escapeHtml(publicMediaUrl(asset.path))}" alt="${escapeHtml(asset.name)}" loading="lazy" /><figcaption>${escapeHtml(asset.name)}</figcaption></figure>`).join("")}</div></section></div>`;
+      }
+
+      const calendarStatuses = {
+        planned: "Planned",
+        draft: "Draft",
+        review: "In review",
+        ready: "Ready",
+        published: "Published",
+        blocked: "Blocked",
+      };
+      let calendarWeekStart = "";
+      let calendarFilterStatus = "all";
+      let calendarCache = {items: [], posts: []};
+
+      function calendarDate(value) {
+        return new Date(`${value}T12:00:00`);
+      }
+
+      function calendarIso(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      function calendarAddDays(value, days) {
+        const date = typeof value === "string" ? calendarDate(value) : new Date(value);
+        date.setDate(date.getDate() + days);
+        return calendarIso(date);
+      }
+
+      function calendarMonday(value) {
+        const date = calendarDate(value);
+        const weekday = date.getDay() || 7;
+        date.setDate(date.getDate() - weekday + 1);
+        return calendarIso(date);
+      }
+
+      function calendarDayLabel(value, options) {
+        return new Intl.DateTimeFormat("en", options).format(calendarDate(value));
+      }
+
+      function calendarPostLabel(post) {
+        return post.name || post.subject || post.templateName || "Untitled post";
+      }
+
+      function renderWorkingCalendar() {
+        const {items, posts} = calendarCache;
+        const postById = new Map(posts.map((post) => [String(post.id), post]));
+        const weekDates = Array.from({length: 7}, (_, index) => calendarAddDays(calendarWeekStart, index));
+        const weekEnd = weekDates[6];
+        const visibleItems = items.filter((item) => item.date >= calendarWeekStart && item.date <= weekEnd && (calendarFilterStatus === "all" || item.status === calendarFilterStatus));
+        const readyCount = items.filter((item) => item.status === "ready" || item.status === "published").length;
+        const blockedCount = items.filter((item) => item.status === "blocked").length;
+        const statusOptions = Object.entries(calendarStatuses).map(([value, label]) => `<option value="${value}">${escapeHtml(label)}</option>`).join("");
+        const linkedPostOptions = posts.slice(0, 100).map((post) => `<option value="${escapeHtml(String(post.id))}">${escapeHtml(calendarPostLabel(post))}</option>`).join("");
+        return `${liveSummary([["Scheduled", String(items.length)], ["Ready / published", String(readyCount)], ["Blocked", String(blockedCount)]])}
+          <section class="preview-calendar-create">
+            <div class="preview-calendar-create-head"><div><span>New publication</span><h3>Add to schedule</h3></div><p>Calendar records are saved separately. Linking a post does not change it.</p></div>
+            <form id="calendar-event-form" class="preview-calendar-form">
+              <label class="is-wide"><span>Title</span><input name="title" required maxlength="180" placeholder="Publication title" /></label>
+              <label><span>Date</span><input name="date" type="date" required value="${calendarWeekStart}" /></label>
+              <label><span>Channel</span><input name="channel" maxlength="80" value="Instagram" /></label>
+              <label><span>Owner</span><input name="owner" maxlength="80" placeholder="Name" /></label>
+              <label><span>Status</span><select name="status">${statusOptions}</select></label>
+              <label class="is-wide"><span>Current post (optional)</span><select name="linkedPostId"><option value="">Not linked</option>${linkedPostOptions}</select></label>
+              <label class="is-wide"><span>Notes</span><input name="notes" maxlength="500" placeholder="Approval, assets or deadline notes" /></label>
+              <div class="preview-calendar-submit"><span data-calendar-form-status>Ready to save</span><button class="preview-primary" type="submit">Add publication</button></div>
+            </form>
+          </section>
+          <div class="preview-calendar-toolbar">
+            <div><button type="button" class="preview-secondary preview-small" data-calendar-week="-7">← Previous</button><button type="button" class="preview-secondary preview-small" data-calendar-next-scheduled>Next scheduled</button><button type="button" class="preview-secondary preview-small" data-calendar-week="7">Next →</button></div>
+            <strong>${escapeHtml(calendarDayLabel(calendarWeekStart, {month: "short", day: "numeric"}))} — ${escapeHtml(calendarDayLabel(weekEnd, {month: "short", day: "numeric", year: "numeric"}))}</strong>
+            <label><span>Status</span><select data-calendar-filter><option value="all">All statuses</option>${Object.entries(calendarStatuses).map(([value, label]) => `<option value="${value}" ${calendarFilterStatus === value ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}</select></label>
+          </div>
+          <div class="preview-calendar-scroll"><div class="preview-calendar-week">
+            ${weekDates.map((date) => {
+              const dayItems = visibleItems.filter((item) => item.date === date);
+              return `<section class="preview-calendar-day ${date === calendarIso(new Date()) ? "is-today" : ""}"><header><span>${escapeHtml(calendarDayLabel(date, {weekday: "short"}))}</span><strong>${escapeHtml(calendarDayLabel(date, {day: "2-digit", month: "short"}))}</strong></header><div>${dayItems.length ? dayItems.map((item) => {
+                const linkedPost = item.linkedPostId ? postById.get(String(item.linkedPostId)) : null;
+                return `<article class="preview-calendar-event" data-status="${escapeHtml(item.status)}"><div class="preview-calendar-event-meta"><span>${escapeHtml(item.channel)}</span><button type="button" data-calendar-delete="${escapeHtml(item.id)}" aria-label="Delete ${escapeHtml(item.title)}">×</button></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.notes || "No notes")}</p>${linkedPost ? `<a href="/picker.html#/content/posts/${encodeURIComponent(linkedPost.id)}" data-current-link>Linked: ${escapeHtml(calendarPostLabel(linkedPost))} ↗</a>` : '<span class="preview-calendar-unlinked">No linked post</span>'}<footer><span>${escapeHtml(item.owner)}</span><select data-calendar-status="${escapeHtml(item.id)}" aria-label="Status for ${escapeHtml(item.title)}">${Object.entries(calendarStatuses).map(([value, label]) => `<option value="${value}" ${item.status === value ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}</select></footer></article>`;
+              }).join("") : '<div class="preview-calendar-empty-day">No publications</div>'}</div></section>`;
+            }).join("")}
+          </div></div>
+          <div class="preview-note">Working Calendar · events are stored in <code>data/content-calendar.json</code>. Posts are only linked and remain controlled by the Current Posts workspace.</div>`;
+      }
+
+      function bindCalendarActions(root, route) {
+        root.querySelectorAll("[data-calendar-week]").forEach((button) => button.addEventListener("click", () => {
+          calendarWeekStart = calendarAddDays(calendarWeekStart, Number(button.dataset.calendarWeek));
+          root.innerHTML = renderWorkingCalendar();
+          bindCalendarActions(root, route);
+        }));
+        root.querySelector("[data-calendar-next-scheduled]")?.addEventListener("click", () => {
+          const next = calendarCache.items.find((item) => item.date >= calendarIso(new Date())) || calendarCache.items[0];
+          if (next) calendarWeekStart = calendarMonday(next.date);
+          root.innerHTML = renderWorkingCalendar();
+          bindCalendarActions(root, route);
+        });
+        root.querySelector("[data-calendar-filter]")?.addEventListener("change", (event) => {
+          calendarFilterStatus = event.currentTarget.value;
+          root.innerHTML = renderWorkingCalendar();
+          bindCalendarActions(root, route);
+        });
+        root.querySelector("#calendar-event-form")?.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const submit = form.querySelector('button[type="submit"]');
+          const status = form.querySelector("[data-calendar-form-status]");
+          submit.disabled = true;
+          status.textContent = "Saving…";
+          try {
+            const body = Object.fromEntries(new FormData(form).entries());
+            const response = await fetch("/api/calendar", {method: "POST", headers: {"Content-Type": "application/json", Accept: "application/json"}, body: JSON.stringify(body)});
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || "Could not add publication");
+            calendarWeekStart = calendarMonday(data.event.date);
+            await loadLiveData(route);
+          } catch (error) {
+            status.textContent = error.message;
+            submit.disabled = false;
+          }
+        });
+        root.querySelectorAll("[data-calendar-status]").forEach((select) => select.addEventListener("change", async () => {
+          select.disabled = true;
+          try {
+            const response = await fetch(`/api/calendar/${encodeURIComponent(select.dataset.calendarStatus)}`, {method: "PUT", headers: {"Content-Type": "application/json", Accept: "application/json"}, body: JSON.stringify({status: select.value})});
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || "Could not update status");
+            await loadLiveData(route);
+          } catch (error) {
+            select.disabled = false;
+            window.alert(error.message);
+          }
+        }));
+        root.querySelectorAll("[data-calendar-delete]").forEach((button) => button.addEventListener("click", async () => {
+          const item = calendarCache.items.find((entry) => entry.id === button.dataset.calendarDelete);
+          if (!window.confirm(`Delete “${item?.title || "this publication"}” from Calendar?`)) return;
+          button.disabled = true;
+          try {
+            const response = await fetch(`/api/calendar/${encodeURIComponent(button.dataset.calendarDelete)}`, {method: "DELETE", headers: {Accept: "application/json"}});
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || "Could not delete publication");
+            await loadLiveData(route);
+          } catch (error) {
+            button.disabled = false;
+            window.alert(error.message);
+          }
+        }));
+        bindCardActions(root);
+      }
+
+      let liveLoadToken = 0;
+      async function loadLiveData(route) {
+        const token = ++liveLoadToken;
+        try {
+          if (route.section === "site") {
+            const data = await fetchLiveJson("/api/site-status");
+            if (token !== liveLoadToken) return;
+            const host = document.getElementById("site-live");
+            if (host) host.innerHTML = renderSiteLive(route.sub, data);
+          } else if (route.section === "dashboard") {
+            const [posts,assets,research,calendar,collabs,changelog]=await Promise.all([fetchLiveJson("/api/posts"),fetchLiveJson("/api/assets"),fetchLiveJson("/api/new-ia/research/archive"),fetchLiveJson("/api/calendar"),fetchLiveJson("/api/collabs"),fetchLiveJson("/api/changelog")]);
+            if (token !== liveLoadToken) return;
+            const host=document.getElementById("dashboard-live"); if(host){host.innerHTML=renderDashboardLive({posts,assets,research,calendar,collabs,changelog});bindCardActions(host);}
+          } else if (route.section === "analytics") {
+            const [posts,research,calendar,collabs]=await Promise.all([fetchLiveJson("/api/posts"),fetchLiveJson("/api/new-ia/research/archive"),fetchLiveJson("/api/calendar"),fetchLiveJson("/api/collabs")]);
+            if(token!==liveLoadToken)return; const host=document.getElementById("analytics-live"); if(host){host.innerHTML=renderAnalyticsLive(route.sub,{posts,research,calendar,collabs},route.detail);bindCardActions(host);}
+          } else if (route.section === "systems") {
+            const [changelog,config,prompts,research,posts,assets,calendar,collabs]=await Promise.all([fetchLiveJson("/api/changelog"),fetchLiveJson("/api/app-config"),fetchLiveJson("/api/prompts"),fetchLiveJson("/api/new-ia/research/archive"),fetchLiveJson("/api/posts"),fetchLiveJson("/api/assets"),fetchLiveJson("/api/calendar"),fetchLiveJson("/api/collabs")]);
+            if(token!==liveLoadToken)return; const host=document.getElementById("systems-live"); if(host){host.innerHTML=renderSystemsLive(route.sub,{changelog,config,prompts,research,posts,assets,calendar,collabs});bindCardActions(host);}
+          } else if (route.section === "brand" && route.sub === "presets") {
+            const data=await fetchLiveJson("/api/new-ia/brand-presets"); if(token!==liveLoadToken)return; const host=document.getElementById("brand-presets-live"); if(host)host.innerHTML=renderBrandPresetsLive(data);
+          } else if (route.section === "brand" && route.sub === "assets") {
+            const [assets,emojis,cards]=await Promise.all([fetchLiveJson("/api/assets"),fetchLiveJson("/api/emojis"),fetchLiveJson("/api/cards")]);
+            if(token!==liveLoadToken)return; const host=document.getElementById("brand-assets-live"); if(host)host.innerHTML=renderBrandAssetsLive({assets,emojis,cards});
+          } else if (route.section === "creative-tools" && route.sub === "template-studio") {
+            const data=await fetchLiveJson("/api/new-ia/template-registry"); if(token!==liveLoadToken)return; const host=document.getElementById("template-studio-live"); if(host)host.innerHTML=renderTemplateRegistry(data);
+          } else if (route.section === "creative-tools" && route.sub === "item-generator" && projectConfig.itemGenerator?.kind !== "mascot") {
+            const data = await fetchLiveJson("/api/emojis");
+            if (token !== liveLoadToken) return;
+            const host = document.getElementById("item-generator-live");
+            if (host) host.innerHTML = renderItemCatalog(data);
+          } else if (route.section === "opportunities") {
+            const data = await fetchLiveJson("/api/collabs");
+            if (token !== liveLoadToken) return;
+            collabCache = {items: data.items || []};
+            const host = document.getElementById("opportunities-live");
+            if (host) { host.innerHTML = renderCollabWorkspace(route.sub); bindCollabActions(host, route); }
+          } else if (route.section === "content" && route.sub === "calendar") {
+            const [calendarData, postData] = await Promise.all([fetchLiveJson("/api/calendar"), fetchLiveJson("/api/posts")]);
+            if (token !== liveLoadToken) return;
+            calendarCache = {items: calendarData.items || [], posts: postData.posts || []};
+            if (!calendarWeekStart) {
+              const next = calendarCache.items.find((item) => item.date >= calendarIso(new Date())) || calendarCache.items[0];
+              calendarWeekStart = calendarMonday(next?.date || calendarIso(new Date()));
+            }
+            const host = document.getElementById("calendar-live");
+            if (host) { host.innerHTML = renderWorkingCalendar(); bindCalendarActions(host, route); }
+          } else if (route.section === "content" && route.sub === "assets") {
+            const data = await fetchLiveJson("/api/assets");
+            if (token !== liveLoadToken) return;
+            mediaCache = data;
+            const host = document.getElementById("content-live");
+            if (host) host.innerHTML = renderLiveAssets(data);
+          } else if (route.section === "cases" && route.sub === "test-pack") {
+            const [postData, assetData] = await Promise.all([fetchLiveJson("/api/posts"), fetchLiveJson("/api/assets")]);
+            if (token !== liveLoadToken) return;
+            const host = document.getElementById("project-live");
+            if (host) { host.innerHTML = renderTestPackLive(postData.posts || [], assetData); bindCardActions(host); }
+          } else if (route.section === "research" && route.sub === "trends") {
+            const params = new URLSearchParams({period:trendFilters.period,source:trendFilters.source});
+            if (trendFilters.hashtag) params.set("hashtag",trendFilters.hashtag);
+            const [data,favorites] = await Promise.all([fetchLiveJson(`/api/new-ia/research/trends?${params}`),fetchLiveJson("/api/new-ia/research/favorites")]);
+            if(token!==liveLoadToken)return; const host=document.getElementById("research-live"); if(host){host.innerHTML=renderUnifiedTrends(data,new Set(favorites.ids||[]));bindCardActions(host);bindTrendTagActions(host,route);}
+          } else if (route.section === "research" && ["news", "videos"].includes(route.sub)) {
+            const date = researchSelectedDates[route.sub];
+            const [data, favorites] = await Promise.all([
+              fetchLiveJson(`/api/new-ia/research?source=${encodeURIComponent(route.sub)}${date ? `&date=${encodeURIComponent(date)}` : ""}`),
+              fetchLiveJson("/api/new-ia/research/favorites"),
+            ]);
+            if (token !== liveLoadToken) return;
+            const host = document.getElementById("research-live");
+            if (host) {
+              const favoriteIds = new Set(favorites.ids || []);
+              host.innerHTML = route.sub === "news" ? renderLiveNews(data, favoriteIds) : route.sub === "videos" ? renderLiveVideos(data, favoriteIds) : renderLiveTrends(data);
+              syncResearchDateControl(route, data);
+              bindCardActions(host);
+            }
+          } else if (route.section === "research" && route.sub === "favorites") {
+            const data = await fetchLiveJson("/api/new-ia/research/favorites");
+            if (token !== liveLoadToken) return;
+            const host = document.getElementById("research-live");
+            if (host) { host.innerHTML = renderLiveFavorites(data); bindCardActions(host); }
+          } else if (route.section === "research" && route.sub === "archive") {
+            const data = await fetchLiveJson("/api/new-ia/research/archive");
+            if (token !== liveLoadToken) return;
+            const host = document.getElementById("research-live");
+            if (host) {
+              host.innerHTML = renderResearchArchive(data);
+              host.querySelectorAll("[data-archive-source]").forEach((button) => button.addEventListener("click", () => {
+                const source = button.dataset.archiveSource;
+                researchSelectedDates[source] = button.dataset.archiveDate;
+                trendFilters.period = "day";
+                trendFilters.source = source === "videos" ? "youtube" : source === "news" ? "news" : "all";
+                trendFilters.hashtag = "";
+                window.location.hash = "#/research/trends";
+              }));
+            }
+          }
+        } catch (error) {
+          if (token !== liveLoadToken) return;
+          const host = document.getElementById("site-live") || document.getElementById("dashboard-live") || document.getElementById("analytics-live") || document.getElementById("systems-live") || document.getElementById("brand-presets-live") || document.getElementById("brand-assets-live") || document.getElementById("template-studio-live") || document.getElementById("item-generator-live") || document.getElementById("opportunities-live") || document.getElementById("calendar-live") || document.getElementById("content-live") || document.getElementById("research-live") || document.getElementById("project-live");
+          if (host) host.innerHTML = `<div class="preview-empty preview-live-error"><strong>Could not load live data</strong><span>${escapeHtml(error.message)}</span></div>`;
+        }
+      }
+
+      function renderSite(sub) {
+        const labels = {
+          overview: ["Public website overview", "Live availability, domain, website identity and Hub connections."],
+          pages: ["Pages & routes", "Every public route currently declared by the website sitemap."],
+          content: ["Website content", "Live homepage structure, tour pages, languages and currencies."],
+          seo: ["SEO & share", "Metadata, social preview, structured data and crawler rules from the live homepage."],
+          forms: ["Forms & leads", "Public contact points and the current state of lead delivery to this Hub."],
+          publishing: ["Publishing", "Live release signals and the current state of deployment control from this Hub."],
+          files: ["Public files", "Media and frontend assets referenced by the live homepage."],
+        };
+        const [title, description] = labels[sub] || labels.overview;
+        return `${pageIntro(`Site / ${sub}`, title, description, '<a class="preview-secondary" href="https://helloiam.am" target="_blank" rel="noreferrer">Open helloiam.am ↗</a>')}<div id="site-live" class="preview-live-region"><div class="preview-empty">Inspecting the live website…</div></div>`;
+      }
+
+      function siteConnection(label, connected, description) {
+        return `<article><span>${connected ? "Connected" : "Not connected"}</span><strong>${escapeHtml(label)}</strong><p>${escapeHtml(description)}</p></article>`;
+      }
+
+      function renderSiteLive(sub, data) {
+        const home = data.homepage || {};
+        const content = data.content || {};
+        const routes = data.routes || [];
+        const healthyRoutes = routes.filter((route) => route.status >= 200 && route.status < 400).length;
+        const checkedAt = data.checkedAt ? new Date(data.checkedAt).toLocaleString("en-GB", {dateStyle: "medium", timeStyle: "short"}) : "—";
+        const routeLink = (path) => `<a href="${escapeHtml(new URL(path, data.origin).href)}" target="_blank" rel="noreferrer">Open ↗</a>`;
+        if (sub === "overview") return `${liveSummary([["Homepage", home.status ? `HTTP ${home.status}` : "Unavailable"], ["Response", `${home.responseMs || 0} ms`], ["Public routes", String(routes.length)]])}
+          <div class="preview-brand-statement"><span>Live public website</span><h3>${escapeHtml(home.title || data.origin)}</h3><p>${escapeHtml(home.description || "No public description found.")}</p></div>
+          <section class="preview-section-head"><div><span>Hub connections</span><h2>What this interface can control</h2></div></section>
+          <div class="preview-integration-grid">${siteConnection("CMS", data.connections?.cms, "Content is visible on the public site, but no CMS is connected to this Hub.")}${siteConnection("Deployment", data.connections?.deployment, "Live state is observable; releases cannot yet be started here.")}${siteConnection("Analytics", data.connections?.analytics, "No public-site analytics source is connected to the New IA.")}${siteConnection("Forms inbox", data.connections?.formsInbox, "The public form exists, but its submissions are not available in this Hub.")}</div>
+          <div class="preview-note">Read-only live check · inspected ${escapeHtml(checkedAt)}. The Hub does not change the website.</div>`;
+        if (sub === "pages") return `${liveSummary([["Sitemap routes", String(routes.length)], ["Healthy", `${healthyRoutes}/${routes.length}`], ["Latest sitemap date", data.sitemap?.latestModified || "—"]])}
+          <div class="preview-system-table preview-site-routes">${routes.map((route) => `<article><strong>${escapeHtml(route.path)}</strong><span>HTTP ${escapeHtml(route.status || "error")}</span><span>${escapeHtml(route.lastmod || "No lastmod")} · ${escapeHtml(route.responseMs || 0)} ms</span>${routeLink(route.path)}</article>`).join("") || '<div class="preview-empty">The sitemap contains no routes.</div>'}</div>
+          <div class="preview-note">Source · live sitemap.xml plus an availability check for every URL.</div>`;
+        if (sub === "content") return `${liveSummary([["Homepage sections", String(content.sections?.length || 0)], ["Tour pages", String(content.tourPaths?.length || 0)], ["Languages", (content.languages || []).join(" · ") || "—"]])}
+          <section class="preview-section-head"><div><span>Homepage</span><h2>Visible sections</h2></div></section><div class="preview-knowledge-list">${(content.sections || []).map((section) => `<article><span>#${escapeHtml(section.id)}</span><strong>${escapeHtml(section.title || section.id)}</strong><p>Section discovered in the live homepage markup.</p></article>`).join("")}</div>
+          <section class="preview-section-head"><div><span>Products</span><h2>Tour pages</h2></div></section><div class="preview-site-table">${(content.tourPaths || []).map((path) => `<article><strong>${escapeHtml(path.split("/").at(-1).replaceAll("-", " "))}</strong><p>${escapeHtml(path)}</p><span>${routeLink(path)}</span></article>`).join("")}</div>
+          <div class="preview-note">Also detected · currencies ${(content.currencies || []).join(", ") || "none"}. Content editing requires a future CMS connection.</div>`;
+        if (sub === "seo") return `<div class="preview-facts-grid">${factRow("Title", home.title || "Not found", "Live <title>")}${factRow("Description", home.description || "Not found", "Live meta description")}${factRow("Canonical", home.canonical || "Not found", "Live canonical URL")}${factRow("Robots", home.robots || "Not specified", "Homepage directive")}${factRow("Twitter card", home.twitterCard || "Not found", "Live social metadata")}${factRow("Structured data", (home.schemaTypes || []).join(" · ") || "Not found", "JSON-LD types")}</div>
+          <section class="preview-section-head"><div><span>Share preview</span><h2>${escapeHtml(home.ogTitle || home.title || "No Open Graph title")}</h2></div></section><article class="preview-seo-card">${home.ogImage ? `<img src="${escapeHtml(home.ogImage)}" alt="Live Open Graph preview">` : ""}<div><span>${escapeHtml(data.origin)}</span><strong>${escapeHtml(home.ogTitle || home.title || "")}</strong><p>${escapeHtml(home.ogDescription || home.description || "")}</p></div></article>
+          <section class="preview-section-head"><div><span>robots.txt</span><h2>Crawler rules</h2></div></section><pre class="preview-code-block">${escapeHtml(data.robots?.content || "Not available")}</pre>`;
+        if (sub === "forms") return `${liveSummary([["Public forms", String(content.forms || 0)], ["Forms inbox", data.connections?.formsInbox ? "Connected" : "Not connected"], ["Contact email", content.email || "Not found"]])}
+          <div class="preview-integration-grid">${siteConnection("Trip request", false, "A request form is present on the public homepage; submissions are not readable here yet.")}${siteConnection("Email", Boolean(content.email), content.email ? `Public contact: ${content.email}` : "No public email detected.")}${siteConnection("Instagram", Boolean(content.instagram), content.instagram ? `Public account: @${content.instagram}` : "No public Instagram detected.")}</div>
+          <div class="preview-actions-row"><a class="preview-primary" href="${escapeHtml(data.origin)}/#request" target="_blank" rel="noreferrer">Open public request form ↗</a></div>
+          <div class="preview-note">To make this tab operational, the form backend must provide a secure submissions API or webhook.</div>`;
+        if (sub === "publishing") return `${liveSummary([["Live site", home.status === 200 ? "Available" : `HTTP ${home.status || "error"}`], ["Healthy routes", `${healthyRoutes}/${routes.length}`], ["Last modified", home.lastModified || data.sitemap?.latestModified || "—"]])}
+          <div class="preview-publishing-flow">${[["01","Edit","Content changes in the website source or future CMS."],["02","Review","Copy, assets, SEO and legal details are checked."],["03","Deploy","The website hosting publishes a new build."],["04","Verify","This Hub checks homepage, sitemap and every route."],["05","Observe","Analytics and form leads appear once integrations are connected."]].map(([num,name,desc]) => `<article><span>${num}</span><strong>${escapeHtml(name)}</strong><p>${escapeHtml(desc)}</p></article>`).join("")}</div>
+          <div class="preview-note">Deployment is not connected · this screen reflects the public result but cannot publish or roll back releases.</div>`;
+        const assets = content.assetUrls || [];
+        return `${liveSummary([["Referenced files", String(assets.length)], ["Images", String(content.images || 0)], ["Videos", String(content.videos || 0)]])}
+          <div class="preview-system-table preview-site-files">${assets.map((url) => { const parsed = new URL(url); return `<article><strong>${escapeHtml(parsed.pathname.split("/").at(-1) || parsed.pathname)}</strong><span>${escapeHtml(parsed.pathname.split(".").at(-1).toUpperCase())}</span><span>${escapeHtml(parsed.pathname)}</span><a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">Open ↗</a></article>`; }).join("") || '<div class="preview-empty">No public asset references found.</div>'}</div>
+          <div class="preview-note">These are public references found in homepage HTML, not direct access to the hosting filesystem.</div>`;
+      }
+
+      function renderAnalytics(sub, detail = "") {
+        const labels = {content: ["Content performance", "Production readiness and output volume from real Current posts."], channels: ["Channel analytics", "Compare publication results across social, website and email channels."], research: ["Research coverage", "Collection volume and history across News, YouTube and Trends."], production: ["Production operations", "Calendar readiness, active Collabs and draft workload."], formats: ["Format comparison", "Compare the formats currently produced in HelloIAM."]};
+        const [title, description] = labels[sub];
+        return `${pageIntro(`Analytics / ${sub}${detail ? ` / ${detail}` : ""}`, title, description)}<div id="analytics-live" class="preview-live-region"><div class="preview-empty">Calculating live workspace metrics…</div></div>`;
+      }
+
+      function renderChannelNav(active) {
+        const labels = {overview:"Overview", instagram:"Instagram", youtube:"YouTube", tiktok:"TikTok", website:"Website", email:"Email", comparison:"Comparison"};
+        return `<nav class="preview-channel-nav" aria-label="Channel analytics">${analyticsChannelViews.map((id) => `<a href="#/analytics/channels/${id}" class="${id === active ? "is-active" : ""}">${escapeHtml(labels[id])}</a>`).join("")}</nav>`;
+      }
+
+      function channelMetricCards(metrics) {
+        return `<div class="preview-format-strip preview-channel-metrics">${metrics.map(([name, description]) => `<article><strong>${escapeHtml(name)}</strong><span>${escapeHtml(description)}</span><p>—</p></article>`).join("")}</div>`;
+      }
+
+      function renderChannelsAnalytics(view = "overview") {
+        const nav = renderChannelNav(view);
+        const filterBar = `<div class="preview-channel-filters"><label>Period<select disabled><option>Last 30 days</option></select></label><label>Case<select disabled><option>All cases</option></select></label><label>Format<select disabled><option>All formats</option></select></label><span>Filters activate after the first channel connection.</span></div>`;
+        const channelMetrics = {
+          instagram: [["Reach","Unique accounts"],["Impressions","Total displays"],["Reactions","Likes and reactions"],["Comments","Post responses"],["Saves","Saved posts"],["Shares","Reposts and sends"]],
+          youtube: [["Views","Video views"],["Unique viewers","Estimated audience"],["Watch time","Total consumption"],["Avg. duration","Average view"],["Completion","Video completion"],["Subscribers","Subscribers gained"]],
+          tiktok: [["Views","Video views"],["Reach","Unique viewers"],["Full views","Completed videos"],["Watch time","Total consumption"],["Reactions","Likes and comments"],["Shares","Reposts and sends"]],
+          website: [["Users","Unique visitors"],["Sessions","Website visits"],["Page views","Content consumption"],["Engagement","Active time"],["Forms","Submitted requests"],["Conversion","Visitor to lead"]],
+          email: [["Delivered","Delivered messages"],["Open rate","Opened email"],["Clicks","Link clicks"],["Replies","Direct responses"],["Unsubscribes","Audience loss"],["CTOR","Click-to-open rate"]],
+        };
+        if (view === "comparison") {
+          const rows = [["Instagram","Meta API"],["YouTube","YouTube Analytics API"],["TikTok","TikTok API"],["Website","Web analytics"],["Email","Email provider API"]];
+          return `${nav}${filterBar}<div class="preview-note"><strong>Cross-channel comparison is ready for integrations</strong><span>Only comparable metric groups will be combined; channel-specific metrics remain inside each channel.</span></div><div class="preview-format-comparison preview-channel-comparison"><header><span>Channel</span><span>Audience</span><span>Consumption</span><span>Interactions</span><span>Conversions</span></header>${rows.map(([name,source]) => `<article><strong>${escapeHtml(name)}</strong><span>—</span><span>—</span><span>—</span><span title="${escapeHtml(source)}">Not connected</span></article>`).join("")}</div>`;
+        }
+        if (view !== "overview") {
+          const title = view.charAt(0).toUpperCase() + view.slice(1);
+          return `${nav}${filterBar}${liveSummary([["Publications","—"],["Audience","—"],["Engagement","—"]])}<div class="preview-note"><strong>${escapeHtml(title)} is not connected</strong><span>Real values will appear after account authorization and publication ID mapping.</span></div><section class="preview-section-head"><div><span>${escapeHtml(title)}</span><h2>Channel metrics</h2></div></section>${channelMetricCards(channelMetrics[view] || [])}<section class="preview-section-head"><div><span>Publications</span><h2>Performance by post</h2></div></section><div class="preview-system-table"><article><strong>Published post</strong><span>Date · format</span><span>Core metrics</span><span>Status</span></article><article class="preview-placeholder-row"><strong>Waiting for integration</strong><span>No publications synced</span><span>—</span><span>Not connected</span></article></div>`;
+        }
+        const overviewRows = [["Instagram","Reach · impressions · saves"],["YouTube","Views · watch time · completion"],["TikTok","Views · full views · shares"],["Website","Users · sessions · conversions"],["Email","Delivered · opens · clicks"]];
+        return `${nav}${filterBar}${liveSummary([["Total audience","—"],["Content views","—"],["Conversions","—"]])}<div class="preview-note"><strong>No publication channels connected yet</strong><span>This overview will normalize audience, consumption, interactions, clicks and conversions without mixing incompatible platform metrics.</span></div><section class="preview-section-head"><div><span>Channels</span><h2>Connection overview</h2></div></section><div class="preview-system-table">${overviewRows.map(([name,metrics]) => `<article><strong>${escapeHtml(name)}</strong><span>Not connected</span><span>${escapeHtml(metrics)}</span><a href="#/analytics/channels/${name.toLowerCase()}">Open</a></article>`).join("")}</div>`;
+      }
+
+      function renderAnalyticsLive(sub, data, detail = "") {
+        const posts = data.posts.posts || [];
+        const formatRows = [...posts.reduce((map, post) => {
+          const key = post.templateName || post.templateId || "Unknown";
+          const row = map.get(key) || {name: key, count: 0, rendered: 0, slides: 0};
+          row.count += 1; row.rendered += post.hasRender ? 1 : 0; row.slides += Number(post.cardCount || 0); map.set(key, row); return map;
+        }, new Map()).values()].sort((a, b) => b.count - a.count);
+        const rendered = posts.filter((post) => post.hasRender).length;
+        if (sub === "content") {
+          const categories = Object.entries(posts.reduce((acc, post) => { const key = post.category || "uncategorized"; acc[key] = (acc[key] || 0) + 1; return acc; }, {})).sort((a,b) => b[1]-a[1]);
+          return `${liveSummary([["Total posts", String(posts.length)], ["Rendered", String(rendered)], ["Drafts", String(posts.length-rendered)]])}<section class="preview-analytics-panel"><h3>Posts by category</h3>${renderBars(categories.map(([name,count]) => [name,count]), posts.length)}</section><section class="preview-analytics-panel"><h3>Recent output</h3><div class="preview-dashboard-list">${posts.slice(0,8).map((post) => `<a href="/picker.html#/content/posts/${encodeURIComponent(post.id)}" data-current-link><div><span>${escapeHtml(post.templateName || "Post")}</span><strong>${escapeHtml(post.name || post.subject || "Untitled")}</strong></div><small>${post.hasRender ? "Rendered" : "Draft"}</small></a>`).join("")}</div></section>`;
+        }
+        if (sub === "channels") return renderChannelsAnalytics(detail || "overview");
+        if (sub === "research") {
+          const dates = data.research.dates || [];
+          const totals = dates.reduce((acc,row) => ({news:acc.news+Number(row.news||0),videos:acc.videos+Number(row.videos||0),trends:acc.trends+Number(row.trends||0)}), {news:0,videos:0,trends:0});
+          return `${liveSummary([["Snapshots", String(dates.length)], ["News collected", String(totals.news)], ["Videos collected", String(totals.videos)]])}<section class="preview-analytics-panel"><h3>Collection history</h3><div class="preview-system-table">${dates.map((row) => `<article><strong>${escapeHtml(formatLiveDate(row.date,true))}</strong><span>${row.news} news</span><span>${row.videos} videos</span><span>${row.trends} trends</span></article>`).join("")}</div></section>`;
+        }
+        if (sub === "production") {
+          const calendar = data.calendar.items || []; const collabs = data.collabs.items || [];
+          const calendarCounts = Object.entries(calendar.reduce((acc,item)=>{acc[item.status]=(acc[item.status]||0)+1;return acc;},{}));
+          return `${liveSummary([["Draft posts", String(posts.length-rendered)], ["Scheduled", String(calendar.length)], ["Active Collabs", String(collabs.filter((item)=>item.status==="active").length)]])}<section class="preview-analytics-panel"><h3>Calendar status</h3>${renderBars(calendarCounts, calendar.length)}</section><section class="preview-analytics-panel"><h3>Current workload</h3><div class="preview-system-table"><article><strong>Content</strong><span>${posts.length-rendered} drafts</span><span>${rendered} rendered</span><a href="#/content/posts">Open</a></article><article><strong>Calendar</strong><span>${calendar.filter((item)=>item.status==="blocked").length} blocked</span><span>${calendar.filter((item)=>item.status==="ready").length} ready</span><a href="#/content/calendar">Open</a></article><article><strong>Collabs</strong><span>${collabs.filter((item)=>item.status==="candidate").length} candidates</span><span>${collabs.filter((item)=>item.status==="active").length} active</span><a href="#/opportunities/active">Open</a></article></div></section>`;
+        }
+        return `${liveSummary([["Formats", String(formatRows.length)], ["Posts", String(posts.length)], ["Average slides", posts.length ? (posts.reduce((sum,p)=>sum+Number(p.cardCount||0),0)/posts.length).toFixed(1) : "0"]])}<div class="preview-format-comparison"><header><span>Format</span><span>Posts</span><span>Rendered</span><span>Avg. slides</span></header>${formatRows.map((row)=>`<article><strong>${escapeHtml(row.name)}</strong><span>${row.count}</span><span>${row.rendered}</span><span>${(row.slides/row.count).toFixed(1)}</span></article>`).join("")}</div>`;
+      }
+
+      function renderBars(rows, total) {
+        const max = Math.max(1, ...rows.map(([,value]) => Number(value)||0));
+        return `<div class="preview-metric-bars">${rows.map(([label,value]) => `<div><span>${escapeHtml(label)}</span><i style="--value:${Math.max(3,Math.round((Number(value||0)/max)*100))}%"></i><strong>${value}${total ? ` · ${Math.round((Number(value||0)/total)*100)}%` : ""}</strong></div>`).join("")}</div>`;
+      }
+
+      function renderSystems(sub) {
+        const labels = {changelog:["Changelog","Product versions and every recorded technical change."],ai:["AI settings","Configured generation services and the real prompt library."],integrations:["Integrations","Connectivity used by research, generation and storage."],automation:["Automation","Daily collection schedule and recent stored snapshots."],runtime:["Runtime & deployment","Application version, architecture and workspace volume."],access:["Users & access","Role model for viewing, producing and administering the project."]};
+        const [title,description]=labels[sub];
+        return `${pageIntro(`Systems / ${sub}`,title,description)}<div id="systems-live" class="preview-live-region"><div class="preview-empty">Loading system state…</div></div>`;
+      }
+
+      function renderSystemsLive(sub, data) {
+        const version = data.changelog.productVersion || "—"; const config=data.config; const prompts=data.prompts.sections||[];
+        if (sub === "changelog") return `${liveSummary([["Version",version],["Releases",String(data.changelog.entries?.length||0)],["Recorded changes",String((data.changelog.entries||[]).reduce((sum,entry)=>sum+(entry.changes?.length||0),0))]])}<div class="preview-changelog">${(data.changelog.entries||[]).map((entry)=>`<section><header><span>${escapeHtml(entry.date)}</span><h3>${escapeHtml(entry.version)} · ${escapeHtml(entry.title)}</h3></header>${(entry.changes||[]).map((change)=>`<article><span>${escapeHtml(`${change.type} · ${change.area}`)}</span><div><strong>${escapeHtml(change.summary)}</strong><p>${escapeHtml(change.details)}</p></div></article>`).join("")}</section>`).join("")}</div>`;
+        if (sub === "ai") return `${liveSummary([["Prompt sections",String(prompts.length)],["LLM",config.llmConfigured?"Connected":"Missing"],["Image AI",config.falConfigured?"Connected":"Missing"]])}<div class="preview-system-table">${prompts.map((section)=>`<article><strong>${escapeHtml(section.title)}</strong><span>${escapeHtml(`${section.content.length} characters`)}</span><span>${escapeHtml(section.content.slice(0,110).replace(/\s+/g," "))}…</span><a href="/picker.html#/content/prompts" data-current-link>Edit in Current</a></article>`).join("")}</div>`;
+        if (sub === "integrations") return `<div class="preview-integration-grid">${[["LLM API",config.llmConfigured,"Text and fallback image generation"],["FAL",config.falConfigured,"Images, video and Item Generator"],["News collector",true,"Daily research snapshots"],["YouTube collector",true,"Videos and hashtag trends"],["Filesystem storage",true,"Posts, assets and operational records"]].map(([name,ok,use])=>`<article><span>${ok?"Connected":"Needs setup"}</span><strong>${name}</strong><p>${use}</p></article>`).join("")}</div>`;
+        if (sub === "automation") return `${liveSummary([["Schedule","12:00 MSK"],["Stored snapshots",String(data.research.dates?.length||0)],["Latest",data.research.dates?.[0]?.date||"—"]])}<div class="preview-automation-flow">${[["01","Trigger","Cron runs every day at 12:00 Europe/Moscow"],["02","Collect news","News sources are parsed and normalized"],["03","Collect YouTube","Videos and hashtag deltas are stored"],["04","Publish to Research","The unified Trends feed and Archive update together"]].map(([num,name,desc])=>`<article><span>${num}</span><strong>${name}</strong><p>${desc}</p></article>`).join("")}</div><a class="preview-primary" href="#/research/trends">Open collector controls</a>`;
+        if (sub === "runtime") return `${liveSummary([["App version",version],["Architecture","New IA"],["Mode",config.admin?"Admin":"Standard"]])}<div class="preview-system-table"><article><strong>Posts storage</strong><span>${data.posts.posts?.length||0} records</span><span>data/posts</span><a href="#/content/posts">Inspect</a></article><article><strong>Media storage</strong><span>${data.assets.assets?.length||0} library files</span><span>${data.assets.bindings?.length||0} post bindings</span><a href="#/content/assets">Inspect</a></article><article><strong>Operational stores</strong><span>${data.calendar.items?.length||0} Calendar</span><span>${data.collabs.items?.length||0} Collabs</span><a href="#/content/calendar">Inspect</a></article></div>`;
+        return `<div class="preview-access-matrix"><header><span>Capability</span><span>Viewer</span><span>Producer</span><span>Admin</span></header>${[["View research and content","✓","✓","✓"],["Create posts and items","—","✓","✓"],["Edit Calendar and Collabs","—","✓","✓"],["Change prompts and integrations","—","—","✓"],["Deploy and manage access","—","—","✓"]].map((row)=>`<article>${row.map((cell,index)=>index?`<span>${cell}</span>`:`<strong>${cell}</strong>`).join("")}</article>`).join("")}</div><div class="preview-note">Current local session: ${config.admin?"Admin":"Standard"}. The matrix defines the intended universal role model; account provisioning remains deployment-specific.</div>`;
+      }
+
+      function renderGeneric(section, sub) {
+        const configurations = {
+          analytics: {
+            content: ["Content performance", "Reach, reactions, saves and engagement by publication."], research: ["Research performance", "Which signals most often become successful posts."], production: ["Production metrics", "Volume, production time, failures and AI usage."], formats: ["Format comparison", "Compare Promo, Item and News outcomes."],
+          },
+          systems: {
+            changelog: ["Changelog", "Product releases and change history."], ai: ["AI settings", "Post, image, video and project-item prompt groups."], integrations: ["Integrations", "Exa, YouTube, LLM, Fal and storage connectivity."], automation: ["Automation", "Daily 12:00 collection, manual runs and error logs."], runtime: ["Runtime & deployment", "Application version, containers and deploy status."], access: ["Users & access", "Viewing, production and administration roles."],
+          },
+        };
+        const [title, description] = configurations[section][sub];
+        const cards = section === "analytics" ? [["Overview", "A single comparable summary"],["Breakdown", "Inspect individual contributors"],["History", "See change over time"]] : [["Status", "Current configuration state"],["Controls", "Admin-only actions"],["History", "Changes and operational events"]];
+        return `${pageIntro(`${section} / ${sub}`, title, description)}<div class="preview-grid preview-grid-three">${cards.map(([a,b]) => featureCard(a,b,section)).join("")}</div><div class="preview-note">Prototype only · no production data or settings are changed from this screen.</div>`;
+      }
+
+      function renderSubnav(route) {
+        const host = document.getElementById("preview-subnav");
+        const items = sectionSubnavItems(route.section);
+        host.hidden = !items;
+        host.innerHTML = items ? items.map(([id, label]) => `<a href="#/${route.section}/${id}" class="${id === route.sub ? "is-active" : ""}">${escapeHtml(label)}</a>`).join("") : "";
+      }
+
+      function productCardValues() {
+        const form=document.getElementById("product-card-form"); return form ? Object.fromEntries(new FormData(form).entries()) : {};
+      }
+
+      function updateProductCardPreview() {
+        const values=productCardValues(); const preview=document.getElementById("product-card-preview"); if(!preview)return;
+        const set=(selector,value,fallback)=>{const node=preview.querySelector(selector);if(node)node.textContent=value||fallback;};
+        preview.dataset.preset=values.brandPreset||"core"; preview.dataset.motion=values.motion||"none";
+        set("[data-product-brand]",values.brandPreset==="news"?"AM NEWS":values.brandPreset==="tours"?"HELLOIAM.AM":"HELLO I AM . AM","HELLO I AM . AM");
+        set("[data-product-audience]",values.audience,"Audience"); set("[data-product-name]",values.product,"Product"); set("[data-product-positioning]",values.positioning,"Positioning"); set("[data-product-proof]",values.proof,values.benefit||"Proof"); set("[data-product-price]",values.price,values.benefit||"Main benefit"); set("[data-product-cta]",`${values.cta||"Learn more"} →`);
+      }
+
+      function standaloneProductCardHtml(values) {
+        const preset=values.brandPreset||"core"; const palettes={core:["#FFF3D8","#17110B","#FF3B12"],news:["#FFC83D","#17110B","#FF3B12"],tours:["#BFD9B7","#17110B","#F4F2EC"]}; const [background,ink,accent]=palettes[preset]||palettes.core;
+        const brand=preset==="news"?"AM NEWS":preset==="tours"?"HELLOIAM.AM":"HELLO I AM . AM"; const motion=values.motion==="rise"?"rise":values.motion==="fade"?"fade":"none";
+        return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(values.product||"Product card")}</title><style>*{box-sizing:border-box}body{margin:0;background:#ddd;font-family:Arial,sans-serif;color:${ink}}.card{width:1080px;height:1350px;margin:auto;padding:64px;background:${background};display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}.card.${motion}{animation:${motion} .7s ease both}@keyframes fade{from{opacity:0}to{opacity:1}}@keyframes rise{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:none}}header,footer{display:flex;justify-content:space-between;gap:30px;font-size:24px;text-transform:uppercase}main span{font-size:22px;text-transform:uppercase}h1{max-width:900px;margin:32px 0;font-size:112px;letter-spacing:-.06em;line-height:.9}main p{max-width:800px;font-size:38px;line-height:1.25}footer{align-items:flex-end;border-top:3px solid ${ink};padding-top:30px}footer div{display:grid;gap:10px}footer strong{font-size:42px}footer b{padding:20px 24px;background:${accent};color:#fff;font-size:28px}</style></head><body><article class="card ${motion}"><header><strong>${escapeHtml(brand)}</strong><span>${escapeHtml(values.audience||"Audience")}</span></header><main><span>${escapeHtml(values.benefit||"Product")}</span><h1>${escapeHtml(values.product||"Product")}</h1><p>${escapeHtml(values.positioning||"Positioning")}</p></main><footer><div><strong>${escapeHtml(values.price||values.benefit||"")}</strong><span>${escapeHtml(values.proof||"")}</span></div><b>${escapeHtml(values.cta||"Learn more")} →</b></footer></article></body></html>`;
+      }
+
+      function bindPrototypeActions(route) {
+        document.querySelectorAll("[data-demo-action]").forEach((button) => button.addEventListener("click", () => {
+          button.textContent = button.dataset.demoAction;
+          button.disabled = true;
+        }));
+        bindCardActions(document);
+        document.getElementById("product-card-form")?.addEventListener("submit", (event)=>event.preventDefault());
+        document.getElementById("product-card-form")?.addEventListener("input", updateProductCardPreview);
+        document.querySelector("[data-export-product-html]")?.addEventListener("click",()=>{
+          const values=productCardValues(); const blob=new Blob([standaloneProductCardHtml(values)],{type:"text/html"}); const url=URL.createObjectURL(blob); const link=document.createElement("a"); link.href=url; link.download=`${String(values.product||"product-card").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"product-card"}.html`; link.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); const status=document.querySelector("[data-product-status]"); if(status)status.textContent=`Exported ${link.download} · ready for render`;
+        });
+        document.getElementById("trend-controls")?.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const values = Object.fromEntries(new FormData(event.currentTarget).entries());
+          trendFilters.period = values.period || "day";
+          trendFilters.source = values.source || "all";
+          trendFilters.hashtag = String(values.hashtag || "").trim().replace(/^#+/, "");
+          const host = document.getElementById("research-live");
+          if (host) host.innerHTML = '<div class="preview-empty">Applying trend filters…</div>';
+          await loadLiveData(route);
+        });
+        document.getElementById("media-filters")?.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const values = Object.fromEntries(new FormData(event.currentTarget).entries());
+          mediaFilters.query = String(values.query || "").trim();
+          mediaFilters.source = values.source || "all";
+          mediaFilters.usage = values.usage || "all";
+          const host = document.getElementById("content-live");
+          if (host && mediaCache) host.innerHTML = renderLiveAssets(mediaCache);
+        });
+        document.querySelector("[data-reset-media]")?.addEventListener("click", () => {
+          mediaFilters.query = ""; mediaFilters.source = "all"; mediaFilters.usage = "all";
+          render();
+        });
+        document.getElementById("item-generator-form")?.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const input = document.getElementById("item-generator-subject");
+          const button = form.querySelector('button[type="submit"]');
+          const status = form.querySelector("[data-item-generator-status]");
+          const name = input.value.trim();
+          if (!name) return input.focus();
+          button.disabled = true;
+          button.textContent = "Generating…";
+          status.textContent = `Generating ${name} in the HelloIAM emoji style…`;
+          try {
+            const response = await fetch("/api/emojis/generate", {method: "POST", headers: {"Content-Type": "application/json", Accept: "application/json"}, body: JSON.stringify({name, overwrite: false})});
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || "Item generation failed");
+            input.value = "";
+            status.textContent = `Saved ${data.filename} to the shared Current catalog`;
+            await loadLiveData(route);
+          } catch (error) {
+            status.textContent = error.message;
+          } finally {
+            button.disabled = false;
+            button.textContent = "Generate item";
+          }
+        });
+        document.querySelector("[data-creative-brief]")?.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const form=event.currentTarget; const values=Object.fromEntries(new FormData(form).entries()); const type=form.dataset.creativeBrief;
+          const output=document.getElementById("creative-brief-output");
+          output.innerHTML=`<span>${type === "image" ? "Image" : "Video"} production brief</span><strong>${escapeHtml(values.subject)}</strong><p>${escapeHtml(`${values.usage} · ${values.format} · ${values.style}`)}</p><small>${escapeHtml(values.direction || "No additional direction")}</small><a class="preview-primary preview-small" href="#/creative-tools/post-generator">Continue in Post Generator →</a>`;
+        });
+        document.getElementById("share-card-form")?.addEventListener("input", (event) => {
+          const form=event.currentTarget; const values=Object.fromEntries(new FormData(form).entries()); const preview=document.getElementById("share-card-preview");
+          preview.dataset.accent=values.accent; preview.querySelector("strong").textContent=values.title||"Untitled page"; preview.querySelector("p").textContent=values.description||"Add a description";
+        });
+        document.querySelectorAll("[data-pose]").forEach((button) => button.addEventListener("click", () => {
+          selectedPose = button.dataset.pose;
+          render();
+        }));
+        document.getElementById("build-attributes")?.addEventListener("click", () => {
+          const theme = document.getElementById("mascot-theme").value.trim();
+          if (!theme) {
+            document.getElementById("mascot-theme").focus();
+            document.getElementById("mascot-theme").classList.add("is-invalid");
+            return;
+          }
+          mascotBuilt = true;
+          mascotGenerated = false;
+          render();
+        });
+        document.getElementById("generate-mascot")?.addEventListener("click", () => {
+          mascotGenerated = true;
+          render();
+        });
+        document.getElementById("research-search")?.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const query = document.getElementById("search-query").value.trim();
+          const host = document.getElementById("research-live");
+          if (!query) {
+            host.innerHTML = '<div class="preview-empty">Enter a query to search the Current archive.</div>';
+            return;
+          }
+          host.innerHTML = '<div class="preview-empty">Searching News and YouTube…</div>';
+          try {
+            const data = await fetchLiveJson(`/api/new-ia/research/search?q=${encodeURIComponent(query)}`);
+            host.innerHTML = renderSearchResults(data);
+            bindCardActions(host);
+          } catch (error) {
+            host.innerHTML = `<div class="preview-empty preview-live-error"><strong>Search failed</strong><span>${escapeHtml(error.message)}</span></div>`;
+          }
+        });
+        document.querySelectorAll("[data-collect-research]").forEach((button) => button.addEventListener("click", async () => {
+          const source = button.dataset.collectResearch;
+          const status = document.querySelector("[data-collect-status]");
+          const original = button.textContent;
+          button.disabled = true;
+          button.textContent = "Parsing…";
+          if (status) status.textContent = source === "news" ? "Collecting current News sources…" : "Collecting YouTube videos and trends…";
+          try {
+            const endpoint = source === "news" ? "/ideas/api/collect" : "/ideas/api/collect-youtube";
+            const response = await fetch(`${endpoint}?force=1`, {method: "POST", headers: {Accept: "application/json"}});
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || `Collection failed (${response.status})`);
+            researchSelectedDates[route.sub] = "";
+            if (status) status.textContent = "Collection updated just now";
+            await loadLiveData(route);
+          } catch (error) {
+            if (status) status.textContent = error.message;
+          } finally {
+            button.disabled = false;
+            button.textContent = original;
+          }
+        }));
+      }
+
+      function bindTrendTagActions(root, route) {
+        root.querySelectorAll("[data-trend-tag]").forEach((button) => button.addEventListener("click", async () => {
+          trendFilters.hashtag = button.dataset.trendTag || "";
+          const input = document.querySelector('#trend-controls input[name="hashtag"]');
+          if (input) input.value = trendFilters.hashtag ? `#${trendFilters.hashtag}` : "";
+          await loadLiveData(route);
+        }));
+      }
+
+      function bindCardActions(root) {
+        root.querySelectorAll("[data-favorite]").forEach((button) => button.addEventListener("click", () => {
+          const saved = button.classList.toggle("is-saved");
+          button.textContent = saved ? "★ Saved" : "☆ Save";
+        }));
+        root.querySelectorAll("[data-use-source]").forEach((button) => button.addEventListener("click", () => {
+          window.location.hash = "#/creative-tools/post-generator";
+        }));
+        root.querySelectorAll("[data-research-favorite]").forEach((button) => button.addEventListener("click", async () => {
+          if (button.disabled) return;
+          button.disabled = true;
+          try {
+            const response = await fetch("/ideas/api/favorites", {
+              method: "POST",
+              headers: {"Content-Type": "application/json", Accept: "application/json"},
+              body: JSON.stringify({type: button.dataset.favoriteType, id: button.dataset.favoriteId, action: "toggle"}),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || "Favorite update failed");
+            button.classList.toggle("is-saved", Boolean(data.favorite));
+            button.textContent = data.favorite ? "★ Saved" : "☆ Save";
+            if (parseRoute()?.sub === "favorites") loadLiveData(parseRoute());
+          } catch (error) {
+            button.textContent = "Try again";
+          } finally {
+            button.disabled = false;
+          }
+        }));
+        root.querySelectorAll("[data-current-link]").forEach((link) => link.addEventListener("click", () => {
+          localStorage.setItem(ARCHITECTURE_MODE_KEY, "current");
+        }));
+      }
+
+      function render() {
+        const route = parseRoute();
+        if (!route) return;
+        if (route.invalid) {
+          window.location.replace("#/dashboard");
+          return;
+        }
+        document.getElementById("preview-nav").innerHTML = navItems.map((item) => item.disabled
+          ? `<span class="preview-nav-disabled" aria-disabled="true" title="This section is not available yet"><span>${item.index}</span><b>${escapeHtml(item.label)}</b><small>Later</small></span>`
+          : `<a href="${item.href}" class="${item.id === route.section ? "is-active" : ""}"><span>${item.index}</span>${escapeHtml(item.label)}</a>`).join("");
+        renderSubnav(route);
+        const sectionLabel = navItems.find((item) => item.id === route.section).label;
+        const subLabel = sectionSubnavItems(route.section)?.find(([id]) => id === route.sub)?.[1];
+        const pageLabel = route.section === "cases" && route.sub === "test-pack" ? "test-pack" : subLabel || sectionLabel;
+        document.getElementById("preview-title").textContent = pageLabel;
+        document.getElementById("preview-breadcrumb").textContent = `${projectConfig.name} / ${sectionLabel}${pageLabel !== sectionLabel ? ` / ${pageLabel}` : ""}`;
+        const currentLink = document.getElementById("architecture-current-link");
+        currentLink.href = `/picker.html${previewToCurrentHash(route)}`;
+        let html = "";
+        if (route.section === "dashboard") html = renderDashboard();
+        else if (route.section === "brand") html = renderBrand(route.sub);
+        else if (route.section === "research") html = renderResearch(route.sub);
+        else if (route.section === "content") html = renderContent(route.sub);
+        else if (route.section === "cases") html = renderCases(route.sub);
+        else if (route.section === "opportunities") html = renderOpportunities(route.sub);
+        else if (route.section === "creative-tools") html = renderCreativeTools(route.sub);
+        else if (route.section === "knowledge") html = renderKnowledge(route.sub);
+        else if (route.section === "site") html = renderSite(route.sub);
+        else if (route.section === "analytics") html = renderAnalytics(route.sub, route.detail);
+        else if (route.section === "systems") html = renderSystems(route.sub);
+        else html = renderGeneric(route.section, route.sub);
+        document.getElementById("preview-main").innerHTML = html;
+        bindPrototypeActions(route);
+        loadLiveData(route);
+        document.querySelector(".preview-sidebar")?.classList.remove("is-open");
+        document.getElementById("preview-menu-button").setAttribute("aria-expanded", "false");
+      }
+
+      localStorage.setItem(ARCHITECTURE_MODE_KEY, "new");
+      document.title = `${projectConfig.name} — Universal IA Prototype`;
+      document.getElementById("preview-project-name").textContent = projectConfig.name;
+      document.getElementById("architecture-current-link").addEventListener("click", () => localStorage.setItem(ARCHITECTURE_MODE_KEY, "current"));
+      document.getElementById("preview-menu-button").addEventListener("click", (event) => {
+        const sidebar = document.querySelector(".preview-sidebar");
+        const open = sidebar.classList.toggle("is-open");
+        event.currentTarget.setAttribute("aria-expanded", String(open));
+      });
+      window.addEventListener("hashchange", render);
+      if (!window.location.hash) window.location.replace("#/dashboard");
+      else render();
+    </script>
+  </body>
+</html>

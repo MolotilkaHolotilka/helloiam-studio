@@ -1,0 +1,108 @@
+{
+  "items": [
+    {
+      "id": "calendar-pomegranate-2026-08-10",
+      "title": "Object post · Pomegranate",
+      "date": "2026-08-10",
+      "channel": "Instagram",
+      "owner": "Mariam",
+      "status": "ready",
+      "projectId": "test-pack",
+      "linkedPostId": "df111d92-2f42-4068-9250-911e089c9ec3",
+      "notes": "Feed object post",
+      "createdAt": "2026-08-05T09:00:00.000Z",
+      "updatedAt": "2026-08-05T09:00:00.000Z"
+    },
+    {
+      "id": "calendar-yerevan-news-2026-08-11",
+      "title": "News carousel · Yerevan",
+      "date": "2026-08-11",
+      "channel": "Instagram · Telegram",
+      "owner": "Arman",
+      "status": "published",
+      "projectId": "test-pack",
+      "linkedPostId": "3c867fa0-9b8f-4763-acc9-d5e72f4a0212",
+      "notes": "Fact-check before release",
+      "createdAt": "2026-08-05T09:01:00.000Z",
+      "updatedAt": "2026-08-05T10:26:02.607Z"
+    },
+    {
+      "id": "calendar-garni-road-2026-08-12",
+      "title": "Road reel · Garni",
+      "date": "2026-08-12",
+      "channel": "Reels · TikTok",
+      "owner": "Nare",
+      "status": "review",
+      "projectId": "test-pack",
+      "linkedPostId": "",
+      "notes": "Waiting for route footage",
+      "createdAt": "2026-08-05T09:02:00.000Z",
+      "updatedAt": "2026-08-05T10:01:45.089Z"
+    },
+    {
+      "id": "calendar-coffee-ritual-2026-08-13",
+      "title": "Ritual story · Armenian coffee",
+      "date": "2026-08-13",
+      "channel": "Stories",
+      "owner": "Mariam",
+      "status": "planned",
+      "projectId": "test-pack",
+      "linkedPostId": "",
+      "notes": "Use jazve object",
+      "createdAt": "2026-08-05T09:03:00.000Z",
+      "updatedAt": "2026-08-05T09:03:00.000Z"
+    },
+    {
+      "id": "calendar-gyumri-guide-2026-08-14",
+      "title": "Place guide · Gyumri",
+      "date": "2026-08-14",
+      "channel": "Site · Instagram",
+      "owner": "Arman",
+      "status": "draft",
+      "projectId": "test-pack",
+      "linkedPostId": "",
+      "notes": "Add map and practical details",
+      "createdAt": "2026-08-05T09:04:00.000Z",
+      "updatedAt": "2026-08-05T09:04:00.000Z"
+    },
+    {
+      "id": "calendar-chef-collab-2026-08-15",
+      "title": "Chef collab · Khorovats",
+      "date": "2026-08-15",
+      "channel": "Reels",
+      "owner": "Nare",
+      "status": "blocked",
+      "projectId": "test-pack",
+      "linkedPostId": "",
+      "notes": "Waiting on partner confirmation",
+      "createdAt": "2026-08-05T09:05:00.000Z",
+      "updatedAt": "2026-08-05T09:05:00.000Z"
+    },
+    {
+      "id": "calendar-weekly-objects-2026-08-16",
+      "title": "Weekly Armenia objects",
+      "date": "2026-08-16",
+      "channel": "Newsletter",
+      "owner": "Mariam",
+      "status": "planned",
+      "projectId": "test-pack",
+      "linkedPostId": "",
+      "notes": "Weekly recap",
+      "createdAt": "2026-08-05T09:06:00.000Z",
+      "updatedAt": "2026-08-05T09:06:00.000Z"
+    },
+    {
+      "id": "4ff1f2ab-a3bb-4b3d-b42b-4ec0e236f690",
+      "title": "Carousel to TikTok",
+      "date": "2026-08-10",
+      "channel": "TikTok",
+      "owner": "Ilya",
+      "status": "published",
+      "projectId": "test-pack",
+      "linkedPostId": "",
+      "notes": "good carousel",
+      "createdAt": "2026-08-05T10:02:30.892Z",
+      "updatedAt": "2026-08-05T10:02:37.957Z"
+    }
+  ]
+}

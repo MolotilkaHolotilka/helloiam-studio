@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <title>Hello I Am</title>
+    <script>
+      window.__HELLOIAM_EMBEDDED_CONTENT__ = ["content", "create"].includes(new URLSearchParams(window.location.search).get("embed"));
+      if (window.__HELLOIAM_EMBEDDED_CONTENT__) {
+        document.documentElement.classList.add("is-embedded-content");
+      } else if (localStorage.getItem("helloiam-architecture-mode") === "new") {
+        window.location.replace("/architecture-preview.html#/dashboard");
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
@@ -27,6 +35,13 @@
             <a href="#/assets" id="nav-assets" data-section="assets" hidden>Images</a>
           </nav>
           <!-- ADMIN:GATE:nav-end -->
+          <div class="architecture-mode-switch" aria-label="Architecture mode">
+            <span class="architecture-mode-label">Architecture</span>
+            <div class="architecture-mode-options">
+              <span class="architecture-mode-option is-active" aria-current="page">Current</span>
+              <a href="/architecture-preview.html#/dashboard" id="architecture-new-link">New IA</a>
+            </div>
+          </div>
         </aside>
 
         <div class="app-main">
@@ -582,6 +597,7 @@
 
     <script>
       const STORAGE_KEY = "helloiam-stories-project";
+      const ARCHITECTURE_MODE_KEY = "helloiam-architecture-mode";
       /** Archived — see docs/IDEAS_ARCHIVE.md «Live card preview» */
       const CARD_PREVIEW_IN_CREATE = true;
       const CARD_PREVIEW_IN_PICTURES = false;
@@ -938,6 +954,26 @@
         contentTree.querySelectorAll(".tree-link[data-tree]").forEach((link) => {
           link.classList.toggle("is-active", link.getAttribute("data-tree") === contentView);
         });
+      }
+
+      function currentToPreviewHash(hash = window.location.hash) {
+        if (hash.startsWith("#/brand/collabs")) return "#/opportunities/candidates";
+        if (hash.startsWith("#/brand")) return "#/brand";
+        if (hash.startsWith("#/news-trends")) return "#/research/trends";
+        if (hash.startsWith("#/content/create")) return "#/creative-tools/post-generator";
+        if (hash.startsWith("#/content/prompts")) return "#/systems/ai";
+        if (hash.startsWith("#/content/pipeline-map")) return "#/knowledge/pipelines";
+        if (hash.startsWith("#/content/images") || hash.startsWith("#/assets")) return "#/content/assets";
+        if (hash.startsWith("#/content")) return "#/content/posts";
+        if (hash.startsWith("#/analytics")) return "#/analytics";
+        if (hash.startsWith("#/site")) return "#/site";
+        if (hash.startsWith("#/systems")) return "#/systems";
+        return "#/dashboard";
+      }
+
+      function syncArchitectureSwitch() {
+        const link = document.getElementById("architecture-new-link");
+        if (link) link.href = `/architecture-preview.html${currentToPreviewHash()}`;
       }
 
       function escapeHtml(v) {
@@ -4902,7 +4938,17 @@
       }
 
       async function init() {
-        window.addEventListener("hashchange", applyRoute);
+        if (!window.__HELLOIAM_EMBEDDED_CONTENT__) {
+          localStorage.setItem(ARCHITECTURE_MODE_KEY, "current");
+          syncArchitectureSwitch();
+          document.getElementById("architecture-new-link")?.addEventListener("click", () => {
+            localStorage.setItem(ARCHITECTURE_MODE_KEY, "new");
+          });
+        }
+        window.addEventListener("hashchange", () => {
+          syncArchitectureSwitch();
+          applyRoute();
+        });
         document.getElementById("edit-back").addEventListener("click", () => {
           window.location.hash = "#/content/posts";
         });
